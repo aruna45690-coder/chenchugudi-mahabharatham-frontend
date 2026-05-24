@@ -15,7 +15,7 @@ import { useSearchParams } from "next/navigation";
 import { useAuth, UserButton, useClerk } from "@clerk/nextjs";
 import { getStats, getAnnouncements, getGalleryImages, checkAdminStatus, recordPageView, submitFeedback, getUserFeedbackStatus, getLiveStreamSettings } from "@/lib/actions";
 import FallingPetals from "./components/FallingPetals";
-import DonorsSection from "./components/DonorsSection";
+
 
 interface SiteStats {
   activeAnnouncements: number;
@@ -2147,7 +2147,7 @@ export default function Home() {
       </section>
 
       {/* ══ DONORS SECTION ═════════════════════════════════════════ */}
-      <DonorsSection lang={lang} />
+
 
       {/* ══ FOOTER ═════════════════════════════════════════ */}
       <footer className="bg-[#1a0000] text-white pt-16 pb-8 px-6 border-t border-[#FFD700]/20 relative overflow-hidden">
