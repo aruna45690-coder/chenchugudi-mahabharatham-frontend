@@ -1,7 +1,5 @@
- 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { prisma } from "./prisma";

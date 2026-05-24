@@ -1,7 +1,7 @@
+"use client";
 /* eslint-disable */
 // src/app/page.tsx
 /* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element, react-hooks/set-state-in-effect */
-"use client";
 
 import { useState, useEffect, useCallback, Suspense, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
