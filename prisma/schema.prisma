@@ -65,11 +65,4 @@ model SiteSetting {
   updatedAt          DateTime @updatedAt
 }
 
-// Push subscriptions for live notifications
-model PushSubscription {
-  id        Int      @id @default(autoincrement())
-  endpoint  String   @unique
-  p256dh    String
-  auth      String
-  createdAt DateTime @default(now())
-}
+
