@@ -256,17 +256,26 @@ export default function Home() {
         registration.pushManager.getSubscription().then((subscription) => {
           setIsPushSubscribed(!!subscription);
           if (!subscription && Notification.permission === 'default') {
-            // Show prompt after 10 seconds of visiting
-            setTimeout(() => setShowPushPrompt(true), 10000);
+            // Check if user already interacted with the prompt before
+            const hasInteracted = localStorage.getItem('pushPromptInteracted');
+            if (!hasInteracted) {
+              // Show prompt after 10 seconds of visiting
+              setTimeout(() => setShowPushPrompt(true), 10000);
+            }
           }
         });
       });
     }
   }, []);
 
+  const handleDismissPushPrompt = () => {
+    localStorage.setItem('pushPromptInteracted', 'true');
+    setShowPushPrompt(false);
+  };
+
   const subscribeToPushNotifications = async () => {
     // Hide the HTML popup immediately so it doesn't stay stuck
-    setShowPushPrompt(false);
+    handleDismissPushPrompt();
 
     if (!('serviceWorker' in navigator)) return;
 
@@ -623,12 +632,12 @@ export default function Home() {
                   <p className="text-xs text-orange-200 mt-0.5">{lang === 'en' ? 'We will notify you when the festival is Live!' : 'ఉత్సవం ప్రారంభమైనప్పుడు మేము మీకు తెలియజేస్తాము!'}</p>
                 </div>
               </div>
-              <button onClick={() => setShowPushPrompt(false)} className="text-white/60 hover:text-white transition-colors">
+              <button onClick={handleDismissPushPrompt} className="text-white/60 hover:text-white transition-colors">
                 <X size={18} />
               </button>
             </div>
             <div className="p-4 flex gap-3 bg-[#fffdf5]">
-              <button onClick={() => setShowPushPrompt(false)} className="flex-1 py-2 rounded-xl text-gray-500 font-bold text-sm hover:bg-gray-100 transition-colors">
+              <button onClick={handleDismissPushPrompt} className="flex-1 py-2 rounded-xl text-gray-500 font-bold text-sm hover:bg-gray-100 transition-colors">
                 {lang === 'en' ? 'Not Now' : 'ఇప్పుడు వద్దు'}
               </button>
               <button onClick={subscribeToPushNotifications} className="flex-1 py-2 bg-gradient-to-r from-[#FFD700] to-orange-500 text-[#580000] rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all">
