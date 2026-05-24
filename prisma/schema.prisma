@@ -15,7 +15,9 @@ datasource db {
 model GalleryImage {
   id          Int      @id @default(autoincrement())
   title       String
-  imageUrl    String
+  imageUrl    String   // stores Cloudinary URL (image or video thumbnail)
+  mediaType   String   @default("IMAGE") // IMAGE, VIDEO, YOUTUBE
+  videoUrl    String?  // Original video URL or YouTube URL
   publicId    String?  // Cloudinary asset ID for deletion
   uploadedBy  String
   eventDate   DateTime

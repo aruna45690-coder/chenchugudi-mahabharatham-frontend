@@ -113,26 +113,75 @@ export async function uploadGalleryImage(formData: FormData) {
     const eventName = formData.get("eventName")?.toString() || null;
     const eventDateStr = formData.get("eventDate")?.toString();
     const eventDate = eventDateStr ? new Date(eventDateStr) : new Date();
+    const mediaType = formData.get("mediaType")?.toString() || "IMAGE";
+    const videoUrl = formData.get("videoUrl")?.toString() || null;
     
-    const file = formData.get("image") as File;
-    if (!file) throw new Error("No image file provided");
+    let secure_url = "";
+    let public_id = null;
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const base64Data = `data:${file.type};base64,${buffer.toString('base64')}`;
+    if (mediaType === "YOUTUBE") {
+      // For YouTube, store the thumbnail from YouTube and the video URL
+      secure_url = formData.get("thumbnailUrl")?.toString() || "https://img.youtube.com/vi/" + (videoUrl?.split("v=")[1]?.split("&")[0] || "") + "/hqdefault.jpg";
+    } else {
+      const file = formData.get("image") as File;
+      if (!file) throw new Error("No media file provided");
 
-    const result = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload(base64Data, { folder: "chenchugudi-festival" }, (error, result) => {
-        if (error) reject(error);
-        else resolve(result as { secure_url: string; public_id: string });
-      });
-    }) as { secure_url: string; public_id: string };
+      // Auto-detect whether the file is a video based on its MIME type
+      const isVideo = file.type.startsWith("video/");
+      const detectedMediaType = isVideo ? "VIDEO" : "IMAGE";
+      // Override the mediaType if we auto-detected it correctly
+      if (detectedMediaType === "VIDEO") {
+        (formData as any)._mediaType = "VIDEO";
+      }
+
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const base64Data = `data:${file.type};base64,${buffer.toString('base64')}`;
+
+      const result = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload(base64Data, { 
+          folder: "chenchugudi-festival", 
+          resource_type: "auto",
+          // For videos, also generate a thumbnail poster image
+          ...(isVideo ? { eager: [{ format: "jpg", transformation: [{ start_offset: "0" }] }] } : {})
+        }, (error, result) => {
+          if (error) reject(error);
+          else resolve(result as { secure_url: string; public_id: string; eager?: any[] });
+        });
+      }) as { secure_url: string; public_id: string; eager?: any[] };
+      
+      secure_url = result.secure_url;
+      public_id = result.public_id;
+
+      // For videos, use the eager thumbnail as imageUrl (for the masonry grid preview), 
+      // store the original video URL in videoUrl field
+      if (isVideo) {
+        const videoFullUrl = result.secure_url;
+        const thumbnail = result.eager?.[0]?.secure_url || result.secure_url.replace(/\.[^/.]+$/, ".jpg");
+
+        const newImage = await prisma.galleryImage.create({
+          data: {
+            title,
+            imageUrl: thumbnail,   // thumbnail for the grid preview
+            videoUrl: videoFullUrl, // actual video for the lightbox player
+            publicId: public_id,
+            mediaType: "VIDEO",
+            uploadedBy,
+            eventDate,
+            eventName,
+          },
+        });
+        return newImage;
+      }
+    }
 
     const newImage = await prisma.galleryImage.create({
       data: {
         title,
-        imageUrl: result.secure_url,
-        publicId: result.public_id,
+        imageUrl: secure_url,
+        publicId: public_id,
+        mediaType,
+        videoUrl,
         uploadedBy,
         eventDate,
         eventName,

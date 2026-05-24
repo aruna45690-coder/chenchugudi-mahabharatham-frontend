@@ -243,6 +243,11 @@ export default function Home() {
   const [isPushSubscribed, setIsPushSubscribed] = useState(false);
   const [showPushPrompt, setShowPushPrompt] = useState(false);
 
+  // Gallery states
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [lightboxItems, setLightboxItems] = useState<any[]>([]);
+
   // Initialize Push Notifications
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -415,11 +420,10 @@ export default function Home() {
     }
   }, []);
 
-  // Grouping gallery items by eventDate and eventName
+  // Grouping gallery items by Year and then by eventName
   const getGroupedGallery = useCallback(() => {
     const groups: {
-      dateString: string;
-      rawDate: number;
+      year: number;
       events: {
         eventName: string;
         items: any[];
@@ -429,32 +433,52 @@ export default function Home() {
     const sorted = [...galleryImages].sort((a, b) => {
       const timeA = new Date(a.eventDate).getTime();
       const timeB = new Date(b.eventDate).getTime();
-      if (timeA !== timeB) return timeA - timeB;
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      if (timeA !== timeB) return timeB - timeA; // Descending by date
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
     sorted.forEach((item) => {
-      const dateStr = formatDate(item.eventDate, lang);
-      const rawTime = new Date(item.eventDate).getTime();
+      const year = new Date(item.eventDate).getFullYear();
       const eventNameStr = item.eventName || (lang === 'en' ? 'General' : 'సాధారణం');
 
-      let dateGroup = groups.find((g) => g.dateString === dateStr);
-      if (!dateGroup) {
-        dateGroup = { dateString: dateStr, rawDate: rawTime, events: [] };
-        groups.push(dateGroup);
+      let yearGroup = groups.find((g) => g.year === year);
+      if (!yearGroup) {
+        yearGroup = { year, events: [] };
+        groups.push(yearGroup);
       }
 
-      let eventGroup = dateGroup.events.find((e) => e.eventName === eventNameStr);
+      let eventGroup = yearGroup.events.find((e) => e.eventName === eventNameStr);
       if (!eventGroup) {
         eventGroup = { eventName: eventNameStr, items: [] };
-        dateGroup.events.push(eventGroup);
+        yearGroup.events.push(eventGroup);
       }
 
       eventGroup.items.push(item);
     });
 
-    return groups;
-  }, [galleryImages, lang, formatDate]);
+    return groups.sort((a, b) => b.year - a.year);
+  }, [galleryImages, lang]);
+
+  // Handle year selection initialized to latest year
+  useEffect(() => {
+    if (galleryImages.length > 0 && selectedYear === null) {
+      const years = [...new Set(galleryImages.map(img => new Date(img.eventDate).getFullYear()))];
+      const maxYear = Math.max(...years);
+      setSelectedYear(maxYear);
+    }
+  }, [galleryImages, selectedYear]);
+
+  const openLightbox = (items: any[], startIndex: number) => {
+    setLightboxItems(items);
+    setLightboxIndex(startIndex);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    setLightboxIndex(null);
+    setLightboxItems([]);
+    document.body.style.overflow = 'auto';
+  };
 
   // Check admin status and sign out unauthorized users
   useEffect(() => {
@@ -1977,71 +2001,107 @@ export default function Home() {
           </div>
 
           {galleryImages.length > 0 ? (
-            <div className="space-y-16">
-              {getGroupedGallery().map((dateGroup) => (
-                <div key={dateGroup.dateString} className="border-l-4 border-[#E25822] pl-6 md:pl-8 space-y-8 text-left">
-                  <h3 className="text-2xl md:text-3xl font-black text-[#580000] tracking-tight">
-                    {dateGroup.dateString}
-                  </h3>
+            <div className="space-y-12">
+              {/* Year Tabs */}
+              <div className="flex flex-wrap gap-3 justify-center border-b border-gray-200 pb-4">
+                {getGroupedGallery().map((yearGroup) => (
+                  <button
+                    key={yearGroup.year}
+                    onClick={() => setSelectedYear(yearGroup.year)}
+                    className={`px-6 py-2 rounded-full font-black text-sm md:text-base transition-all ${
+                      selectedYear === yearGroup.year
+                        ? 'bg-[#E25822] text-white shadow-md scale-105'
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-800'
+                    }`}
+                  >
+                    {yearGroup.year}
+                  </button>
+                ))}
+              </div>
 
-                  {dateGroup.events.map((eventGroup) => (
-                    <div key={eventGroup.eventName} className="space-y-4">
-                      {eventGroup.eventName !== 'General' && eventGroup.eventName !== 'సాధారణం' && (
-                        <h4 className="text-lg font-bold text-orange-600 flex items-center gap-2">
-                          <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
-                          {eventGroup.eventName}
-                        </h4>
-                      )}
+              {/* Media for Selected Year */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedYear}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-16"
+                >
+                  {getGroupedGallery()
+                    .filter((g) => g.year === selectedYear)
+                    .map((yearGroup) => (
+                      <div key={yearGroup.year} className="space-y-12">
+                        {yearGroup.events.map((eventGroup) => (
+                          <div key={eventGroup.eventName} className="space-y-6">
+                            <h4 className="text-xl md:text-2xl font-black text-[#580000] flex items-center gap-3 border-l-4 border-orange-500 pl-4">
+                              {eventGroup.eventName}
+                            </h4>
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        {eventGroup.items.map((img) => (
-                          <div
-                            key={img.id}
-                            className="bg-white border border-gray-100 rounded-3xl overflow-hidden group shadow-md hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer relative aspect-square"
-                          >
-                            {img.mediaType === 'video' ? (
-                              <div className="w-full h-full relative bg-black">
-                                <video
-                                  src={img.imageUrl}
-                                  className="w-full h-full object-cover"
-                                  controls
-                                  preload="metadata"
-                                />
-                              </div>
-                            ) : (
-                              <>
-                                { }
-                                <img
-                                  src={img.imageUrl}
-                                  alt={img.title}
-                                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#580000]/80 via-transparent to-transparent opacity-85 group-hover:opacity-95 transition-opacity flex items-end p-4 pointer-events-none">
-                                  <div className="text-left w-full">
-                                    <p className="text-white font-black text-sm md:text-base leading-tight truncate drop-shadow-md" title={img.title}>
+                            {/* Masonry Grid */}
+                            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+                              {eventGroup.items.map((img, idx) => (
+                                <div
+                                  key={img.id}
+                                  onClick={() => openLightbox(eventGroup.items, idx)}
+                                  className="break-inside-avoid bg-white border border-gray-100 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer relative"
+                                >
+                                  {img.mediaType === 'YOUTUBE' ? (
+                                    <div className="w-full relative aspect-video bg-black">
+                                      <img
+                                        src={img.imageUrl}
+                                        alt={img.title}
+                                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                      />
+                                      <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                          <Play size={24} className="text-white ml-1" fill="white" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ) : img.mediaType === 'VIDEO' || img.mediaType === 'video' ? (
+                                    <div className="w-full relative aspect-video bg-black">
+                                      <video
+                                        src={img.imageUrl}
+                                        className="w-full h-full object-cover"
+                                        preload="metadata"
+                                        muted
+                                      />
+                                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <div className="w-12 h-12 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
+                                          <Play size={24} className="text-white ml-1" fill="white" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <img
+                                      src={img.imageUrl}
+                                      alt={img.title}
+                                      className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+                                      loading="lazy"
+                                    />
+                                  )}
+                                  
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                                    <p className="text-white font-bold text-sm leading-tight drop-shadow-md">
                                       {img.title}
-                                    </p>
-                                    <p className="text-orange-200 text-[10px] font-bold uppercase tracking-wider mt-1 drop-shadow-sm">
-                                      {lang === 'en' ? `By ${img.uploadedBy}` : `${img.uploadedBy} ద్వారా`}
                                     </p>
                                   </div>
                                 </div>
-                              </>
-                            )}
+                              ))}
+                            </div>
                           </div>
                         ))}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
+                    ))}
+                </motion.div>
+              </AnimatePresence>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div key={i} className="aspect-square bg-gray-100 rounded-3xl flex items-center justify-center text-gray-400 overflow-hidden group cursor-pointer relative shadow-inner">
-                  <ImageIcon size={48} className="opacity-30 group-hover:scale-110 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-[#580000]/25 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div key={i} className="aspect-square bg-gray-50 rounded-2xl flex items-center justify-center text-gray-300 overflow-hidden border border-gray-100">
+                  <ImageIcon size={48} className="opacity-50" />
                 </div>
               ))}
             </div>
@@ -2049,6 +2109,93 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ══ LIGHTBOX MODAL ════════════════════════ */}
+      <AnimatePresence>
+        {lightboxIndex !== null && lightboxItems.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center"
+          >
+            <button
+              onClick={closeLightbox}
+              className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-2 transition-colors z-[110]"
+            >
+              <X size={28} />
+            </button>
+
+            {lightboxItems.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setLightboxIndex((lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length); }}
+                  className="absolute left-4 md:left-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-3 md:p-6 transition-colors z-[110]"
+                >
+                  <span className="text-4xl md:text-6xl">❮</span>
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setLightboxIndex((lightboxIndex + 1) % lightboxItems.length); }}
+                  className="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-3 md:p-6 transition-colors z-[110]"
+                >
+                  <span className="text-4xl md:text-6xl">❯</span>
+                </button>
+              </>
+            )}
+
+            <div className="relative max-w-5xl w-full max-h-[85vh] flex flex-col items-center justify-center px-4 md:px-20" onClick={(e) => e.stopPropagation()}>
+              {(() => {
+                const item = lightboxItems[lightboxIndex];
+                const isYoutube = item.mediaType === 'YOUTUBE';
+                const isVideo = item.mediaType === 'VIDEO' || item.mediaType === 'video' ||
+                  (!isYoutube && (item.videoUrl || /\.(mp4|webm|mov|avi|mkv)/i.test(item.imageUrl)));
+                const videoSrc = item.videoUrl || item.imageUrl;
+
+                if (isYoutube) return (
+                  <div className="w-full aspect-video rounded-xl overflow-hidden bg-black shadow-2xl">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${item.videoUrl?.split("v=")[1]?.split("&")[0]}?autoplay=1`}
+                      className="w-full h-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                );
+
+                if (isVideo) return (
+                  <div className="w-full max-h-[80vh] rounded-xl overflow-hidden bg-black shadow-2xl flex items-center justify-center">
+                    <video
+                      key={videoSrc}
+                      src={videoSrc}
+                      className="max-w-full max-h-[80vh] object-contain"
+                      controls
+                      autoPlay
+                      playsInline
+                    />
+                  </div>
+                );
+
+                return (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl"
+                  />
+                );
+              })()}
+              
+              <div className="text-center mt-6">
+                <h3 className="text-white text-xl font-bold">{lightboxItems[lightboxIndex].title}</h3>
+                <p className="text-gray-400 text-sm mt-1">
+                  {lightboxItems[lightboxIndex].eventName}
+                </p>
+                <p className="text-white/30 text-xs mt-2">
+                  {lightboxIndex + 1} / {lightboxItems.length}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* ══ CONTACT & SUPPORT SECTION ════════════════════════ */}
       <section id="contact" className="py-24 px-6 relative bg-gradient-to-b from-[#fffdf5] to-[#fff5e6]">
         <div className="max-w-6xl mx-auto">

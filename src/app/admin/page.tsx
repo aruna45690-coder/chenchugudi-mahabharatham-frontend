@@ -52,6 +52,8 @@ export default function AdminDashboard() {
     return `${yyyy}-${mm}-${dd}`;
   });
   const [eventName, setEventName] = useState("");
+  const [mediaType, setMediaType] = useState("IMAGE");
+  const [videoUrl, setVideoUrl] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sendingPush, setSendingPush] = useState(false);
 
@@ -136,13 +138,22 @@ export default function AdminDashboard() {
     e.target.value = ""; // Clear file input
   };
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = async (file: File | null) => {
+    if (mediaType !== "YOUTUBE" && !file) return;
+
     setUploading(true);
     setUploadError(null);
 
     const formData = new FormData();
-    formData.append("image", file);
-    formData.append("title", file.name.split(".")[0] || "Chenchugudi Mahabharatham Media");
+    if (file) {
+      formData.append("image", file);
+      formData.append("title", file.name.split(".")[0] || "Chenchugudi Mahabharatham Media");
+    } else {
+      formData.append("title", "YouTube Video " + Date.now());
+    }
+    
+    formData.append("mediaType", mediaType);
+    if (videoUrl) formData.append("videoUrl", videoUrl);
     formData.append("uploadedBy", displayName);
     formData.append("eventDate", eventDate);
     if (eventName.trim()) {
@@ -182,12 +193,18 @@ export default function AdminDashboard() {
 
   const handleDeleteImage = async (id: number) => {
     if (!confirm("Are you sure you want to delete this item?")) return;
+    
+    // Optimistically remove from state immediately — no refresh needed
+    const previous = galleryImages;
+    setGalleryImages((prev) => prev.filter((img) => img.id !== id));
+    
     try {
       await deleteGalleryImage(id);
-      await fetchGallery();
     } catch (err) {
       console.error("Delete error:", err);
-      alert("Failed to delete image.");
+      // Restore original state if server call fails
+      setGalleryImages(previous);
+      alert("Failed to delete item. Please try again.");
     }
   };
 
@@ -577,51 +594,86 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="relative mb-8">
-                <input
-                  type="file"
-                  id="file-upload"
-                  className="hidden"
-                  onChange={handleFileUpload}
-                  accept="image/*,video/*"
-                  disabled={uploading}
-                />
-                <label
-                  htmlFor="file-upload"
-                  onDragEnter={handleDrag}
-                  onDragOver={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDrop={handleDrop}
-                  className={`p-10 bg-gray-50 rounded-2xl border-2 border-dashed mb-4 flex flex-col items-center justify-center transition-all cursor-pointer group ${
-                    dragActive
-                      ? "border-orange-500 bg-orange-50/50 shadow-[0_0_15px_rgba(249,115,22,0.15)]"
-                      : "border-gray-300 hover:bg-gray-100/70 hover:border-orange-400"
-                  } ${uploading ? "opacity-50 pointer-events-none" : ""}`}
+              <div className="mb-6 flex gap-4">
+                <button 
+                  onClick={() => setMediaType("IMAGE")}
+                  className={`px-6 py-2 rounded-full font-bold transition-all ${mediaType === "IMAGE" ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
                 >
-                  <div className="p-4 bg-white rounded-full shadow-sm mb-4 group-hover:scale-110 transition-transform">
-                    {uploading ? (
-                      <RefreshCw size={32} className="text-orange-500 animate-spin" />
-                    ) : (
-                      <Upload size={32} className="text-orange-500" />
-                    )}
-                  </div>
-                  {uploading ? (
-                    <h3 className="text-lg font-bold text-gray-700">Uploading to Cloudinary...</h3>
-                  ) : (
-                    <>
-                      <h3 className="text-lg font-bold text-gray-700">
-                        {dragActive ? "Drop your files now!" : "Drag & Drop Photos/Videos Here"}
-                      </h3>
-                      <p className="text-sm text-gray-500 mt-2 max-w-md text-center">
-                        Upload high quality festival images or videos. Max size 10MB.
-                      </p>
-                      <span className="mt-6 bg-[#8B0000] text-white px-8 py-3 rounded-full font-bold shadow-md hover:shadow-lg transition-all inline-block">
-                        Browse Files
-                      </span>
-                    </>
-                  )}
-                </label>
+                  Photo/Video Upload
+                </button>
+                <button 
+                  onClick={() => setMediaType("YOUTUBE")}
+                  className={`px-6 py-2 rounded-full font-bold transition-all ${mediaType === "YOUTUBE" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                >
+                  YouTube Link
+                </button>
               </div>
+
+              {mediaType === "YOUTUBE" ? (
+                <div className="mb-8 p-6 bg-gray-50 rounded-2xl border border-gray-200">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">YouTube Video URL</label>
+                  <input 
+                    type="url" 
+                    value={videoUrl}
+                    onChange={(e) => setVideoUrl(e.target.value)}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none mb-4"
+                  />
+                  <button 
+                    onClick={() => uploadFile(null)}
+                    disabled={uploading || !videoUrl}
+                    className="bg-red-600 text-white px-8 py-3 rounded-xl font-bold shadow-md hover:bg-red-700 transition-all disabled:opacity-50"
+                  >
+                    {uploading ? "Adding..." : "Add YouTube Video"}
+                  </button>
+                </div>
+              ) : (
+                <div className="relative mb-8">
+                  <input
+                    type="file"
+                    id="file-upload"
+                    className="hidden"
+                    onChange={handleFileUpload}
+                    accept="image/*,video/*"
+                    disabled={uploading}
+                  />
+                  <label
+                    htmlFor="file-upload"
+                    onDragEnter={handleDrag}
+                    onDragOver={handleDrag}
+                    onDragLeave={handleDrag}
+                    onDrop={handleDrop}
+                    className={`p-10 bg-gray-50 rounded-2xl border-2 border-dashed mb-4 flex flex-col items-center justify-center transition-all cursor-pointer group ${
+                      dragActive
+                        ? "border-orange-500 bg-orange-50/50 shadow-[0_0_15px_rgba(249,115,22,0.15)]"
+                        : "border-gray-300 hover:bg-gray-100/70 hover:border-orange-400"
+                    } ${uploading ? "opacity-50 pointer-events-none" : ""}`}
+                  >
+                    <div className="p-4 bg-white rounded-full shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                      {uploading ? (
+                        <RefreshCw size={32} className="text-orange-500 animate-spin" />
+                      ) : (
+                        <Upload size={32} className="text-orange-500" />
+                      )}
+                    </div>
+                    {uploading ? (
+                      <h3 className="text-lg font-bold text-gray-700">Uploading to Cloudinary...</h3>
+                    ) : (
+                      <>
+                        <h3 className="text-lg font-bold text-gray-700">
+                          {dragActive ? "Drop your files now!" : "Drag & Drop Photos/Videos Here"}
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-2 max-w-md text-center">
+                          Upload high quality festival images or videos. Max size 10MB.
+                        </p>
+                        <span className="mt-6 bg-[#8B0000] text-white px-8 py-3 rounded-full font-bold shadow-md hover:shadow-lg transition-all inline-block">
+                          Browse Files
+                        </span>
+                      </>
+                    )}
+                  </label>
+                </div>
+              )}
 
               <h3 className="text-lg font-bold mb-4">Recent Uploads</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
