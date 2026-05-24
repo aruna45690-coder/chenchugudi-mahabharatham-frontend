@@ -265,6 +265,9 @@ export default function Home() {
   }, []);
 
   const subscribeToPushNotifications = async () => {
+    // Hide the HTML popup immediately so it doesn't stay stuck
+    setShowPushPrompt(false);
+
     if (!('serviceWorker' in navigator)) return;
 
     try {
@@ -280,8 +283,6 @@ export default function Home() {
         applicationServerKey: convertedVapidKey,
       });
 
-      setShowPushPrompt(false);
-
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/subscribe`, {
         method: 'POST',
         headers: {
@@ -293,7 +294,6 @@ export default function Home() {
       setIsPushSubscribed(true);
     } catch (error) {
       console.error('Error subscribing to push notifications:', error);
-      setShowPushPrompt(false);
     }
   };
 
