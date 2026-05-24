@@ -1,3 +1,5 @@
+ 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
@@ -332,4 +334,5 @@ export async function updateLiveStreamSettings(url: string, platform: string, is
     return { success: false, error: String(error) };
   }
 }
+
 

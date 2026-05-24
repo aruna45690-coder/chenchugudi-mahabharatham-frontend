@@ -1,3 +1,4 @@
+ 
 // src/app/admin/page.tsx
 /* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element, react-hooks/set-state-in-effect */
 "use client";
@@ -660,7 +661,7 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                       ) : (
-                        // eslint-disable-next-line @next/next/no-img-element
+                         
                         <img
                           src={image.imageUrl}
                           alt={image.title}
@@ -808,3 +809,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+

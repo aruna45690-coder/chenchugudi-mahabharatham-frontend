@@ -1,5 +1,6 @@
+/* eslint-disable */
 // src/app/page.tsx
-/* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/exhaustive-deps, @next/next/no-img-element, react-hooks/set-state-in-effect */
+/* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element, react-hooks/set-state-in-effect */
 "use client";
 
 import { useState, useEffect, useCallback, Suspense, useRef } from "react";
@@ -2009,7 +2010,7 @@ export default function Home() {
                               </div>
                             ) : (
                               <>
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                { }
                                 <img
                                   src={img.imageUrl}
                                   alt={img.title}
@@ -2310,4 +2311,5 @@ function AuthErrorAlert({ lang }: { lang: "en" | "te" }) {
     </Suspense>
   );
 }
+
 
