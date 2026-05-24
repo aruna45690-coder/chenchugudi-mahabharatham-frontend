@@ -60,7 +60,7 @@ export default function AdminDashboard() {
     
     setSendingPush(true);
     try {
-      const res = await fetch('http://localhost:5000/api/notifications/send', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -276,7 +276,9 @@ export default function Home() {
         applicationServerKey: convertedVapidKey,
       });
 
-      await fetch('http://localhost:5000/api/notifications/subscribe', {
+      setShowPushPrompt(false);
+
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/subscribe`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -285,9 +287,9 @@ export default function Home() {
       });
 
       setIsPushSubscribed(true);
-      setShowPushPrompt(false);
     } catch (error) {
       console.error('Error subscribing to push notifications:', error);
+      setShowPushPrompt(false);
     }
   };
 
