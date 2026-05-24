@@ -13,6 +13,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useAuth, UserButton, useClerk } from "@clerk/nextjs";
 import { getStats, getAnnouncements, getGalleryImages, checkAdminStatus, recordPageView, submitFeedback, getUserFeedbackStatus, getLiveStreamSettings } from "@/lib/actions";
+import FallingPetals from "./components/FallingPetals";
+import DonorsSection from "./components/DonorsSection";
 
 interface SiteStats {
   activeAnnouncements: number;
@@ -211,10 +213,6 @@ export default function Home() {
   const { isSignedIn } = useAuth();
   const { signOut } = useClerk();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const audioCtxRef = useRef<any>(null);
-  const oscillatorsRef = useRef<any[]>([]);
-  const gainNodeRef = useRef<any>(null);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -396,55 +394,7 @@ export default function Home() {
     }
   };
 
-  const toggleAudio = () => {
-    if (!isPlaying) {
-      if (!audioCtxRef.current) {
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-        if (!AudioContextClass) return;
-        audioCtxRef.current = new AudioContextClass();
-      }
-      const ctx = audioCtxRef.current;
-      
-      // Resume context if it was suspended (critical for mobile browsers)
-      if (ctx.state === 'suspended') {
-        ctx.resume();
-      }
 
-      const masterGain = ctx.createGain();
-      masterGain.gain.setValueAtTime(0, ctx.currentTime);
-      masterGain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 3);
-      masterGain.connect(ctx.destination);
-      gainNodeRef.current = masterGain;
-
-      const frequencies = [136.1, 136.6, 68.05];
-      const newOscillators: any[] = [];
-
-      frequencies.forEach(freq => {
-        const osc = ctx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        osc.connect(masterGain);
-        osc.start();
-        newOscillators.push(osc);
-      });
-
-      oscillatorsRef.current = newOscillators;
-      setIsPlaying(true);
-    } else {
-      if (gainNodeRef.current && audioCtxRef.current) {
-        const ctx = audioCtxRef.current;
-        gainNodeRef.current.gain.setValueAtTime(gainNodeRef.current.gain.value, ctx.currentTime);
-        gainNodeRef.current.gain.linearRampToValueAtTime(0, ctx.currentTime + 2);
-
-        setTimeout(() => {
-          oscillatorsRef.current.forEach(osc => { try { osc.stop(); osc.disconnect(); } catch (e) { } });
-          oscillatorsRef.current = [];
-          if (gainNodeRef.current) gainNodeRef.current.disconnect();
-        }, 2100);
-      }
-      setIsPlaying(false);
-    }
-  };
   // Helper to format a Date nicely in English or Telugu
   const formatDate = useCallback((dateInput: string | Date, language: "en" | "te") => {
     try {
@@ -577,6 +527,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#fffdf5] mandala-bg selection:bg-[#E25822] selection:text-white pb-24 text-gray-800">
+      <FallingPetals />
 
       {/* GLOBAL LIVE BANNER */}
       <AnimatePresence>
@@ -611,21 +562,6 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Floating Audio Player Button */}
-      <div className="fixed top-24 left-4 md:top-24 md:left-8 z-[90]">
-        <button
-          onClick={toggleAudio}
-          className="bg-[#580000]/80 backdrop-blur-md border border-[#FFD700]/30 text-[#FFD700] p-3 rounded-full shadow-2xl hover:scale-110 hover:bg-[#580000] transition-all flex items-center justify-center group relative"
-        >
-          {isPlaying && (
-            <span className="absolute inset-0 rounded-full border border-[#FFD700] animate-ping opacity-75 pointer-events-none"></span>
-          )}
-          {isPlaying ? <Volume2 size={24} /> : <VolumeX size={24} />}
-          <span className="absolute left-14 bg-black/80 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10">
-            {lang === 'en' ? 'Divine Music' : 'భక్తి గీతం'}
-          </span>
-        </button>
-      </div>
 
       {/* Floating WhatsApp Community Button */}
       <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[90]">
@@ -679,7 +615,7 @@ export default function Home() {
       </AnimatePresence>
 
       {/* Floating Sidebar Navigation */}
-      <div className="hidden md:flex fixed right-4 top-1/2 -translate-y-1/2 z-[90] flex-col gap-3 bg-[#580000]/90 backdrop-blur-md p-2 rounded-full border border-[#FFD700]/30 shadow-2xl">
+      <div className="hidden md:flex fixed right-4 bottom-24 z-[90] flex-col gap-1.5 bg-[#580000]/90 backdrop-blur-md p-1.5 rounded-full border border-[#FFD700]/30 shadow-2xl">
         {[
           { id: 'home', icon: <HomeIcon size={16} className="md:w-[18px] md:h-[18px]" />, label: t.nav.home, href: '#home' },
           { id: 'announcements', icon: <Megaphone size={16} className="md:w-[18px] md:h-[18px]" />, label: lang === 'en' ? 'News' : 'వార్తలు', href: '#announcements' },
@@ -695,7 +631,7 @@ export default function Home() {
             href={item.href}
             onClick={(e) => handleNavClick(e, item.href, item.onClick)}
             title={item.label}
-            className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-[#FFD700] hover:text-[#580000] hover:scale-110 transition-all duration-300"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-[#FFD700] hover:text-[#580000] hover:scale-110 transition-all duration-300"
           >
             {item.icon}
           </a>
@@ -1199,11 +1135,16 @@ export default function Home() {
       <section id="announcements" className="py-24 px-6" style={{ background: 'linear-gradient(180deg, #fffdf5 0%, #fff8ec 100%)' }}>
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
-          <div className="flex flex-col items-center gap-3 mb-14 text-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center gap-3 mb-14 text-center"
+          >
             <span className="text-xs font-bold tracking-[0.3em] uppercase text-[#E25822]/70">— {lang === 'en' ? 'Latest Updates' : 'తాజా నవీకరణలు'} —</span>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-[#580000]">{t.announcements}</h2>
             <div className="divider-gold w-32" />
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6">
             {announcements.length > 0 ? (
@@ -1268,7 +1209,12 @@ export default function Home() {
       {/* Festival Schedule Section */}
       <section id="schedule" className="py-24 px-6 relative bg-white">
         <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col items-center justify-center gap-4 mb-6 text-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center justify-center gap-4 mb-6 text-center"
+          >
             <span className="text-[#E25822] font-black tracking-widest uppercase text-xl md:text-2xl">{t.annualSchedule}</span>
             <div className="h-1 w-24 bg-gradient-to-r from-transparent via-[#E25822] to-transparent rounded-full"></div>
             <p className="text-gray-500 text-sm mt-2">
@@ -1276,7 +1222,7 @@ export default function Home() {
                 ? '64th Annual Mahabharatham Mahotsavam — Chenchugudi, Vedurukuppam Mandal'
                 : '64వ సం॥ మహాభారత మహోత్సవం — చెంచుగుడి, వేదురుకుప్పం మండలం'}
             </p>
-          </div>
+          </motion.div>
 
           {/* Highlight Banner */}
           <div className="mb-10 p-5 rounded-2xl bg-gradient-to-r from-[#580000] to-[#8B0000] text-white text-center shadow-xl">
@@ -1369,13 +1315,18 @@ export default function Home() {
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,215,0,0.15) 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
         <div className="max-w-6xl mx-auto relative z-10">
           {/* Section Header */}
-          <div className="flex flex-col items-center gap-3 mb-10 text-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center gap-3 mb-10 text-center"
+          >
             <span className="text-xs font-bold tracking-[0.3em] uppercase text-[#E25822]/70">— {lang === 'en' ? 'Devotional & Cultural Events' : 'భక్తి మరియు సాంస్కృతిక కార్యక్రమాలు'} —</span>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-[#580000] flex items-center gap-2">
               <span className="text-orange-500">✨</span> {lang === 'en' ? 'Cultural Programs' : 'సాంస్కృతిక కార్యక్రమాలు'}
             </h2>
             <div className="divider-gold w-32" />
-          </div>
+          </motion.div>
 
           {/* Premium Tab Navigation */}
           <div className="flex justify-center gap-2 mb-12 bg-orange-100/40 p-1.5 rounded-2xl border border-orange-200/50 max-w-md mx-auto">
@@ -2193,6 +2144,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ══ DONORS SECTION ═════════════════════════════════════════ */}
+      <DonorsSection lang={lang} />
 
       {/* ══ FOOTER ═════════════════════════════════════════ */}
       <footer className="bg-[#1a0000] text-white pt-16 pb-8 px-6 border-t border-[#FFD700]/20 relative overflow-hidden">

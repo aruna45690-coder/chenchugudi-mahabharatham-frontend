@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cinzel, Hind_Guntur } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
+import AudioPlayer from "./components/AudioPlayer";
 
 const cinzel = Cinzel({
   variable: "--font-cinzel",
@@ -59,7 +60,10 @@ export default function RootLayout({
         lang="te"
         className={`${cinzel.variable} ${hindGuntur.variable} h-full antialiased`}
       >
-        <body className="min-h-full flex flex-col">{children}</body>
+        <body className="min-h-full flex flex-col">
+          {children}
+          <AudioPlayer />
+        </body>
       </html>
     </ClerkProvider>
   );

@@ -1,5 +1,5 @@
 // src/app/admin/page.tsx
-/* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element, react-hooks/set-state-in-effect */
 "use client";
 
 import { motion } from "framer-motion";

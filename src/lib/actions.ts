@@ -124,9 +124,9 @@ export async function uploadGalleryImage(formData: FormData) {
     const result = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload(base64Data, { folder: "chenchugudi-festival" }, (error, result) => {
         if (error) reject(error);
-        else resolve(result);
+        else resolve(result as { secure_url: string; public_id: string });
       });
-    }) as any;
+    }) as { secure_url: string; public_id: string };
 
     const newImage = await prisma.galleryImage.create({
       data: {
@@ -203,7 +203,7 @@ export async function recordPageView() {
         },
       });
       return { success: true, isNewToday: true };
-    } catch (dbError: any) {
+    } catch (dbError: unknown) {
       // Catch unique constraint (already visited today) and return success
       return { success: true, isNewToday: false };
     }
