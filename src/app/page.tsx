@@ -994,7 +994,7 @@ export default function Home() {
       </section>
 
       {/* ══ HISTORY TIMELINE SECTION ══════════════════════ */}
-      <section id="history" className="py-24 px-6 relative bg-[#fffdf5] overflow-hidden">
+      <section id="history" className="py-12 md:py-16 px-6 relative bg-[#fffdf5] overflow-hidden">
         {/* Decorative Mandalas */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#FFD700]/5 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#E25822]/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -1004,13 +1004,12 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            className="text-center mb-8"
+            className="text-center"
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-orange-200 bg-orange-50 text-[#E25822] text-xs tracking-widest font-bold uppercase mb-4 shadow-sm">
               <History size={14} /> Since 1961
             </div>
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#3D0000] drop-shadow-sm">{t.historyTitle}</h2>
-            <div className="divider-red w-32 mx-auto mt-6 mb-6" />
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#3D0000] drop-shadow-sm mb-6">{t.historyTitle}</h2>
             
             <button
               onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
@@ -1166,7 +1165,7 @@ export default function Home() {
       )}
 
       {/* ══ ANNOUNCEMENTS SECTION ══════════════════════════ */}
-      <section id="announcements" className="py-24 px-6" style={{ background: 'linear-gradient(180deg, #fffdf5 0%, #fff8ec 100%)' }}>
+      <section id="announcements" className="py-12 md:py-16 px-6" style={{ background: 'linear-gradient(180deg, #fffdf5 0%, #fff8ec 100%)' }}>
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <motion.div 
@@ -1241,7 +1240,7 @@ export default function Home() {
       </section>
 
       {/* Festival Schedule Section */}
-      <section id="schedule" className="py-24 px-6 relative bg-white">
+      <section id="schedule" className="py-12 md:py-16 px-6 relative bg-white">
         <div className="max-w-5xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -1345,7 +1344,7 @@ export default function Home() {
       </section>
 
       {/* ══ CULTURAL PROGRAMS SECTION ═══════════════════════ */}
-      <section id="programs" className="py-24 px-6 relative" style={{ background: 'linear-gradient(180deg, #fffdf5 0%, #fff8ec 100%)' }}>
+      <section id="programs" className="py-12 md:py-16 px-6 relative" style={{ background: 'linear-gradient(180deg, #fffdf5 0%, #fff8ec 100%)' }}>
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,215,0,0.15) 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
         <div className="max-w-6xl mx-auto relative z-10">
           {/* Section Header */}
@@ -1564,7 +1563,7 @@ export default function Home() {
       </section>
 
       {/* ══ DONORS SECTION ══════════════════════════════════ */}
-      <section id="donors" className="py-24 px-6 relative" style={{ background: 'linear-gradient(180deg, #fffdf5 0%, #fff8ec 100%)' }}>
+      <section id="donors" className="py-12 md:py-16 px-6 relative" style={{ background: 'linear-gradient(180deg, #fffdf5 0%, #fff8ec 100%)' }}>
         <div className="max-w-5xl mx-auto">
           {/* Section Header */}
           <div className="flex flex-col items-center gap-3 mb-12 text-center">
@@ -1931,7 +1930,7 @@ export default function Home() {
       </section>
 
       {/* Villages Section */}
-      <section id="villages" className="py-24 px-6 bg-[#580000]/5">
+      <section id="villages" className="py-12 md:py-16 px-6 bg-[#580000]/5">
         <div className="max-w-6xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1995,7 +1994,7 @@ export default function Home() {
       {/* Interactive Contribution Section (Samaarpana) temporarily removed */}
 
       {/* Photo & Video Gallery Section */}
-      <section id="gallery" className="py-24 px-6 bg-white">
+      <section id="gallery" className="py-12 md:py-16 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col items-center justify-center gap-4 mb-16 text-center">
             <span className="text-[#E25822] font-black tracking-widest uppercase text-xl md:text-2xl">
@@ -2206,7 +2205,7 @@ export default function Home() {
         )}
       </AnimatePresence>
       {/* ══ CONTACT & SUPPORT SECTION ════════════════════════ */}
-      <section id="contact" className="py-24 px-6 relative bg-gradient-to-b from-[#fffdf5] to-[#fff5e6]">
+      <section id="contact" className="py-12 md:py-16 px-6 relative bg-gradient-to-b from-[#fffdf5] to-[#fff5e6]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-[#E25822] font-black tracking-widest uppercase text-sm">మమ్మల్ని సంప్రదించండి</span>
