@@ -245,6 +245,7 @@ export default function Home() {
 
   // Gallery states
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [activeEventTab, setActiveEventTab] = useState<string | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [lightboxItems, setLightboxItems] = useState<any[]>([]);
 
@@ -2010,98 +2011,111 @@ export default function Home() {
 
           {galleryImages.length > 0 ? (
             <div className="space-y-12">
-              {/* Year Tabs */}
               <div className="flex flex-wrap gap-3 justify-center border-b border-gray-200 pb-4">
-                {getGroupedGallery().map((yearGroup) => (
+                {getGroupedGallery().map((yearGroup) => {
+                  const isActiveYear = selectedYear === yearGroup.year || (!selectedYear && yearGroup.year === getGroupedGallery()[0]?.year);
+                  return (
                   <button
                     key={yearGroup.year}
-                    onClick={() => setSelectedYear(yearGroup.year)}
+                    onClick={() => {
+                      setSelectedYear(yearGroup.year);
+                      setActiveEventTab(yearGroup.events[0]?.eventName || null);
+                    }}
                     className={`px-6 py-2 rounded-full font-black text-sm md:text-base transition-all ${
-                      selectedYear === yearGroup.year
+                      isActiveYear
                         ? 'bg-[#E25822] text-white shadow-md scale-105'
                         : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-800'
                     }`}
                   >
                     {yearGroup.year}
                   </button>
-                ))}
+                )})}
               </div>
 
-              {/* Media for Selected Year */}
+              {/* Media for Selected Year & Event */}
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={selectedYear}
+                  key={`${selectedYear}-${activeEventTab}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="space-y-16"
+                  className="space-y-8"
                 >
-                  {getGroupedGallery()
-                    .filter((g) => g.year === selectedYear)
-                    .map((yearGroup) => (
-                      <div key={yearGroup.year} className="space-y-12">
-                        {yearGroup.events.map((eventGroup) => (
-                          <div key={eventGroup.eventName} className="space-y-6">
-                            <h4 className="text-xl md:text-2xl font-black text-[#580000] flex items-center gap-3 border-l-4 border-orange-500 pl-4">
-                              {eventGroup.eventName}
-                            </h4>
+                  {(() => {
+                    const activeYearData = getGroupedGallery().find((g) => g.year === selectedYear) || getGroupedGallery()[0];
+                    if (!activeYearData) return null;
+                    
+                    const actualActiveEvent = activeEventTab && activeYearData.events.some(e => e.eventName === activeEventTab)
+                      ? activeEventTab
+                      : activeYearData.events[0]?.eventName;
 
-                            {/* Masonry Grid */}
-                            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
-                              {eventGroup.items.map((img, idx) => (
-                                <div
-                                  key={img.id}
-                                  onClick={() => openLightbox(eventGroup.items, idx)}
-                                  className="break-inside-avoid bg-white border border-gray-100 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer relative"
-                                >
-                                  {img.mediaType === 'YOUTUBE' ? (
-                                    <div className="w-full relative aspect-video bg-black">
-                                      <img
-                                        src={img.imageUrl}
-                                        alt={img.title}
-                                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                                      />
-                                      <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                                          <Play size={24} className="text-white ml-1" fill="white" />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ) : img.mediaType === 'VIDEO' || img.mediaType === 'video' ? (
-                                    <div className="w-full relative aspect-video bg-black">
-                                      <video
-                                        src={img.imageUrl}
-                                        className="w-full h-full object-cover"
-                                        preload="metadata"
-                                        muted
-                                      />
-                                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                        <div className="w-12 h-12 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
-                                          <Play size={24} className="text-white ml-1" fill="white" />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <img
-                                      src={img.imageUrl}
-                                      alt={img.title}
-                                      className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
-                                      loading="lazy"
-                                    />
-                                  )}
-                                  
-                                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
-                                    <p className="text-white font-bold text-sm leading-tight drop-shadow-md">
-                                      {img.title}
-                                    </p>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
+                    const activeEventData = activeYearData.events.find(e => e.eventName === actualActiveEvent);
+
+                    return (
+                      <div className="space-y-8">
+                        {/* Event Sub-Tabs (Like Donors Section) */}
+                        {activeYearData.events.length > 1 && (
+                          <div className="flex flex-wrap justify-center gap-2 md:gap-4 bg-[#fffdf5] p-2 rounded-2xl md:rounded-full shadow-[inset_0_2px_10px_rgba(0,0,0,0.03)] border border-orange-100">
+                            {activeYearData.events.map((eventGroup) => (
+                              <button
+                                key={eventGroup.eventName}
+                                onClick={() => setActiveEventTab(eventGroup.eventName)}
+                                className={`px-4 md:px-6 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-bold tracking-widest uppercase transition-all duration-300 flex-1 min-w-[120px] md:flex-none ${
+                                  actualActiveEvent === eventGroup.eventName
+                                    ? 'bg-[#580000] text-[#FFD700] shadow-md transform scale-105'
+                                    : 'text-gray-600 hover:bg-orange-100 hover:text-[#580000]'
+                                }`}
+                              >
+                                {eventGroup.eventName}
+                              </button>
+                            ))}
                           </div>
-                        ))}
+                        )}
+
+                        {/* Masonry Grid for Active Event */}
+                        {activeEventData && (
+                          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+                            {activeEventData.items.map((img, idx) => (
+                              <div
+                                key={img.id}
+                                onClick={() => openLightbox(activeEventData.items, idx)}
+                                className="break-inside-avoid bg-white border border-gray-100 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer relative"
+                              >
+                                {/* Media Content */}
+                                {img.mediaType === 'YOUTUBE' ? (
+                                  <div className="w-full relative aspect-video bg-black">
+                                    <img src={img.imageUrl} alt={img.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                      <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                        <Play size={24} className="text-white ml-1" fill="white" />
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : img.mediaType === 'VIDEO' || img.mediaType === 'video' || (img.videoUrl && img.videoUrl.trim() !== '') || (img.imageUrl && img.imageUrl.match(/\.(mp4|webm|ogg|mov)$/i)) ? (
+                                  <div className="w-full relative aspect-video bg-black">
+                                    <video src={img.videoUrl || img.imageUrl} className="w-full h-full object-cover" preload="metadata" muted />
+                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                      <div className="w-12 h-12 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
+                                        <Play size={24} className="text-white ml-1" fill="white" />
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <img src={img.imageUrl} alt={img.title} className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                                )}
+                                
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                                  <p className="text-white font-bold text-sm leading-tight drop-shadow-md">
+                                    {img.title}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    ))}
+                    );
+                  })()}
                 </motion.div>
               </AnimatePresence>
             </div>
