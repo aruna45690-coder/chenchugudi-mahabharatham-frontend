@@ -76,13 +76,14 @@ export async function getAnnouncements() {
 }
 
 // ── Gallery images ────────────────────────────────────────────────────
-export async function getGalleryImages() {
+export async function getGalleryImages(limit?: number) {
   try {
     const images = await prisma.galleryImage.findMany({
       orderBy: [
-        { eventDate: 'asc' },
-        { createdAt: 'asc' }
+        { eventDate: 'desc' },
+        { createdAt: 'desc' }
       ],
+      ...(limit ? { take: limit } : {})
     });
     return images;
   } catch (error) {
