@@ -1238,7 +1238,7 @@ export default function Home() {
           {/* Highlight Banner */}
           <div className="mb-10 p-5 rounded-2xl bg-gradient-to-r from-[#580000] to-[#8B0000] text-white text-center shadow-xl">
             <p className="text-2xl md:text-3xl font-black tracking-wide">
-              {lang === 'en' ? '🗓️ Main Festival: May 29 – June 7' : '🗓️ ముఖ్య ఉత్సవం: మే 29 – జూన్ 7'}
+              {lang === 'en' ? '🗓️ Sri Mahabharata Mahotsava — Official Festival Dates: May 29 – June 7' : '🗓️ శ్రీ మహాభారత మహోత్సవ తేదీలు: మే 29 – జూన్ 7'}
             </p>
             <p className="text-orange-200 text-sm mt-2 font-medium">
               {lang === 'en'
