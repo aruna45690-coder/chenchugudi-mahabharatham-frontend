@@ -55,6 +55,18 @@ async function getClientIp(): Promise<string> {
   }
 }
 
+// ── Festival Schedule & Donors ─────────────────────────────────────────
+export async function getActiveFestivalYear() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/festival/active`, { cache: 'no-store' });
+    if (!res.ok) throw new Error("Failed to fetch active festival year");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching active festival year:", error);
+    return null;
+  }
+}
+
 // ── Stats for the homepage ────────────────────────────────────────────
 export async function getStats() {
   try {

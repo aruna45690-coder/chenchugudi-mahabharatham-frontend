@@ -321,7 +321,7 @@ export default function AdminDashboard() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 flex font-sans text-gray-800">
+    <div className="min-h-screen flex font-sans text-[#3D0000]" style={{ background: 'linear-gradient(135deg, #fffdf5 0%, #fff0d4 100%)' }}>
       
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
@@ -332,8 +332,8 @@ export default function AdminDashboard() {
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex-col flex transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 h-screen`}>
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+      <aside className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-white/90 backdrop-blur-xl border-r border-[#FFD700]/30 shadow-[4px_0_24px_rgba(88,0,0,0.05)] flex-col flex transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 h-screen`}>
+        <div className="p-6 border-b border-[#FFD700]/20 flex justify-between items-center">
           <div>
             <h2 className="text-xl font-black text-[#8B0000] flex items-center gap-2">
               <LayoutDashboard size={24} /> Admin
@@ -354,8 +354,8 @@ export default function AdminDashboard() {
             <button
                key={item.id}
                onClick={() => { setActiveTab(item.id); setIsSidebarOpen(false); }}
-               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-colors ${
-                 activeTab === item.id ? "bg-orange-50 text-orange-600" : "text-gray-500 hover:bg-gray-50"
+               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-300 ${
+                 activeTab === item.id ? "bg-gradient-to-r from-[#580000] to-[#8B0000] text-[#FFD700] shadow-[0_4px_15px_rgba(88,0,0,0.3)]" : "text-[#8B0000]/70 hover:bg-[#FFD700]/15 hover:text-[#580000]"
                }`}
             >
                {item.icon} {item.label}
@@ -379,7 +379,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 px-4 md:px-8 py-4 md:py-5 flex justify-between items-center shrink-0">
+        <header className="bg-white/70 backdrop-blur-md border-b border-[#FFD700]/20 px-4 md:px-8 py-4 md:py-5 flex justify-between items-center shrink-0 shadow-sm z-10">
           <div className="flex items-center gap-3 md:gap-4">
             <button className="md:hidden p-2 text-gray-500 bg-gray-100 rounded-lg" onClick={() => setIsSidebarOpen(true)}>
               <Menu size={20} />
@@ -403,7 +403,7 @@ export default function AdminDashboard() {
         </header>
  
         {/* Dashboard Content */}
-        <div className="p-8 flex-1 overflow-y-auto bg-gray-50/50">
+        <div className="p-8 flex-1 overflow-y-auto relative">
  
           {/* OVERVIEW TAB */}
           {activeTab === "overview" && (
@@ -421,22 +421,24 @@ export default function AdminDashboard() {
               {/* Stats Row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Announcements */}
-                <div className="bg-gradient-to-br from-white to-green-50/40 p-6 rounded-2xl border border-green-100 shadow-sm flex items-center gap-5 hover:shadow-lg hover:border-green-300 hover:-translate-y-1 transition-all duration-300 group cursor-default">
-                  <div className="p-4 bg-green-100 text-green-700 rounded-xl shrink-0 shadow-inner group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300"><Bell size={24} /></div>
+                <div className="bg-white/70 backdrop-blur-md p-6 rounded-3xl border border-[#FFD700]/30 shadow-[0_4px_20px_rgba(255,215,0,0.1)] flex items-center gap-5 hover:shadow-[0_8px_30px_rgba(226,88,34,0.15)] hover:border-[#FFD700]/60 hover:-translate-y-1 transition-all duration-300 group cursor-default relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#fffdf5] to-[#FFD700]/5 -z-10" />
+                  <div className="p-4 bg-gradient-to-br from-[#580000] to-[#8B0000] text-[#FFD700] rounded-2xl shrink-0 shadow-inner group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 border border-[#FFD700]/20"><Bell size={24} /></div>
                   <div>
-                    <p className="text-[10px] text-green-600/80 font-black uppercase tracking-[0.2em] mb-1">Announcements</p>
-                    <p className="text-3xl font-black text-gray-800 drop-shadow-sm">
+                    <p className="text-[10px] text-[#580000] font-black uppercase tracking-[0.2em] mb-1">Announcements</p>
+                    <p className="text-3xl font-black text-[#3D0000] drop-shadow-sm">
                       {loading ? "—" : (stats?.activeAnnouncements ?? 0)}
                     </p>
                   </div>
                 </div>
 
                 {/* Participating Villages */}
-                <div className="bg-gradient-to-br from-white to-orange-50/40 p-6 rounded-2xl border border-orange-100 shadow-sm flex items-center gap-5 hover:shadow-lg hover:border-orange-300 hover:-translate-y-1 transition-all duration-300 group cursor-default">
-                  <div className="p-4 bg-orange-100 text-orange-700 rounded-xl shrink-0 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300"><Users size={24} /></div>
+                <div className="bg-white/70 backdrop-blur-md p-6 rounded-3xl border border-[#FFD700]/30 shadow-[0_4px_20px_rgba(255,215,0,0.1)] flex items-center gap-5 hover:shadow-[0_8px_30px_rgba(226,88,34,0.15)] hover:border-[#FFD700]/60 hover:-translate-y-1 transition-all duration-300 group cursor-default relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#fffdf5] to-[#FFD700]/5 -z-10" />
+                  <div className="p-4 bg-gradient-to-br from-[#E25822] to-[#FF6B35] text-white rounded-2xl shrink-0 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 border border-white/20"><Users size={24} /></div>
                   <div>
-                    <p className="text-[10px] text-orange-600/80 font-black uppercase tracking-[0.2em] mb-1">Villages</p>
-                    <p className="text-3xl font-black text-gray-800 drop-shadow-sm">
+                    <p className="text-[10px] text-[#E25822] font-black uppercase tracking-[0.2em] mb-1">Villages</p>
+                    <p className="text-3xl font-black text-[#3D0000] drop-shadow-sm">
                       {loading ? "—" : (stats?.villages ?? 24)}
                     </p>
                   </div>
@@ -445,12 +447,13 @@ export default function AdminDashboard() {
                 {/* Unique Visitors */}
                 <div 
                   onClick={() => setActiveTab('analytics')}
-                  className="bg-gradient-to-br from-white to-blue-50/40 p-6 rounded-2xl border border-blue-100 shadow-sm flex items-center gap-5 hover:shadow-lg hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+                  className="bg-white/70 backdrop-blur-md p-6 rounded-3xl border border-[#FFD700]/30 shadow-[0_4px_20px_rgba(255,215,0,0.1)] flex items-center gap-5 hover:shadow-[0_8px_30px_rgba(226,88,34,0.15)] hover:border-[#FFD700]/60 hover:-translate-y-1 transition-all duration-300 group cursor-pointer relative overflow-hidden"
                 >
-                  <div className="p-4 bg-blue-100 text-blue-700 rounded-xl shrink-0 shadow-inner group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300"><Eye size={24} /></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#fffdf5] to-[#FFD700]/5 -z-10" />
+                  <div className="p-4 bg-gradient-to-br from-blue-600 to-blue-400 text-white rounded-2xl shrink-0 shadow-inner group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 border border-white/20"><Eye size={24} /></div>
                   <div>
-                    <p className="text-[10px] text-blue-600/80 font-black uppercase tracking-[0.2em] mb-1">Unique Visitors</p>
-                    <p className="text-3xl font-black text-gray-800 drop-shadow-sm">
+                    <p className="text-[10px] text-blue-700 font-black uppercase tracking-[0.2em] mb-1">Unique Visitors</p>
+                    <p className="text-3xl font-black text-[#3D0000] drop-shadow-sm">
                       {analyticsLoading ? "—" : (analyticsStats?.totalUniqueVisitors ?? 0)}
                     </p>
                   </div>
@@ -459,16 +462,17 @@ export default function AdminDashboard() {
                 {/* Likes Ratio / Feedback */}
                 <div 
                   onClick={() => setActiveTab('analytics')}
-                  className="bg-gradient-to-br from-white to-amber-50/40 p-6 rounded-2xl border border-amber-100 shadow-sm flex items-center gap-5 hover:shadow-lg hover:border-amber-300 hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+                  className="bg-white/70 backdrop-blur-md p-6 rounded-3xl border border-[#FFD700]/30 shadow-[0_4px_20px_rgba(255,215,0,0.1)] flex items-center gap-5 hover:shadow-[0_8px_30px_rgba(226,88,34,0.15)] hover:border-[#FFD700]/60 hover:-translate-y-1 transition-all duration-300 group cursor-pointer relative overflow-hidden"
                 >
-                  <div className="p-4 bg-amber-100 text-amber-700 rounded-xl shrink-0 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300"><ThumbsUp size={24} /></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#fffdf5] to-[#FFD700]/5 -z-10" />
+                  <div className="p-4 bg-gradient-to-br from-[#FFD700] to-[#FFA500] text-[#580000] rounded-2xl shrink-0 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 border border-white/20"><ThumbsUp size={24} /></div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[10px] text-amber-600/80 font-black uppercase tracking-[0.2em] mb-1">Devotee Feedback</p>
+                    <p className="text-[10px] text-[#8B0000] font-black uppercase tracking-[0.2em] mb-1">Devotee Feedback</p>
                     <div className="flex items-baseline gap-2">
-                      <p className="text-3xl font-black text-gray-800 drop-shadow-sm">
+                      <p className="text-3xl font-black text-[#3D0000] drop-shadow-sm">
                         {analyticsLoading ? "—" : `${(analyticsStats?.likes ?? 0) + (analyticsStats?.dislikes ?? 0) > 0 ? Math.round(((analyticsStats?.likes ?? 0) / ((analyticsStats?.likes ?? 0) + (analyticsStats?.dislikes ?? 0))) * 100) : 0}%`}
                       </p>
-                      <span className="text-[10px] text-amber-700/60 font-black uppercase tracking-wider">Likes</span>
+                      <span className="text-[10px] text-orange-600 font-black uppercase tracking-wider">Likes</span>
                     </div>
                   </div>
                 </div>
@@ -850,8 +854,8 @@ export default function AdminDashboard() {
                     <optgroup label="ముఖ్య కార్యక్రమాలు (Main Events)">
                       <option value="ధ్వజారోహణము">ధ్వజారోహణము — Dhwajarohanamu (Flag Hoisting) 🚩</option>
                       <option value="బండి కుంభాలు">బండి కుంభాలు — Bandi Kumballu (Sacred Pots Chariot Ceremony) 🎡</option>
-                      <option value="ద్రౌపది కళ్యాణం">ద్రౌపది కళ్యాణం — Draupadi Kalyanam (Wedding Ceremony) 💛</option>
-                      <option value="రాత్రి ద్రౌపది మాన సంరక్షణ">రాత్రి ద్రౌపది మాన సంరక్షణ — Draupadi Mana Samrakshana (Night Protection of Honour) ⚔️</option>
+                      <option value="ద్రౌపతి కళ్యాణం">ద్రౌపతి కళ్యాణం — Draupadi Kalyanam (Wedding Ceremony) 💛</option>
+                      <option value="రాత్రి ద్రౌపతి మాన సంరక్షణ">రాత్రి ద్రౌపతి మాన సంరక్షణ — Draupadi Mana Samrakshana (Night Protection of Honour) ⚔️</option>
                       <option value="అర్జున తపస్సు కార్యక్రమం">అర్జున తపస్సు కార్యక్రమం — Arjuna Tapassu (Penance Ceremony) 🙏</option>
                       <option value="కీచకవధ">కీచకవధ — Keechaka Vadha (Slaying of Keechaka) 🗡️</option>
                       <option value="ఉత్తరగోగ్రహణం">ఉత్తరగోగ్రహణం — Uttaragograhanam (Cattle Retrieval Ceremony) 🐄</option>

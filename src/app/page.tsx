@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useAuth, UserButton, useClerk } from "@clerk/nextjs";
-import { getStats, getAnnouncements, getGalleryImages, checkAdminStatus, recordPageView, submitFeedback, getUserFeedbackStatus, getLiveStreamSettings } from "@/lib/actions";
+import { getStats, getAnnouncements, getGalleryImages, checkAdminStatus, recordPageView, submitFeedback, getUserFeedbackStatus, getLiveStreamSettings, getActiveFestivalYear } from "@/lib/actions";
 import FallingPetals from "./components/FallingPetals";
 
 
@@ -26,12 +26,12 @@ const content = {
   en: {
     nav: { home: "Home", schedule: "Schedule", harikatha: "Harikatha", dramas: "Night Dramas", donors: "Donors", villages: "Villages", gallery: "Gallery", admin: "Admin Login", live: "Live" },
     village: "Chenchugudi",
-    title1: "64th Annual Mahabharatham",
+    title1: "65th Annual Mahabharatham",
     title2: "Mahotsavam",
     badge: "Since 1961 · Our Sacred Tradition",
-    desc: "Sri Krishna, Draupadi Sametha Dharmarajuvari Devasthanam — A grand 10-day celebration uniting 24 villages of Vedurukuppam Mandal in devotion, culture, and faith.",
+    desc: "Sri Krishna, Draupathi Sametha Dharmarajuvari Devasthanam — A grand 10-day celebration uniting 24 villages of Chenchugudi, Vedurukuppam Mandal in devotion, culture, and faith.",
     liveStats: { visitors: "Live Visitors", villages: "Villages" },
-    annualSchedule: "Festival Schedule 2025",
+    annualSchedule: "Festival Schedule 2026",
     majorFest: "Main Festival",
     june: "Every June",
     days10: "10-Day Grand Mahotsavam",
@@ -39,7 +39,7 @@ const content = {
     sept: "Every September",
     days7: "7-Day Utsavam",
     united: "United by Faith",
-    unitedDesc: "With the blessings of the divine, all 24 surrounding villages of Vedurukuppam Mandal come together year after year to make this festival a monumental success.",
+    unitedDesc: "With the blessings of the divine, all 24 surrounding villages of Chenchugudi, Vedurukuppam Mandal come together year after year to make this festival a monumental success.",
     chechugudi: "Chenchugudi",
     vill: "Village",
     announcements: "Announcements & News",
@@ -48,19 +48,19 @@ const content = {
     history1961Title: "Inception in 1961",
     history1961Desc: "The Dharmarajuvari Devasthanam was established, marking the beginning of the annual Mahabharatham Mahotsavam.",
     history24VillagesTitle: "Unity of 24 Villages",
-    history24VillagesDesc: "The festival grew to unite 24 surrounding villages of Vedurukuppam Mandal, participating together in devotion and cultural harmony.",
-    historyTodayTitle: "A 64-Year Legacy",
-    historyTodayDesc: "Today, we celebrate the 64th continuous year of this grand 10-day tradition, preserving our heritage for future generations."
+    history24VillagesDesc: "The festival grew to unite 24 surrounding villages of Chenchugudi, Vedurukuppam Mandal, participating together in devotion and cultural harmony.",
+    historyTodayTitle: "A 65-Year Legacy",
+    historyTodayDesc: "Today, we celebrate the 65th continuous year of this grand 10-day tradition, preserving our heritage for future generations."
   },
   te: {
     nav: { home: "హోమ్", schedule: "పట్టిక", harikatha: "హరికథ", dramas: "నాటకాలు", donors: "దాతలు", villages: "గ్రామాలు", gallery: "గ్యాలరీ", admin: "అడ్మిన్ లాగిన్", live: "లైవ్" },
     village: "చెంచుగుడి",
-    title1: "64వ సం॥ మహాభారత",
+    title1: "65వ సం॥ మహాభారత",
     title2: "మహోత్సవం",
-    badge: "1961 నుండి · మన పవిత్ర సంప్రదాయం",
-    desc: "శ్రీ కృష్ణ, ద్రౌపది సమేత ధర్మరాజులవారి దేవస్థానం — వేదురుకుప్పం మండలంలోని 24 గ్రామాలు ఏకమై భక్తి మరియు సంస్కృతితో జరుపుకునే 10-రోజుల ఘన మహోత్సవం.",
+    badge: "1961 నుండి ఘనంగా జరుగుతున్న ఉత్సవం",
+    desc: "శ్రీ కృష్ణ, ద్రౌపతి సమేత ధర్మరాజులవారి దేవస్థానం — చెంచుగుడి, వెదురుకుప్పం మండలంలోని 24 గ్రామాలు ఏకమై భక్తి మరియు సంస్కృతితో జరుపుకునే 10-రోజుల ఘన మహోత్సవం.",
     liveStats: { visitors: "లైవ్ వీక్షకులు", villages: "గ్రామాలు" },
-    annualSchedule: "ఉత్సవ కార్యక్రమాలు 2025",
+    annualSchedule: "ఉత్సవ కార్యక్రమాలు 2026",
     majorFest: "ప్రధాన ఉత్సవం",
     june: "ప్రతి జూన్ నెలలో",
     days10: "10-రోజుల ఘన మహోత్సవం",
@@ -68,18 +68,18 @@ const content = {
     sept: "ప్రతి సెప్టెంబర్ నెలలో",
     days7: "7-రోజుల ఉత్సవం",
     united: "భక్తితో ఏకమయ్యాం",
-    unitedDesc: "భగవంతుని ఆశీస్సులతో, వేదురుకుప్పం మండలంలోని మొత్తం 24 గ్రామాలు ఏటా ఈ ఉత్సవాన్ని ఘనంగా విజయవంతం చేయడానికి ఏకమవుతాయి.",
+    unitedDesc: "భగవంతుని ఆశీస్సులతో, చెంచుగుడి, వెదురుకుప్పం మండలంలోని మొత్తం 24 గ్రామాలు ఏటా ఈ ఉత్సవాన్ని ఘనంగా విజయవంతం చేయడానికి ఏకమవుతాయి.",
     chechugudi: "చెంచుగుడి",
     vill: "గ్రామం",
     announcements: "ప్రకటనలు & వార్తలు",
     liveStream: "లైవ్ స్ట్రీమ్",
-    historyTitle: "మన పవిత్ర చరిత్ర",
+    historyTitle: "మన గుడి - మన ఘన చరిత్ర",
     history1961Title: "1961 లో ప్రారంభం",
     history1961Desc: "ధర్మరాజులవారి దేవస్థానం స్థాపించబడి, వార్షిక మహాభారత మహోత్సవానికి శ్రీకారం చుట్టబడింది.",
     history24VillagesTitle: "24 గ్రామాల ఐక్యత",
-    history24VillagesDesc: "వేదురుకుప్పం మండలంలోని 24 గ్రామాలు ఏకమై, భక్తి మరియు సాంస్కృతిక సామరస్యంతో ఈ ఉత్సవాన్ని ఒక మహాకార్యంగా తీర్చిదిద్దాయి.",
-    historyTodayTitle: "64-సంవత్సరాల వారసత్వం",
-    historyTodayDesc: "నేడు, మనం ఈ 10-రోజుల ఘనమైన సంప్రదాయం యొక్క 64వ సంవత్సరాన్ని జరుపుకుంటున్నాం, భావితరాలకు మన సంస్కృతిని అందిస్తున్నాం."
+    history24VillagesDesc: "చెంచుగుడి, వెదురుకుప్పం మండలంలోని 24 గ్రామాలు ఏకమై, భక్తి మరియు సాంస్కృతిక సామరస్యంతో ఈ ఉత్సవాన్ని ఒక మహాకార్యంగా తీర్చిదిద్దాయి.",
+    historyTodayTitle: "65-సంవత్సరాల వారసత్వం",
+    historyTodayDesc: "నేడు, మనం ఈ 10-రోజుల ఘనమైన సంప్రదాయం యొక్క 65వ సంవత్సరాన్ని జరుపుకుంటున్నాం, భావితరాలకు మన సంస్కృతిని అందిస్తున్నాం."
   }
 };
 
@@ -88,14 +88,14 @@ const content = {
 const vijayadashamiDonors = [
   { n: '1', nameEn: "Sri M. Gangi Reddy's son Hari Krishna Reddy", nameTe: 'శ్రీ యం. గంగిరెడ్డి కుమారుడు హరికృష్ణారెడ్డి', locEn: 'Chintalagunta', locTe: 'చింతలగుంట' },
   { n: '2', nameEn: 'Sri M. Narasimha Reddy & Brothers', nameTe: 'శ్రీ యం. నరసింహారెడ్డి & బ్రదర్స్', locEn: 'Balupalli', locTe: 'బాలుపల్లి' },
-  { n: '3', nameEn: 'Sri Y. Pratap Reddy', nameTe: 'శ్రీ వై. ప్రతాప్ రెడ్డి', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
+  { n: '3', nameEn: 'Sri Y. Pratap Reddy and Sri Allakula Bhaskar, Revenue', nameTe: 'శ్రీ వై. ప్రతాప్ రెడ్డి మరియు శ్రీ అల్లాకుల భాస్కర్, రెవిన్యూ', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
   { n: '4', nameEn: "Sri B. Chinnaswamy Reddy's sons Nagaraja Reddy, Bhaskar Reddy", nameTe: 'శ్రీ బి. చిన్నస్వామిరెడ్డి కుమారులు నాగరాజరెడ్డి, భాస్కర్ రెడ్డి', locEn: 'Rentalacheenu', locTe: 'రెంటాలచేను' },
   { n: '5', nameEn: "Sri Jayaramaiah's sons Murali, Dr. Siri", nameTe: 'శ్రీ జయరామయ్య కుమారులు మురళి, డా॥ సిరి', locEn: 'Allamavarikadiga', locTe: 'అల్లంవారికండిగ' },
   { n: '6', nameEn: "Sri P. Venkata Reddy & Munemma's sons", nameTe: 'శ్రీ పి. వెంకటరెడ్డి & మునెమ్మ కుమారులు', locEn: 'Vavilacheenu', locTe: 'వావిలిచేను' },
   { n: '7', nameEn: 'Sri P. Gopal Reddy', nameTe: 'శ్రీ పి. గోపాల్ రెడ్డి', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
   { n: '8', nameEn: "Sri Madavali Krishnaiah's sons", nameTe: 'శ్రీ మడవలి కృష్ణయ్య కుమారులు', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
   { n: '9', nameEn: 'Sri M. Mani Prasad', nameTe: 'శ్రీ యం. మణి ప్రసాద్', locEn: 'Veperi', locTe: 'వేపేరి' },
-  { n: '10', nameEn: 'Sri P. Venkatarama Reddy', nameTe: 'శ్రీ పి. వెంకటరామారెడ్డి', locEn: 'Rentalacheenu', locTe: 'రెంటాలచేను' },
+  { n: '10', nameEn: 'Poola Rekha W/o. Sri Reddy Nagendra', nameTe: 'పూల రేఖ W/o. శ్రీ రెడ్డి నాగేంద్ర', locEn: 'Rentalacheenu', locTe: 'రెంటాలచేను' },
 ];
 
 
@@ -116,98 +116,108 @@ const pournamiDonors = [
 ];
 
 const yagnamDonors = [
-  { dateEn: '06-06-2025', dateTe: '06-6-2025', dayEn: 'Friday', dayTe: 'శుక్రవారం', nameEn: 'Sri Bandi Vijayasekhar Reddy', nameTe: 'శ్రీ బండి విజయశేఖర్ రెడ్డి', locEn: 'Rentalacheenu', locTe: 'రెంటాలచేను' },
-  { dateEn: '07-06-2025', dateTe: '07-6-2025', dayEn: 'Saturday', dayTe: 'శనివారం', nameEn: 'Sri Poola Pattabhi Ramireddy, Trustee', nameTe: 'శ్రీ పూల పట్టాభి రామిరెడ్డి, ధర్మకర్త', locEn: 'Rentalacheenu', locTe: 'రెంటాలచేను' },
-  { dateEn: '08-06-2025', dateTe: '08-6-2025', dayEn: 'Sunday', dayTe: 'ఆదివారం', nameEn: 'Sri K. Ananda Reddy, Chenchugudi, Sri Jayarama Reddy', nameTe: 'శ్రీ కె. ఆనందరెడ్డి, చెంచుగుడి, శ్రీ జయరామరెడ్డి', locEn: 'Chavanapalli', locTe: 'చవనపల్లి' },
-  { dateEn: '09-06-2025', dateTe: '09-6-2025', dayEn: 'Monday', dayTe: 'సోమవారం', nameEn: 'Sri D. Nadhamuni Reddy, B.P.M.', nameTe: 'శ్రీ డి. నాధమునిరెడ్డి, బి.пи.ఎం.', locEn: 'Tirumalayya Palli', locTe: 'తిరుమలయ్యపల్లి' },
-  { dateEn: '10-06-2025', dateTe: '10-6-2025', dayEn: 'Tuesday', dayTe: 'మంగళవారం', nameEn: 'Sri T. Devarajulu Reddy', nameTe: 'శ్రీ టి. దేవరాజులురెడ్డి', locEn: 'Boppalamadugu', locTe: 'బొప్పలమడుగు' },
-  { dateEn: '11-06-2025', dateTe: '11-6-2025', dayEn: 'Wednesday', dayTe: 'బుధవారం', nameEn: 'Sri Bandi Love Reddy', nameTe: 'శ్రీ బండి లవ్‌రెడ్డి', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
-  { dateEn: '12-06-2025', dateTe: '12-6-2025', dayEn: 'Thursday', dayTe: 'గురువారం', nameEn: 'Sri M. Shanmugam Achari', nameTe: 'శ్రీ యం షణ్ముగం ఆచారి', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
-  { dateEn: '13-06-2025', dateTe: '13-6-2025', dayEn: 'Friday', dayTe: 'శుక్రవారం', nameEn: 'Sri Yerrasani Krishna Reddy', nameTe: 'శ్రీ యర్రసాని కృష్ణారెడ్డి', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
-  { dateEn: '14-06-2025', dateTe: '14-6-2025', dayEn: 'Saturday', dayTe: 'శనివారం', nameEn: "Late Sri Keshavulu Reddy's son Sri S. Mohan Babu", nameTe: 'కీ॥శే॥ శ్రీ కేశవులురెడ్డి కుమారుడు శ్రీ యస్. మోహన్‌బాబు', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
+  { dateEn: '06-06-2026', dateTe: '06-6-2026', dayEn: 'Friday', dayTe: 'శుక్రవారం', nameEn: 'Sri Bandi Vijayasekhar Reddy', nameTe: 'శ్రీ బండి విజయశేఖర్ రెడ్డి', locEn: 'Rentalacheenu', locTe: 'రెంటాలచేను' },
+  { dateEn: '07-06-2026', dateTe: '07-6-2026', dayEn: 'Saturday', dayTe: 'శనివారం', nameEn: 'Sri Poola Pattabhi Ramireddy, Trustee', nameTe: 'శ్రీ పూల పట్టాభి రామిరెడ్డి, ధర్మకర్త', locEn: 'Rentalacheenu', locTe: 'రెంటాలచేను' },
+  { dateEn: '08-06-2026', dateTe: '08-6-2026', dayEn: 'Sunday', dayTe: 'ఆదివారం', nameEn: 'Sri K. Ananda Reddy, Chenchugudi, Sri Jayarama Reddy', nameTe: 'శ్రీ కె. ఆనందరెడ్డి, చెంచుగుడి, శ్రీ జయరామరెడ్డి', locEn: 'Chavanapalli', locTe: 'చవనపల్లి' },
+  { dateEn: '09-06-2026', dateTe: '09-6-2026', dayEn: 'Monday', dayTe: 'సోమవారం', nameEn: 'Sri D. Nadhamuni Reddy, B.P.M.', nameTe: 'శ్రీ డి. నాధమునిరెడ్డి, బి.пи.ఎం.', locEn: 'Tirumalayya Palli', locTe: 'తిరుమలయ్యపల్లి' },
+  { dateEn: '10-06-2026', dateTe: '10-6-2026', dayEn: 'Tuesday', dayTe: 'మంగళవారం', nameEn: 'Sri T. Devarajulu Reddy', nameTe: 'శ్రీ టి. దేవరాజులురెడ్డి', locEn: 'Boppalamadugu', locTe: 'బొప్పలమడుగు' },
+  { dateEn: '11-06-2026', dateTe: '11-6-2026', dayEn: 'Wednesday', dayTe: 'బుధవారం', nameEn: 'Sri Bandi Love Reddy', nameTe: 'శ్రీ బండి లవ్‌రెడ్డి', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
+  { dateEn: '12-06-2026', dateTe: '12-6-2026', dayEn: 'Thursday', dayTe: 'గురువారం', nameEn: 'Sri M. Shanmugam Achari', nameTe: 'శ్రీ యం షణ్ముగం ఆచారి', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
+  { dateEn: '13-06-2026', dateTe: '13-6-2026', dayEn: 'Friday', dayTe: 'శుక్రవారం', nameEn: 'Sri Yerrasani Krishna Reddy', nameTe: 'శ్రీ యర్రసాని కృష్ణారెడ్డి', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
+  { dateEn: '14-06-2026', dateTe: '14-6-2026', dayEn: 'Saturday', dayTe: 'శనివారం', nameEn: "Late Sri Keshavulu Reddy's son Sri S. Mohan Babu", nameTe: 'కీ॥శే॥ శ్రీ కేశవులురెడ్డి కుమారుడు శ్రీ యస్. మోహన్‌బాబు', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
 ];
 
 const annadanamDonors = [
   {
-    date: '6-6-2025',
+    date: '29-5-2026',
     dayEn: 'Friday (First Day)',
     dayTe: 'శుక్రవారం (తొలి రోజు)',
     timeEn: 'at 8:00 PM',
     timeTe: 'రాత్రి 8.00 గం||లకు',
-    descEn: 'Organized under the leadership of P. Venkatesh, Ration Shop Dealer (son of P. Munaswamy) and P. Mallikarjuna Yadav, Goduguchinta.',
+    descEn: 'Organized under the leadership of P. Venkatesh, Ration Shop Dealer (son of P. Munaswamy) and P. Mallikarjuna Yadav, Goduguchintha.',
     descTe: 'పి. మునస్వామి కుమారుడు పి. వెంకటేష్, రేషన్ షాపు డీలర్ మరియు పి. మల్లికార్జున యాదవ్, గొడుగుచింత వారి ఆధ్వర్యంలో జరుపబడును.'
   },
   {
-    date: '7-6-2025',
+    date: '30-5-2026',
     dayEn: 'Saturday',
     dayTe: 'శనివారం',
     timeEn: 'at 7:00 PM',
     timeTe: 'రాత్రి 7.00 గం||లకు',
-    descEn: "Shiripireddy Narasimha Reddy's sons S. Chokkala Reddy, S. Subramanyam Reddy, Balupalli",
-    descTe: 'శిరిపిరెడ్డి నరసింహ రెడ్డి కుమారులు యస్. చొక్కలింగా రెడ్డి, yస్. సుబ్రహ్మణ్యం రెడ్డి, బాలుపల్లి'
+    descEn: "Siripireddy Narasimha Reddy's sons S. Chokkalinga Reddy, S. Subrahmanyam Reddy, Balupalli.",
+    descTe: 'శిరిపిరెడ్డి నరసింహా రెడ్డి కుమారులు యస్. చొక్కలింగా రెడ్డి, యస్. సుబ్రహ్మణ్యం రెడ్డి, బాలుపల్లి'
   },
   {
-    date: '9-6-2025',
+    date: '1-6-2026',
     dayEn: 'Monday (Goddess Wedding Day)',
     dayTe: 'సోమవారం అమ్మవారి కళ్యాణం రోజు',
     timeEn: 'at 7:00 PM',
     timeTe: 'రాత్రి 7.00 గం||లకు',
-    descEn: 'In memory of Late Kola Babayya, organized by his wife Rangamma and sons Jagadeesh (Retired Teacher), Lakshmaiah, Kumaraswamy, Ramachandraiah, Venugopalapuram.',
-    descTe: 'లేట్ కోలా బాబయ్య జ్ఞాపకార్ధం భార్య రంగమ్మ మరియు కుమారులు జగదీష్, రిటైర్డ్ టీచర్, లక్ష్మయ్య, కుమారస్వామి, రామచంద్రయ్య, వేణుగోపాలపురం వారి ఆధ్వర్యంలో జరుపబడును.'
+    descEn: 'In memory of Late Kola Babayya, organized by his wife Rangamma and sons Jagadish (Retired Teacher), Lakshmayya, Kumaraswamy, Ramachandrayya, Venugopalapuram.',
+    descTe: 'లేట్ కోలా బాబయ్య జ్ఞాపకార్థం భార్య రంగమ్మ మరియు కుమారులు జగదీష్, రిటైర్డు టీచర్, లక్ష్మయ్య, కుమారస్వామి, రామచంద్రయ్య, వేణుగోపాలపురం వారి ఆధ్వర్యంలో జరుపబడును.'
   },
   {
-    date: '10-6-2025',
+    date: '2-6-2026',
     dayEn: 'Tuesday (Vastrapaharanam Day)',
     dayTe: 'మంగళవారం వస్త్రాపహరణం రోజు',
     timeEn: 'at 7:00 PM',
     timeTe: 'రాత్రి 7.00 గం||లకు',
-    descEn: 'Organized by N. Subramanyam, Jayamma, Kutrapakam Murali, Nirmala and N. Narasimhulu, Sarojamma, residents of Goduguchinta.',
-    descTe: 'యన్. సుబ్రహ్మణ్యం, జయమ్మ, కుట్రపాకం మురళి, నిర్మల మరియు యన్. నరసింహులు, సరోజమ్మ, గొడుగుచింత వాస్తవ్యులు వారి ఆధ్వర్యంలో జరుపబడును.'
+    descEn: 'Organized by N. Subrahmanyam, Jayamma, Kutrapakam Murali, Nirmala and N. Narasimhulu, Sarojamma, residents of Goduguchintha.',
+    descTe: 'యన్. సుబ్రహ్మణ్యం, జయమ్మ, కుట్రపాకం మురళి, నిర్మల మరియు యన్. నరసింహులు, సరోజమ్మ గొడుగుచింత వాస్తవ్యులు వారి ఆధ్వర్యంలో జరుపబడును.'
   },
   {
-    date: '11-6-2025',
+    date: '3-6-2026',
     dayEn: 'Wednesday (Penance Day)',
-    dayTe: 'बुధవారం తపస్సు కార్యక్రమము రోజు',
+    dayTe: 'బుధవారం తపస్సు కార్యక్రమము రోజు',
     timeEn: 'at 7:00 PM',
     timeTe: 'రాత్రి 7.00 గం||లకు',
-    descEn: 'Organized under the leadership of Bandi Bharath Reddy, son of Bandi Rajasekhar Reddy, Rentalacheenu.',
-    descTe: 'బండి రాజశేఖర్ రెడ్డి కుమారుడు బండి భరత్ రెడ్డి, రెంటాలచేను వారి ఆధ్వర్యంలో జరుపబడును.'
+    descEn: 'Organized under the leadership of Bandi Bharath Reddy, son of Late Bandi Rajasekhar Reddy, Rentalachenu.',
+    descTe: 'కీ||శే|| బండి రాజశేఖర్ రెడ్డి కుమారుడు బండి భరత్ రెడ్డి, రెంటాలచేను వారి ఆధ్వర్యంలో జరుపబడును.'
   },
   {
-    date: '12-6-2025',
+    date: '4-6-2026',
     dayEn: 'Thursday (Keechaka Vadham Day)',
     dayTe: 'గురువారం కీచకవధ రోజు',
     timeEn: 'at 7:00 PM',
     timeTe: 'రాత్రి 7.00 గం||లకు',
-    descEn: 'Organized under the leadership of Pandikunta Muni Reddy, Former MPTC, Chenchugudi.',
+    descEn: 'Organized under the leadership of Pandikunta Munireddy, Ex. M.P.T.C., Chenchugudi.',
     descTe: 'పందికుంట మునిరెడ్డి, మాజీ యం.పి.టి.సి., చెంచుగుడి వారి ఆధ్వర్యంలో జరుపబడును.'
   },
   {
-    date: '13-6-2025',
+    date: '5-6-2026',
     dayEn: 'Friday',
     dayTe: 'శుక్రవారం',
     timeEn: 'at 7:00 PM',
     timeTe: 'రాత్రి 7.00 గం||లకు',
     descEn: "Organized under the leadership of Late Nagaraja Achari's sons Vinod, Kishore.",
-    descTe: 'కీ॥శే॥ నాగరాజ ఆచారి కుమారులు వినోద్, కిషోర్ వారి ఆధ్వర్యంలో జరుపబడును.'
+    descTe: 'కీ||శే|| నాగరాజ ఆచారి కుమారులు వినోద్, కిషోర్ వారి ఆధ్వర్యంలో జరుపబడును.'
   },
   {
-    date: '15-6-2025',
-    dayEn: 'Sunday (Fire Walk Day)',
-    dayTe: 'ఆదివారం అగ్గిగుండ ప్రవేశం రోజు',
+    date: '6-6-2026',
+    dayEn: 'Saturday',
+    dayTe: 'శనివారం',
     timeEn: 'at 7:00 PM',
     timeTe: 'రాత్రి 7.00 గం||లకు',
-    descEn: 'Sri Vidya Hospital, Chavatagunta: Mrs. S. Munemma & S. Babu (Sarpanch, Goduguchinta); son: Mrs. S. Sandhya & Dr. S. Madhu, M.Sc. (PSY).',
-    descTe: 'శ్రీ విద్యా వైద్యశాల, చవటగుంట శ్రీమతి యస్. మునెమ్మ & యస్. బాబు, సర్పంచ్ గొడుగుచింత కుమారుడు శ్రీమతి యస్. సంధ్య & డా॥ శ్రీ యస్. మధు, M.Sc. (PSY) వారి ఆధ్వర్యంలో జరుపబడును.'
+    descEn: "Organized under the leadership of Nagireddy Subrahmanyam Reddy, Parvathamma's grandson Naga Simha Reddy, Chenchugudi.",
+    descTe: 'నాగిరెడ్డి సుబ్రహ్మణ్యం రెడ్డి, పార్వతమ్మ మనవడు నాగ సింహా రెడ్డి, చెంచుగుడి వారి ఆధ్వర్యంలో జరుపబడును.'
   },
+  {
+    date: '7-6-2026',
+    dayEn: 'Sunday (Fire Walk Day)',
+    dayTe: 'ఆదివారం అగ్నిగుండ ప్రవేశం రోజు',
+    timeEn: 'at 7:00 PM',
+    timeTe: 'రాత్రి 7.00 గం||లకు',
+    descEn: 'Organized under the leadership of Sri Vidya Vaidyasala, Chavatagunta Mrs. N. Munemma & N. Babu (Sarpanch, Goduguchintha), son Mrs. N. Sandhya & Dr. Sri N. Madhu, M.Sc. (PSY).',
+    descTe: 'శ్రీ విద్య వైద్యశాల, చవటగుంట శ్రీమతి యన్. మునెమ్మ & యన్. బాబు, సర్పంచ్ గొడుగుచింత కుమారుడు శ్రీమతి యన్. సంధ్య & డా|| శ్రీ యన్. మధు, M.Sc. (PSY) వారి ఆధ్వర్యంలో జరుపబడును.'
+  }
 ];
 
 export default function Home() {
-  const [lang, setLang] = useState<"en" | "te">("en");
+  const [lang, setLang] = useState<"en" | "te">("te");
   const [isScrolled, setIsScrolled] = useState(false);
   const [siteStats, setSiteStats] = useState<SiteStats | null>(null);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [galleryImages, setGalleryImages] = useState<any[]>([]);
+  const [activeYearData, setActiveYearData] = useState<any>(null);
   const [liveStreamSettings, setLiveStreamSettings] = useState<{ url: string; platform: string; isActive: boolean } | null>(null);
   const [activeDonorTab, setActiveDonorTab] = useState<"vijayadashami" | "pournami" | "yagnam" | "annadanam">("annadanam");
   const [activeProgramTab, setActiveProgramTab] = useState<"harikatha" | "dramas">("harikatha");
@@ -483,16 +493,18 @@ export default function Home() {
   // Fetch all backend data
   const loadData = useCallback(async () => {
     try {
-      const [statsData, announceList, galleryList, liveData] = await Promise.all([
+      const [statsData, announceList, galleryList, liveData, activeYear] = await Promise.all([
         getStats(),
         getAnnouncements(),
         getGalleryImages(),
-        getLiveStreamSettings()
+        getLiveStreamSettings(),
+        getActiveFestivalYear()
       ]);
 
       setSiteStats(statsData);
       setAnnouncements(announceList);
       setGalleryImages(galleryList);
+      setActiveYearData(activeYear);
       if (liveData.success) {
         setLiveStreamSettings({ 
           url: liveData.liveStreamUrl, 
@@ -637,19 +649,23 @@ export default function Home() {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className={`fixed w-full z-[100] transition-all duration-500 ${(isScrolled || isMobileMenuOpen) ? 'bg-[#3D0000] backdrop-blur-xl shadow-2xl py-3 border-b border-[#FFD700]/10' : 'bg-transparent py-5'} ${(liveStreamSettings?.isActive && liveStreamSettings.url) ? 'top-[40px]' : 'top-0'}`}
+        className={`fixed w-full z-[100] transition-all duration-500 ${(isScrolled || isMobileMenuOpen) ? 'bg-[#580000]/85 backdrop-blur-2xl shadow-2xl py-3 border-b border-[#FFD700]/20' : 'bg-transparent py-5'} ${(liveStreamSettings?.isActive && liveStreamSettings.url) ? 'top-[40px]' : 'top-0'}`}
       >
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center gap-3 text-white">
             <span className="text-3xl om-shadow animate-pulse-glow">ॐ</span>
             <div className="hidden sm:block">
-              <p className="font-display font-bold text-base tracking-widest text-[#FFD700] leading-none">CHENCHUGUDI</p>
-              <p className="text-[10px] text-orange-200/70 tracking-[0.3em] uppercase">Mahabharatham</p>
+              <p className={`font-display font-bold text-base text-[#FFD700] leading-none ${lang === 'en' ? 'tracking-widest' : 'tracking-normal'}`}>
+                {lang === 'en' ? 'CHENCHUGUDI' : 'చెంచుగుడి'}
+              </p>
+              <p className={`text-[10px] text-orange-200/70 ${lang === 'en' ? 'tracking-[0.3em] uppercase' : 'tracking-normal mt-1'}`}>
+                {lang === 'en' ? 'Mahabharatham' : 'మహాభారతం'}
+              </p>
             </div>
           </div>
 
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
             {[
               { href: '#home', label: t.nav.home },
               ...(liveStreamSettings?.isActive ? [{ href: '#live', label: t.nav.live }] : []),
@@ -821,13 +837,13 @@ export default function Home() {
         <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center w-full">
           {/* Top badges */}
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}
-            className="mb-8 flex flex-wrap justify-center gap-3"
+            className="mb-8 flex flex-col sm:flex-row justify-center items-center gap-3 w-full max-w-2xl mx-auto"
           >
-            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#FFD700]/35 bg-[#FFD700]/8 backdrop-blur-sm text-[#FFD700] text-xs tracking-[0.2em] font-bold uppercase">
-              <MapPin size={13} /> {t.village} · {lang === 'en' ? 'Vedurukuppam Mandal' : 'వేదురుకుప్పం మండలం'}
+            <div className={`flex-1 flex justify-center items-center gap-2 w-full px-5 py-2 rounded-full border border-[#FFD700]/35 bg-[#FFD700]/8 backdrop-blur-sm text-[#FFD700] text-xs font-bold ${lang === 'en' ? 'tracking-[0.2em] uppercase' : 'tracking-normal'}`}>
+              <MapPin size={13} className="shrink-0" /> <span className="text-center">{t.village} · {lang === 'en' ? 'Vedurukuppam Mandal' : 'వెదురుకుప్పం మండలం'}</span>
             </div>
-            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-orange-400/30 bg-orange-400/8 backdrop-blur-sm text-orange-200 text-xs tracking-[0.2em] font-bold uppercase">
-              <History size={13} /> {t.badge}
+            <div className={`flex-1 flex justify-center items-center gap-2 w-full px-5 py-2 rounded-full border border-orange-400/30 bg-orange-400/8 backdrop-blur-sm text-orange-200 text-xs font-bold ${lang === 'en' ? 'tracking-[0.2em] uppercase' : 'tracking-normal'}`}>
+              <History size={13} className="shrink-0" /> <span className="text-center">{t.badge}</span>
             </div>
           </motion.div>
 
@@ -878,7 +894,7 @@ export default function Home() {
             className="font-display text-4xl sm:text-5xl md:text-7xl font-black mb-4 leading-tight"
             style={{ textShadow: '0 4px 30px rgba(0,0,0,0.5)' }}
           >
-            <span className="text-gold-gradient">{t.title1}</span>
+            <span className="text-gold-gradient animate-shimmer inline-block" style={{ backgroundSize: '200% auto' }}>{t.title1}</span>
             <br />
             <span className="text-white/95">{t.title2}</span>
           </motion.h1>
@@ -1011,7 +1027,7 @@ export default function Home() {
                 align: 'right'
               },
               {
-                year: '2025',
+                year: '2026',
                 title: t.historyTodayTitle,
                 desc: t.historyTodayDesc,
                 icon: <Sparkles size={24} />,
@@ -1050,7 +1066,7 @@ export default function Home() {
 
       {/* ══ LIVE STREAM SECTION ════════════════════════════ */}
       {liveStreamSettings?.isActive && liveStreamSettings.url && (
-        <section id="live" className="py-20 px-6 relative bg-[#fffdf5]">
+        <section id="live" className="py-12 md:py-16 px-6 relative bg-[#fffdf5]">
           <div className="absolute inset-0 bg-gradient-to-b from-[#3D0000] to-[#fffdf5] h-[300px] z-0"></div>
           <div className="max-w-4xl mx-auto relative z-10">
             {/* Section Header */}
@@ -1192,7 +1208,7 @@ export default function Home() {
       </section>
 
       {/* Festival Schedule Section */}
-      <section id="schedule" className="py-12 md:py-16 px-6 relative bg-white">
+      <section id="schedule" className="py-12 md:py-16 px-6 relative bg-[#fffdf5] mandala-bg">
         <div className="max-w-5xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -1204,66 +1220,63 @@ export default function Home() {
             <div className="h-1 w-24 bg-gradient-to-r from-transparent via-[#E25822] to-transparent rounded-full"></div>
             <p className="text-gray-500 text-sm mt-2">
               {lang === 'en'
-                ? '64th Annual Mahabharatham Mahotsavam — Chenchugudi, Vedurukuppam Mandal'
-                : '64వ సం॥ మహాభారత మహోత్సవం — చెంచుగుడి, వేదురుకుప్పం మండలం'}
+                ? '65th Annual Mahabharatham Mahotsavam — Chenchugudi, Vedurukuppam Mandal'
+                : '65వ సం॥ మహాభారత మహోత్సవం — చెంచుగుడి, వెదురుకుప్పం మండలం'}
             </p>
+            {activeYearData?.pamphletUrl && (
+              <a 
+                href={activeYearData.pamphletUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-2 bg-[#580000] text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-[#7A1500] hover:-translate-y-0.5 transition-all"
+              >
+                📥 {lang === 'en' ? 'Download Pamphlet' : 'కరపత్రం డౌన్‌లోడ్ చేయండి'}
+              </a>
+            )}
           </motion.div>
 
           {/* Highlight Banner */}
           <div className="mb-10 p-5 rounded-2xl bg-gradient-to-r from-[#580000] to-[#8B0000] text-white text-center shadow-xl">
             <p className="text-2xl md:text-3xl font-black tracking-wide">
-              {lang === 'en' ? '🗓️ Main Festival: June 6 – 15' : '🗓️ ముఖ్య ఉత్సవం: జూన్ 6 – 15'}
+              {lang === 'en' ? '🗓️ Main Festival: May 29 – June 7' : '🗓️ ముఖ్య ఉత్సవం: మే 29 – జూన్ 7'}
             </p>
             <p className="text-orange-200 text-sm mt-2 font-medium">
               {lang === 'en'
-                ? 'Dhwajarohanam (Flag Hoisting): June 5 · Harikatha: 1–5 PM Daily · Night Dramas: 9 PM – 5 AM'
-                : 'ధ్వజారోహణం: జూన్ 5 · హరికథా: మ.1–సా.5 రోజూ · రాత్రి నాటకాలు: రా.9–తె.5'}
+                ? 'Dhwajarohanam (Flag Hoisting): May 29 · Harikatha: 1–5 PM Daily · Night Dramas: 9 PM – 5 AM'
+                : 'ధ్వజారోహణ: మే 29 · హరికథా: మ.1–సా.5 రోజూ · రాత్రి నాటకాలు: రా.9–తె.5'}
             </p>
           </div>
 
           {/* Day-by-Day Schedule */}
-          <div className="space-y-3">
-            {[
-              { date: '14-5-2025', day: lang === 'en' ? 'Wednesday · బుధవారం' : 'బుధవారం', event: lang === 'en' ? 'Sri Mahabharata Yagna Inauguration' : 'శ్రీ మహాభారతయజ్ఞ శ్రీకారము', sponsor: lang === 'en' ? 'Sri Kotha Reddy Narasimha Reddy, Boppalamadugu' : 'శ్రీ కొత్తరెడ్డి నరసింహారెడ్డి, బొప్పలమడుగు', icon: '🪔', highlight: false },
-              { date: '05-6-2025', day: lang === 'en' ? 'Thursday · గురువారం' : 'గురువారం', event: lang === 'en' ? 'Dhwajarohanam (Flag Hoisting, 7:30 AM – 8:30 AM)' : 'ధ్వజారోహణము (ఉదయం 7:30 – 8:30 గం॥)', sponsor: lang === 'en' ? 'Sri Bandi Vijayasekhar Reddy, Rentalacheenu' : 'శ్రీ బండి విజయశేఖర్ రెడ్డి, రెంటాలచేను', icon: '🚩', highlight: false },
-              { date: '08-6-2025', day: lang === 'en' ? 'Sunday · ఆదివారం' : 'ఆదివారం', event: lang === 'en' ? 'Bandi Kumballu (Sacred Pot Procession)' : 'బండి కుంభాలు', sponsor: lang === 'en' ? 'Sri Sridhar Reddy (son of Late Sri M. Narayana Reddy) and Venugopalapuram villagers' : 'లేట్ శ్రీ యం. నారాయణరెడ్డి కుమారుడు శ్రీధర్‌రెడ్డి మరియు వేణుగోపాలపురం గ్రామస్తులు', icon: '🎡', highlight: false },
-              { date: '09-6-2025', day: lang === 'en' ? 'Monday · సోమవారం' : 'సోమవారం', event: lang === 'en' ? 'Draupadi Kalyanam (Auspicious Wedding Ceremony)' : 'ద్రౌపతి కళ్యాణం', sponsor: lang === 'en' ? 'Sri S. Ramalinga Reddy, Chenchugudi' : 'శ్రీ యస్. రామలింగారెడ్డి, చెంచుగుడి', icon: '💛', highlight: true },
-              { date: '10-6-2025', day: lang === 'en' ? 'Tuesday · మంగళవారం' : 'మంగళవారం', event: lang === 'en' ? "Draupadi Mana Samrakshana (Protection of Draupadi's Honour)" : 'రాత్రి ద్రౌపతి మాన సంరక్షణ', sponsor: lang === 'en' ? 'Devarajulu Naidu (son of Late Sri R. Doraswamy Naidu), Reddepalli' : 'లేట్ శ్రీ ఆర్. దొరస్వామినాయుడు కుమారుడు దేవరాజులనాయుడు, రెడ్డేపల్లి', icon: '⚔️', highlight: false },
-              { date: '11-6-2025', day: lang === 'en' ? 'Wednesday · బుధవారం' : 'बुధవారం', event: lang === 'en' ? "Arjuna Tapassu (Arjuna's Penance)" : 'అర్జున తపస్సు కార్యక్రమం', sponsor: lang === 'en' ? 'Sri P. Yashwanth Reddy (son of Sri Poola Venkatarama Reddy), Rentalacheenu' : 'శ్రీ పూల వెంకటరామారెడ్డి కుమారుడు పి. యశ్వంత్‌రెడ్డి, రెంటాలచేను', icon: '🙏', highlight: false },
-              { date: '12-6-2025', day: lang === 'en' ? 'Thursday · గురువారం' : 'గురువారం', event: lang === 'en' ? 'Keechaka Vadham (Slaying of Keechaka)' : 'కీచకవధ', sponsor: '', icon: '🗡️', highlight: false },
-              { date: '13-6-2025', day: lang === 'en' ? 'Friday Evening · శుక్రవారం సా॥' : 'శుక్రవారం సా॥', event: lang === 'en' ? 'Uttara Gograhanam (Rescue of Cattle)' : 'ఉత్తరగోగ్రహణం', sponsor: lang === 'en' ? 'Y. Rajesh Reddy (son of Late Sri Y. Madhava Reddy and Late Ranamma), Chenchugudi' : 'లేట్ శ్రీ వై. మాధవరెడ్డి, లేట్ రాణమ్మ కుమారుడు వై. రాజేష్‌రెడ్డి, చెంచుగుడి', icon: '🐄', highlight: false },
-              { date: '14-6-2025', day: lang === 'en' ? 'Saturday Evening · శనివారం సా॥' : 'శనివారం సా॥', event: lang === 'en' ? 'Aravan Bali (Sacrifice of Aravan)' : 'ఇలావంతుని బలి', sponsor: lang === 'en' ? "Guta Chandramma's sons-in-law: P. Rajesh Naidu, V. Nagarjuna Naidu, Reddepalli" : 'గుతా చంద్రమ్మ అళ్ళుళ్ళు: పి. రాజేష్ నాయుడు, వి. నాగార్జున నాయుడు, రెడ్డేపల్లి', icon: '🔱', highlight: false },
-              { date: '15-6-2025', day: lang === 'en' ? 'Sunday · ఆదివారం' : 'ఆదివారం', event: lang === 'en' ? 'Duryodhana Vadham (Slaying of Duryodhana)' : 'ధుర్యోధన వధ', sponsor: lang === 'en' ? 'B. Balasubrahmanyam (son of Late Sri Battula Chinanna Boyudu), Venugopalapuram Vaddi Indlu' : 'లేట్ శ్రీ బత్తుల చినన్న బోయుడు కుమారుడు బి. బాలసుబ్రహ్మణ్యం, వేణుగోపాలపురం వడ్డియిండ్లు', icon: '⚔️', highlight: false },
-              { date: '15-6-2025', day: lang === 'en' ? 'Sunday Evening · ఆదివారం సా॥' : 'ఆదివారం సా॥', event: lang === 'en' ? 'Agni Gunda Pravesham (Sacred Fire Walk)' : 'అగ్గిగుండ ప్రవేశం', sponsor: lang === 'en' ? 'Will be conducted by Balupalli villagers' : 'శ్రీ బాలుపల్లి గ్రామస్తులచే జరుపబడును', icon: '🔥', highlight: true, fee: '₹100' },
-              { date: '15-6-2025', day: lang === 'en' ? 'Sunday Night · ఆదివారం రాత్రి' : 'ఆదివారం రాత్రి', event: lang === 'en' ? 'Dharmaraja Pattabhishekam (Grand Royal Coronation)' : 'ధర్మరాజుల పట్టాభిషేకము', sponsor: lang === 'en' ? 'Sri V. Balakrishna, Veperi' : 'శ్రీ వి. బాలకృష్ణ, వేపేరి', icon: '👑', highlight: true },
-            ].map((item, idx) => (
+          <div className="relative pl-6 md:pl-12 space-y-4 before:content-[''] before:absolute before:left-2.5 md:before:left-5 before:top-4 before:bottom-4 before:w-1 before:bg-gradient-to-b before:from-[#FFD700] before:via-[#E25822] before:to-transparent before:rounded-full before:opacity-50">
+            {(activeYearData?.events || []).map((item: any, idx: number) => (
               <motion.div
-                key={idx}
+                key={item.id || idx}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.05 }}
-                className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl border transition-all group card-hover ${item.highlight
-                  ? 'bg-orange-50 border-orange-200 shadow-sm'
-                  : 'bg-[#fffdf5] border-gray-100'
+                className={`relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 md:p-6 rounded-3xl border transition-all group card-hover before:content-[''] before:absolute before:-left-6 md:before:-left-10 before:top-8 md:before:top-1/2 md:before:-translate-y-1/2 before:w-3 before:h-3 before:bg-[#FFD700] before:rounded-full before:border-2 before:border-[#580000] before:shadow-[0_0_10px_rgba(255,215,0,0.6)] before:z-10 ${item.highlight
+                  ? 'bg-gradient-to-br from-[#fffdf5] to-orange-50/50 border-[#FFD700]/40 shadow-[0_8px_30px_rgba(226,88,34,0.12)] z-10'
+                  : 'bg-white border-gray-100 shadow-sm hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)]'
                   }`}
               >
                 <div className="flex items-start gap-4 flex-1 min-w-0">
-                  <div className="text-2xl mt-0.5 shrink-0">{item.icon}</div>
+                  <div className="text-2xl mt-0.5 shrink-0">{item.icon || '✨'}</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
                       <span className={`text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${item.highlight ? 'bg-orange-500 text-white' : 'bg-[#580000]/10 text-[#580000]'}`}>
                         {item.date}
                       </span>
-                      <span className="text-xs text-gray-400 font-bold">{item.day}</span>
+                      <span className="text-xs text-gray-400 font-bold">{lang === 'en' ? item.dayEn : item.dayTe}</span>
                     </div>
                     <p className={`font-bold text-sm md:text-base leading-snug ${item.highlight ? 'text-[#580000]' : 'text-gray-700'}`}>
-                      {item.event}
+                      {lang === 'en' ? item.eventEn : item.eventTe}
                     </p>
-                    {item.sponsor && (
+                    {(lang === 'en' ? item.sponsorEn : item.sponsorTe) && (
                       <p className="text-xs text-gray-400 mt-1.5 flex items-center gap-1">
                         <span className="text-orange-400">🙏</span>
-                        <span>{lang === 'en' ? 'Organizers: ' : 'నిర్వాహకులు: '}{item.sponsor}</span>
+                        <span>{lang === 'en' ? 'Organizers: ' : 'నిర్వాహకులు: '}{lang === 'en' ? item.sponsorEn : item.sponsorTe}</span>
                       </p>
                     )}
                   </div>
@@ -1278,20 +1291,7 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Harikatha note */}
-          <div className="mt-8 p-5 rounded-2xl bg-yellow-50 border border-yellow-200 flex gap-3 items-start shadow-sm">
-            <span className="text-2xl">🎶</span>
-            <div>
-              <p className="font-black text-gray-800 text-sm">
-                {lang === 'en' ? 'Daily Harikatha (Jun 6–15): 1:00 PM – 5:00 PM' : 'రోజువారీ హరికథా (జూన్ 6–15): మ. 1:00 – సా. 5:00'}
-              </p>
-              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                {lang === 'en'
-                  ? 'By Smt. G. Sharada Bhagavatarini (Praveen, Natyamayuri, Ganakokila) — Madanapalli'
-                  : 'శ్రీమతి జి. శారద భాగవతారిణి (ప్రవీణ, నాట్యమయూరి, గానకోకిల) — మదనపల్లి'}
-              </p>
-            </div>
-          </div>
+
         </div>
       </section>
 
@@ -1367,16 +1367,16 @@ export default function Home() {
                         {lang === 'en' ? 'Daily Ganam' : 'రోజువారీ హరికథా గానం'}
                       </span>
                       <h3 className="text-2xl md:text-3xl font-black text-[#580000] mb-2">
-                        {lang === 'en' ? 'Smt. G. Sharada Bhagavatarini' : 'శ్రీమతి జి. శారద భాగవతారిణి'}
+                        {lang === 'en' ? 'Smt. G. Jyoshna Bhagavatarini' : 'జి. జ్యోష్ణ భాగవతారిణి'}
                       </h3>
                       <p className="text-[#E25822] font-semibold text-sm md:text-base mb-4 tracking-wide">
-                        {lang === 'en' ? 'Praveen · Natyamayuri · Ganakokila — Madanapalli' : 'ప్రవీణ · నాట్యమయూరి · గానకోకిల — మదనపల్లి'}
+                        {lang === 'en' ? 'Chittoor Resident · Harikatha Gana Praveena · Natyamayuri · Ganakokila' : 'చిత్తూరు వాస్తవ్యురాలు హరికథా గాన ప్రవీణ, నాట్యమయూరి, గానకోకిల'}
                       </p>
 
                       <p className="text-gray-600 leading-relaxed mb-6 text-sm md:text-base">
                         {lang === 'en'
-                          ? 'Experience the divine stories of Mahabharatham rendered beautifully through traditional music, emotional expression, and epic storytelling that brings the scriptures to life.'
-                          : 'సాంప్రదాయ సంగీతం, లయబద్ధమైన శైలి, మనోహరమైన హావభావాలు మరియు విశిష్టమైన కథా ప్రవచనాల ద్వారా సాక్షాత్తు ఆ మహాభారత ఘట్టాలను మన కళ్ళముందు నిలిపే భక్తిమయ ఆధ్యాత్మిక కార్యక్రమం.'}
+                          ? 'Harikathakalakshepamulu will be performed.'
+                          : 'హరికథాకాల క్షేపములు జరుపబడును.'}
                       </p>
 
                       <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center border-t border-orange-100 pt-6">
@@ -1386,7 +1386,7 @@ export default function Home() {
                           </div>
                           <div className="text-left">
                             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{lang === 'en' ? 'Festival Dates' : 'ఉత్సవ తేదీలు'}</p>
-                            <p className="text-sm font-bold text-gray-800">June 6 – 15 (జూన్ 6 – 15)</p>
+                            <p className="text-sm font-bold text-gray-800">May 29 – June 7 (మే 29 – జూన్ 7)</p>
                           </div>
                         </div>
 
@@ -1403,29 +1403,21 @@ export default function Home() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-orange-100 text-left text-xs">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-orange-100 text-left text-xs">
                         <div className="p-4 bg-[#fffdf5] border border-orange-100/70 shadow-sm rounded-2xl flex flex-col gap-1">
-                          <span className="font-bold text-[#580000]">{lang === 'en' ? '🎵 Troupe / వాయిద్యబృందం' : '🎵 వాయిద్యబృందం'}</span>
+                          <span className="font-bold text-[#580000]">{lang === 'en' ? '🎵 Troupe / వాయిద్య బృందము' : '🎵 వాయిద్య బృందము'}</span>
                           <p className="text-gray-600 font-medium leading-relaxed">
                             {lang === 'en'
-                              ? 'Harmonist: G. Chinna · Tabala: Venkataramanappa'
-                              : 'హార్మోనిస్ట్: జి. చిన్న · తబల: వెంకటరమణప్ప'}
+                              ? 'Harmonist: Valli Saheb Tabala: Ganapathi Shankar'
+                              : 'హార్మోనిస్ట్: వల్లి సాహెబ్ తబల: గణపతి శంకర్'}
                           </p>
                         </div>
                         <div className="p-4 bg-[#fffdf5] border border-orange-100/70 shadow-sm rounded-2xl flex flex-col gap-1">
                           <span className="font-bold text-[#580000]">{lang === 'en' ? '🤝 Patron / విరాళ దాత' : '🤝 హరికథ విరాళ దాత'}</span>
                           <p className="text-gray-600 font-medium leading-relaxed">
                             {lang === 'en'
-                              ? 'Chi. Ravilla Delhibabu, Reddepalli (S/o Sri Ravilla Devarajulu Naidu)'
-                              : 'శ్రీ రావిళ్ళ దేవరాజులు నాయుడు గారి కుమారుడు చి|| రావిళ్ళ ఢిల్లీబాబు, రెడ్డేపల్లి'}
-                          </p>
-                        </div>
-                        <div className="p-4 bg-[#fffdf5] border border-orange-100/70 shadow-sm rounded-2xl flex flex-col gap-1">
-                          <span className="font-bold text-[#580000]">{lang === 'en' ? '🏡 Accommodation / వసతి' : '🏡 భోజన వసతి సౌకర్యం'}</span>
-                          <p className="text-gray-600 font-medium leading-relaxed">
-                            {lang === 'en'
-                              ? 'M. Lokanadha Achari, Chenchugudi'
-                              : 'యం. లోకనాథ ఆచారి, చెంచుగుడి'}
+                              ? 'Chi. Ravilla Dillibabu, Reddepalli (S/o Sri Ravilla Devarajulu Naidu)'
+                              : 'శ్రీ రావిళ్ళ దేవరాజులు నాయుడు గారి కుమారుడు చి|| రావిళ్ళ డిల్లిబాబు, రెడ్డేపల్లి'}
                           </p>
                         </div>
                       </div>
@@ -1453,7 +1445,7 @@ export default function Home() {
                         {lang === 'en' ? 'Mythological Stage Drama' : 'పౌరాణిక రంగస్థల నాటకాలు'}
                       </span>
                       <h3 className="text-2xl md:text-3xl font-black text-[#580000] mb-2">
-                        {lang === 'en' ? 'Sri Venkateswara Nataka Kala Mandali' : 'శ్రీ వెంకటేశ్వర నాటక కళామండలి'}
+                        {lang === 'en' ? 'Sri Venkateshwara Nataka Kalamandali' : 'శ్రీ వేంకటేశ్వరా నాటక కళామండలి'}
                       </h3>
                       <p className="text-[#E25822] font-semibold text-sm md:text-base mb-4 tracking-wide">
                         {lang === 'en' ? 'Performing Timeless Legends of Mahabharatham' : 'మహాభారత పౌరాణిక ఘట్టాల ప్రదర్శన'}
@@ -1461,8 +1453,8 @@ export default function Home() {
 
                       <p className="text-gray-600 leading-relaxed mb-6 text-sm md:text-base">
                         {lang === 'en'
-                          ? 'Witness spectacular, traditional overnight drama performances by seasoned theater artists. The epic sagas of Mahabharata come to life with colorful costumes, dramatic music, and powerful dialogues.'
-                          : 'శతాబ్దాల నాటి మన సాంస్కృతిక వారసత్వాన్ని ప్రతిబింబిస్తూ, రాత్రంతా సాగే అద్భుత నాటక ప్రదర్శనలు. ప్రసిద్ధ రంగస్థల కళాకారుల హావభావాలు, గంభీరమైన డైలాగులు మరియు అద్భుత వేషధారణలతో సాగే పౌరాణిక దృశ్య కావ్యం.'}
+                          ? 'Under the direction of Manager Sri Veerabhadra (Badri) Pileru, night dramas will be performed by talented artists.'
+                          : 'మేనేజరు శ్రీ వీరభద్ర (బద్రి) పీలేరు గారి ఆధ్వర్యమున హేమాహేమీలైన కళాకారులచే రాత్రి నాటకములు జరుపబడును.'}
                       </p>
 
                       <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center border-t border-orange-100 pt-6">
@@ -1472,7 +1464,7 @@ export default function Home() {
                           </div>
                           <div className="text-left">
                             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{lang === 'en' ? 'Show Dates' : 'ప్రదర్శన తేదీలు'}</p>
-                            <p className="text-sm font-bold text-gray-800">June 6 – 15 (జూన్ 6 – 15)</p>
+                            <p className="text-sm font-bold text-gray-800">May 29 – June 7 (మే 29 – జూన్ 7)</p>
                           </div>
                         </div>
 
@@ -1493,15 +1485,15 @@ export default function Home() {
                         <div className="p-4 bg-[#fffdf5] border border-orange-100/70 shadow-sm rounded-2xl flex flex-col gap-1">
                           <span className="font-bold text-[#580000]">{lang === 'en' ? '💼 Manager / మేనేజర్' : '💼 మేనేజర్'}</span>
                           <p className="text-gray-600 font-medium">
-                            {lang === 'en' ? 'Sri P. Srinivasulu, Tirupati' : 'శ్రీ పి. శ్రీనివాసులు, తిరుపతి'}
+                            {lang === 'en' ? 'Sri Veerabhadra (Badri), Pileru' : 'శ్రీ వీరభద్ర (బద్రి), పీలేరు'}
                           </p>
                         </div>
                         <div className="p-4 bg-[#fffdf5] border border-orange-100/70 shadow-sm rounded-2xl flex flex-col gap-1">
                           <span className="font-bold text-[#580000]">{lang === 'en' ? '🎭 Artists / కళాకారులు' : '🎭 కళాకారులు'}</span>
                           <p className="text-gray-600 font-medium">
                             {lang === 'en'
-                              ? 'Performed by legendary, renowned stage artists'
-                              : 'హేమాహేమీలైన ప్రసిద్ధ రంగస్థల కళాకారులచే రాత్రి నాటకములు జరుపబడును'}
+                              ? 'Performed by renowned stage artists'
+                              : 'హేమాహేమీలైన కళాకారులచే'}
                           </p>
                         </div>
                       </div>
@@ -1515,7 +1507,76 @@ export default function Home() {
       </section>
 
       {/* ══ DONORS SECTION ══════════════════════════════════ */}
-      <section id="donors" className="py-12 md:py-16 px-6 relative" style={{ background: 'linear-gradient(180deg, #fffdf5 0%, #fff8ec 100%)' }}>
+      {/* ══ DONORS SECTION ═════════════════════════════════════════ */}
+      <section className="py-12 md:py-16 bg-[#fffdf5] mandala-bg border-t border-orange-100 relative overflow-hidden" id="donors">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <span className="inline-block bg-orange-100 text-[#580000] text-sm font-black uppercase tracking-widest px-4 py-2 rounded-full border border-orange-200 mb-4 shadow-sm">
+              {lang === 'en' ? 'Special Acknowledgements' : 'ప్రత్యేక కృతజ్ఞతలు'}
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-[#580000] mb-6 drop-shadow-sm font-display tracking-wide">
+              {lang === 'en' ? 'Sponsors & Donors' : 'దాతలు & సహాయకులు'}
+            </h2>
+            <div className="w-24 h-1 bg-[#E25822] mx-auto rounded-full" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+            {[
+              {
+                icon: '🎨',
+                titleTe: 'దేవస్థానమునకు రీపెయింటింగ్ విరాళదాత (రూ. 90,000)',
+                titleEn: 'Temple Repainting Donor (Rs. 90,000)',
+                descTe: 'యర్రసాని షణ్ముగంరెడ్డి & శ్రీమతి లలిత, రెడ్డేపల్లి',
+                descEn: 'Yarrasani Shanmugam Reddy & Smt. Lalitha, Reddepalli',
+              },
+              {
+                icon: '🚰',
+                titleTe: '2 1/2 పివిసి పైపులు విరాళదాత (107 పైపులు రూ. 40,000)',
+                titleEn: '2 1/2 PVC Pipes Donor (107 Pipes Rs. 40,000)',
+                descTe: 'రావిళ్ళ చిన్నస్వామి నాయుడు, రెడ్డేపల్లి',
+                descEn: 'Raavilla Chinnaswamy Naidu, Reddepalli',
+              },
+              {
+                icon: '🏺',
+                titleTe: 'గుడికి 18 ఇత్తడి కలశం చెంబులు విరాళదాత',
+                titleEn: '18 Brass Kalasam Vessels Donor',
+                descTe: 'కీ||శే|| బండి రాజశేఖర్ రెడ్డి కుమారుడు బి. భరత్‌రెడ్డి, కుమార్తె హారిక, రెంటాలచేను',
+                descEn: 'Late Bandi Rajasekhar Reddy Son B. Bharath Reddy, Daughter Harika, Rentalachenu',
+              },
+              {
+                icon: '🔆',
+                titleTe: 'గుడికి 6 LED లైట్స్ ఇచ్చిన దాత',
+                titleEn: '6 LED Lights Donor',
+                descTe: 'జి. చెంగల్రాయనాయుడు కుమారుడు నాగేష్నాయుడు & బ్రదర్స్, రెడ్డేపల్లి',
+                descEn: 'G. Chengalrayanaidu Son Nageshnaidu & Brothers, Reddepalli',
+              },
+              {
+                icon: '📜',
+                titleTe: 'పత్రికలు ముద్రణ విరాళదాత',
+                titleEn: 'Pamphlet Printing Donor',
+                descTe: 'శ్రీపురం మాధవ రెడ్డి, చెంచుగుడి',
+                descEn: 'Sripuram Madhava Reddy, Chenchugudi',
+              }
+            ].map((donor, idx) => (
+              <div key={idx} className="bg-gradient-to-br from-[#fffdf5] to-[#FFD700]/10 border border-[#FFD700]/30 rounded-3xl p-6 shadow-[0_4px_20px_rgba(255,215,0,0.1)] hover:shadow-[0_10px_40px_rgba(226,88,34,0.15)] hover:-translate-y-2 transition-all duration-500 flex items-start gap-4 group">
+                <div className="w-14 h-14 rounded-2xl bg-white/50 backdrop-blur-sm border border-[#FFD700]/40 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-inner">
+                  {donor.icon}
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#E25822] mb-1 leading-snug">
+                    {lang === 'en' ? donor.titleEn : donor.titleTe}
+                  </h4>
+                  <p className="text-gray-700 font-medium text-sm leading-relaxed">
+                    {lang === 'en' ? donor.descEn : donor.descTe}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>      
+
+      <section id="pooja-donors" className="py-12 md:py-16 px-6 relative" style={{ background: 'linear-gradient(180deg, #fffdf5 0%, #fff8ec 100%)' }}>
         <div className="max-w-5xl mx-auto">
           {/* Section Header */}
           <div className="flex flex-col items-center gap-3 mb-12 text-center">
@@ -1615,6 +1676,22 @@ export default function Home() {
                         </motion.div>
                       ))}
                     </div>
+
+                    {/* Krishnashtami Donor */}
+                    <div className="mt-8 p-4 rounded-xl bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 shadow-sm flex items-start gap-4">
+                      <span className="text-3xl mt-1">🪈</span>
+                      <div>
+                        <p className="text-[#E25822] font-black text-xs md:text-sm uppercase tracking-wide mb-1">
+                          {lang === 'en' ? 'Annual Krishnashtami Pooja Donor' : 'ప్రతి సం|| కృష్ణాష్టమి పూజ జరిపించు దాత'}
+                        </p>
+                        <p className="text-gray-800 font-bold text-sm md:text-base leading-snug">
+                          {lang === 'en' ? "Late Sri Bandi Lakshmana Reddy's son B. Sarath Reddy" : 'కీ॥శే॥ బండి లక్ష్మణరెడ్డి కుమారుడు బి. శరత్ రెడ్డి'}
+                        </p>
+                        <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider mt-1">
+                          {lang === 'en' ? 'Rentalacheenu' : 'రెంటాలచేను'}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -1627,19 +1704,19 @@ export default function Home() {
                       </h4>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {yagnamDonors.map((donor, idx) => (
+                      {(activeYearData?.sponsors || yagnamDonors).map((donor: any, idx: number) => (
                         <motion.div
-                          key={idx}
+                          key={donor.id || idx}
                           whileHover={{ y: -2 }}
                           className="bg-[#fffdf5] border-l-4 border-red-500 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-2 border-y border-r border-orange-100/70"
                         >
                           <div className="flex items-center justify-between">
-                            <span className="text-[#E25822] font-black text-xs">{lang === 'en' ? donor.dateEn : donor.dateTe}</span>
+                            <span className="text-[#E25822] font-black text-xs">{donor.date || (lang === 'en' ? donor.dateEn : donor.dateTe)}</span>
                             <span className="text-gray-400 text-[9px] font-bold uppercase tracking-wide">({lang === 'en' ? donor.dayEn : donor.dayTe})</span>
                           </div>
                           <div>
                             <p className="text-gray-800 font-bold text-sm md:text-base leading-snug">{lang === 'en' ? donor.nameEn : donor.nameTe}</p>
-                            <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider mt-1">{lang === 'en' ? donor.locEn : donor.locTe}</p>
+                            <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider mt-1">{lang === 'en' ? donor.locationEn || donor.locEn : donor.locationTe || donor.locTe}</p>
                           </div>
                         </motion.div>
                       ))}
@@ -1683,8 +1760,34 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="maha-donors" className="py-12 md:py-16 px-6 relative bg-white border-b border-orange-100">
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, rgba(226,88,34,0.15) 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+        <div className="max-w-4xl mx-auto relative z-10 text-center">
+          <div className="w-16 h-16 mx-auto bg-orange-50 text-[#E25822] rounded-full flex items-center justify-center text-3xl shadow-sm mb-6 border border-orange-200">
+            📜
+          </div>
+          <h2 className="font-display text-2xl md:text-4xl font-black text-[#580000] mb-4">
+            {lang === 'en' ? 'Mahabharatha Yagnam Grand Donors' : 'మహాభారత యజ్ఞమునకు విరాళము ఇచ్చు దాతలు'}
+          </h2>
+          <p className="text-gray-600 text-sm md:text-base leading-relaxed max-w-2xl mx-auto mb-8">
+            {lang === 'en' 
+              ? 'Our heartfelt gratitude to the 150+ devotees who generously contributed towards the grand Mahabharatha Yagnam. Their divine contributions sustain our 65-year-old tradition.' 
+              : 'మహాభారత యజ్ఞమునకు విశేషంగా విరాళములు అందించిన 150+ భక్త మహాశయులకు మా హృదయపూర్వక కృతజ్ఞతలు. మీ సహకారం ఈ 65 సంవత్సరాల ఉత్సవానికి శ్రీరామరక్ష.'}
+          </p>
+          
+          <a 
+            href="/pamphlet-2026.pdf" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-[#580000] px-8 py-3.5 rounded-full font-black text-sm uppercase tracking-widest shadow-[0_8px_30px_rgba(255,215,0,0.4)] hover:scale-105 hover:shadow-[0_12px_40px_rgba(255,215,0,0.6)] transition-all duration-300"
+          >
+            📋 {lang === 'en' ? 'View Complete Official Donor List' : 'పూర్తి దాతల జాబితా (PDF) చూడండి'}
+          </a>
+        </div>
+      </section>
+
       {/* Temple Committee Section */}
-      <section id="committee" className="py-20 px-6 bg-gradient-to-b from-[#580000] to-[#3a0000] text-white relative overflow-hidden">
+      <section id="committee" className="py-12 md:py-16 px-6 bg-gradient-to-b from-[#580000] to-[#3a0000] text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 25% 25%, #FFD700 0%, transparent 50%), radial-gradient(circle at 75% 75%, #FF6B00 0%, transparent 50%)' }} />
         <div className="max-w-5xl mx-auto relative z-10">
           <div className="text-center mb-12">
@@ -1763,10 +1866,10 @@ export default function Home() {
               {
                 role: 'విద్యుద్దీపాలంకరణ',
                 roleEn: 'Lighting & Decoration',
-                nameTe: 'జయలక్ష్మి సౌండ్ సర్వీస్, మొరవ',
-                nameEn: 'Jayalakshmi Sound Service, Morava',
-                name2Te: 'ప్రొప్రైటర్: మణి',
-                name2En: 'Proprietor: Mani',
+                nameTe: 'రవి సౌండ్ సర్వీస్, మొరవ',
+                nameEn: 'Ravi Sound Service, Morava',
+                name2Te: 'ప్రొప్రైటర్: చిన్నబ్బ, యస్.యస్. కొండ',
+                name2En: 'Proprietor: Chinnabba, S.S. Konda',
                 icon: '💡'
               },
               {
@@ -1827,8 +1930,8 @@ export default function Home() {
                   nameEn: 'Sri Poola Venkataramareddy',
                   descTe: 'S/o. కీ॥శే॥ శ్రీ పూలా కృష్ణారెడ్డి గారు, రెంటాలచేను',
                   descEn: 'S/o. Late Sri Poola Krishnareddy, Rentalacheenu',
-                  role: 'నిర్వాహకులు',
-                  roleEn: 'Organizer'
+                  role: 'ధర్మకర్త',
+                  roleEn: 'Trustee'
                 },
                 {
                   nameTe: 'శ్రీ పూల యశ్వంత్ రెడ్డి గారు',
@@ -1856,10 +1959,10 @@ export default function Home() {
                   className="flex flex-col items-center text-center group"
                 >
                   <div className="relative mb-5">
-                    <div className="w-36 h-36 md:w-40 md:h-40 rounded-full border-4 border-[#FFD700]/60 group-hover:border-[#FFD700] transition-all duration-300 p-1.5 bg-white/5 shadow-2xl overflow-hidden flex items-center justify-center relative group-hover:-translate-y-2">
+                    <div className="w-36 h-36 md:w-40 md:h-40 rounded-full border-[3px] border-[#FFD700]/50 group-hover:border-[#FFD700] transition-all duration-500 p-2 bg-gradient-to-br from-white/10 to-transparent shadow-[0_0_30px_rgba(255,215,0,0.15)] group-hover:shadow-[0_0_50px_rgba(255,215,0,0.5)] overflow-hidden flex items-center justify-center relative group-hover:-translate-y-2">
                       {/* Placeholder Avatar */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#580000] to-orange-950 flex items-center justify-center rounded-full m-1">
-                        <User size={56} className="text-[#FFD700]/30 group-hover:text-[#FFD700]/70 transition-colors duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#580000] via-[#8B0000] to-[#3a0000] flex items-center justify-center rounded-full m-1.5 shadow-inner">
+                        <User size={56} className="text-[#FFD700]/40 group-hover:text-[#FFD700] group-hover:scale-110 transition-all duration-500" />
                       </div>
                       {/* Add Image Here later */}
                       {/* <img src={`/member-${idx+1}.jpg`} alt={member.name} className="w-full h-full object-cover rounded-full relative z-10" /> */}
@@ -1877,6 +1980,7 @@ export default function Home() {
                 </motion.div>
               ))}
             </div>
+
           </div>
         </div>
       </section>
@@ -2149,7 +2253,7 @@ export default function Home() {
                 ></iframe>
               </div>
               <p className="mt-4 text-gray-600 text-sm font-bold text-center">
-                {lang === 'en' ? 'Chenchugudi, Vedurukuppam Mandal, Tirupati Dist.' : 'చెంచుగుడి, వేదురుకుప్పం మండలం, తిరుపతి జిల్లా.'}
+                {lang === 'en' ? 'Chenchugudi, Vedurukuppam Mandal, Tirupati Dist.' : 'చెంచుగుడి, వెదురుకుప్పం మండలం, తిరుపతి జిల్లా.'}
               </p>
             </div>
 
@@ -2218,19 +2322,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ DONORS SECTION ═════════════════════════════════════════ */}
-
-
       {/* ══ FOOTER ═════════════════════════════════════════ */}
-      <footer className="bg-[#1a0000] text-white pt-16 pb-8 px-6 border-t border-[#FFD700]/20 relative overflow-hidden">
+      <footer className="bg-[#1a0000] text-white pt-12 pb-6 px-6 border-t border-[#FFD700]/20 relative overflow-hidden">
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 50% 100%, #FFD700 0%, transparent 50%)' }} />
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
             <div className="flex items-center gap-3">
               <span className="text-4xl text-[#FFD700] om-shadow">ॐ</span>
               <div>
-                <p className="font-display font-bold text-xl tracking-widest text-white leading-none">CHENCHUGUDI</p>
-                <p className="text-xs text-[#FFD700] tracking-[0.3em] uppercase">Mahabharatham</p>
+                <p className={`font-display font-bold text-xl text-white leading-none ${lang === 'en' ? 'tracking-widest' : 'tracking-normal'}`}>
+                  {lang === 'en' ? 'CHENCHUGUDI' : 'చెంచుగుడి'}
+                </p>
+                <p className={`text-xs text-[#FFD700] ${lang === 'en' ? 'tracking-[0.3em] uppercase' : 'tracking-normal mt-1'}`}>
+                  {lang === 'en' ? 'Mahabharatham' : 'మహాభారతం'}
+                </p>
               </div>
             </div>
 
@@ -2241,6 +2346,7 @@ export default function Home() {
               <Link href="/login" className="hover:text-[#FFD700] transition-colors">{lang === 'en' ? 'Admin Login' : 'అడ్మిన్ లాగిన్'}</Link>
             </div>
           </div>
+
 
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/40 font-semibold tracking-wider">
             <p>

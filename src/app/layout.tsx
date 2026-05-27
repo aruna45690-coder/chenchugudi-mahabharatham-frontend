@@ -21,32 +21,25 @@ const hindGuntur = Hind_Guntur({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://chenchugudi-mahabharath.vercel.app'),
-  title: "Chenchugudi Mahabharatham Mahotsavam — 64th Annual Grand Festival",
+  title: "Chenchugudi Mahabharatham Mahotsavam — 65th Annual Grand Festival",
   description:
-    "Official website for the 64th Annual Chenchugudi Mahabharatham Mahotsavam. Sri Krishna, Draupadi Sametha Dharmarajuvari Devasthanam, Vedurukuppam Mandal, Tirupati District, Andhra Pradesh. Uniting 24 villages.",
-  keywords: "Chenchugudi, Mahabharatham, Festival, Tirupati, Vedurukuppam, Draupadi, Dharmarajula, Telugu Temple, Chittoor District, Mahabharat Festival 2025, Hindu Festival",
+    "Official website for the 65th Annual Chenchugudi Mahabharatham Mahotsavam. Sri Krishna, Draupadi Sametha Dharmarajuvari Devasthanam, Chenchugudi, Vedurukuppam Mandal, Tirupati District, Andhra Pradesh. Uniting 24 villages.",
+  keywords: "Chenchugudi, Mahabharatham, Festival, Tirupati, Vedurukuppam, Draupadi, Dharmarajula, Telugu Temple, Chittoor District, Mahabharat Festival 2026, Hindu Festival",
   authors: [{ name: 'Chenchugudi Temple Committee' }],
   openGraph: {
-    title: "Chenchugudi Mahabharatham Mahotsavam | 64th Annual Festival",
-    description: "Join the 64th Annual Chenchugudi Mahabharatham Festival, uniting 24 villages in Vedurukuppam Mandal.",
+    title: "Chenchugudi Mahabharatham Mahotsavam | 65th Annual Festival",
+    description: "Join the 65th Annual Chenchugudi Mahabharatham Festival, uniting 24 villages in Chenchugudi, Vedurukuppam Mandal.",
     url: "https://chenchugudi-mahabharath.vercel.app",
     siteName: "Chenchugudi Mahabharatham",
-    images: [
-      {
-        url: "/images/deity.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Chenchugudi Deity",
-      },
-    ],
+
     locale: "te_IN",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Chenchugudi Mahabharatham Mahotsavam",
-    description: "Join the 64th Annual Chenchugudi Mahabharatham Festival, uniting 24 villages in Vedurukuppam Mandal.",
-    images: ["/images/deity.jpg"],
+    description: "Join the 65th Annual Chenchugudi Mahabharatham Festival, uniting 24 villages in Chenchugudi, Vedurukuppam Mandal.",
+
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -54,6 +47,9 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Mahabharatham",
   },
+};
+
+export const viewport = {
   themeColor: "#8B0000",
 };
 
