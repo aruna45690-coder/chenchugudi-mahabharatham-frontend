@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '200mb',
     },
   },
+  turbopack: {},
 };
 
 export default withSerwist(nextConfig);
