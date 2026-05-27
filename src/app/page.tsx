@@ -1163,20 +1163,10 @@ export default function Home() {
                         </span>
                       </div>
                       <h3 className="text-lg font-black text-gray-800 mb-3 leading-snug">
-                        {lang === 'en'
-                          ? (announce.title === "Welcome to Chechugudi Mahabharatham!"
-                            ? "Welcome to Chenchugudi Mahabharatham!"
-                            : announce.title)
-                          : (announce.title === "Welcome to Chenchugudi Mahabharatham!" || announce.title === "Welcome to Chechugudi Mahabharatham!"
-                            ? "చెంచుగుడి మహాభారతానికి స్వాగతం!"
-                            : announce.title)}
+                        {lang === 'en' ? announce.title : (announce.titleTe || announce.title)}
                       </h3>
                       <p className="text-gray-500 leading-relaxed text-sm">
-                        {lang === 'en'
-                          ? announce.body
-                          : (announce.body === "The official platform for our annual festival is now live. Stay tuned for dates and schedules."
-                            ? "మన వార్షిక ఉత్సవాల అధికారిక వేదిక ఇప్పుడు అందుబాటులోకి వచ్చింది. తేదీలు మరియు కార్యక్రమాల పట్టికల కోసం వేచి ఉండండి."
-                            : announce.body)}
+                        {lang === 'en' ? announce.body : (announce.bodyTe || announce.body)}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 text-[11px] text-gray-400 font-semibold uppercase tracking-wide border-t border-gray-100 pt-5 mt-5">
@@ -2342,6 +2332,47 @@ export default function Home() {
 
       {/* Access Denied Toast Notification */}
       <AuthErrorAlert lang={lang} />
+
+      {/* Push Notification Prompt */}
+      <AnimatePresence>
+        {showPushPrompt && isPushSupported && !isPushSubscribed && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] max-w-sm w-[90vw] bg-white text-gray-900 p-5 rounded-3xl border border-gray-100 shadow-2xl overflow-hidden"
+          >
+            <div className="absolute top-0 left-0 w-full h-1 bg-[#25D366]" />
+            <div className="flex flex-col gap-3">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center shrink-0 text-[#25D366]">
+                  <Bell size={20} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-black text-sm mb-1">{lang === 'en' ? 'Get Live Notifications!' : 'లైవ్ నోటిఫికేషన్స్ పొందండి!'}</h3>
+                  <p className="text-gray-500 text-xs leading-relaxed">
+                    {lang === 'en' ? 'Allow notifications to know the moment the festival events go LIVE on YouTube.' : 'ఉత్సవ కార్యక్రమాలు యూట్యూబ్‌లో లైవ్‌లో ఉన్న వెంటనే నోటిఫికేషన్స్ పొందండి.'}
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <button
+                  onClick={subscribeToPushNotifications}
+                  className="bg-[#25D366] text-white font-black text-xs py-2.5 rounded-xl uppercase tracking-wider hover:bg-[#1da851] transition-colors"
+                >
+                  {lang === 'en' ? 'Allow' : 'అనుమతించు'}
+                </button>
+                <button
+                  onClick={handleDismissPushPrompt}
+                  className="bg-gray-50 text-gray-600 font-bold text-xs py-2.5 rounded-xl hover:bg-gray-100 transition-colors"
+                >
+                  {lang === 'en' ? 'Later' : 'తరువాత'}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

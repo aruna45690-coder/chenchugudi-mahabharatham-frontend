@@ -52,6 +52,7 @@ export default function AdminDashboard() {
     return `${yyyy}-${mm}-${dd}`;
   });
   const [eventName, setEventName] = useState("");
+  const [eventNameTe, setEventNameTe] = useState("");
   const [mediaType, setMediaType] = useState("IMAGE");
   const [videoUrl, setVideoUrl] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -61,11 +62,15 @@ export default function AdminDashboard() {
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [announcementsLoading, setAnnouncementsLoading] = useState(false);
   const [newAnnouncementTitle, setNewAnnouncementTitle] = useState("");
+  const [newAnnouncementTitleTe, setNewAnnouncementTitleTe] = useState("");
   const [newAnnouncementBody, setNewAnnouncementBody] = useState("");
+  const [newAnnouncementBodyTe, setNewAnnouncementBodyTe] = useState("");
   const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
   const [editingAnnouncementId, setEditingAnnouncementId] = useState<number | null>(null);
   const [editAnnouncementTitle, setEditAnnouncementTitle] = useState("");
+  const [editAnnouncementTitleTe, setEditAnnouncementTitleTe] = useState("");
   const [editAnnouncementBody, setEditAnnouncementBody] = useState("");
+  const [editAnnouncementBodyTe, setEditAnnouncementBodyTe] = useState("");
   const [updatingAnnouncement, setUpdatingAnnouncement] = useState(false);
 
   const handleSendPushNotification = async () => {
@@ -183,6 +188,9 @@ export default function AdminDashboard() {
     if (eventName.trim()) {
       formData.append("eventName", eventName.trim());
     }
+    if (eventNameTe.trim()) {
+      formData.append("eventNameTe", eventNameTe.trim());
+    }
 
     try {
       await uploadGalleryImage(formData);
@@ -250,9 +258,11 @@ export default function AdminDashboard() {
     if (!newAnnouncementTitle.trim() || !newAnnouncementBody.trim()) return;
     setCreatingAnnouncement(true);
     try {
-      await createAnnouncement(newAnnouncementTitle, newAnnouncementBody);
+      await createAnnouncement(newAnnouncementTitle, newAnnouncementTitleTe, newAnnouncementBody, newAnnouncementBodyTe);
       setNewAnnouncementTitle("");
+      setNewAnnouncementTitleTe("");
       setNewAnnouncementBody("");
+      setNewAnnouncementBodyTe("");
       fetchAnnouncements();
       fetchData(); // update stats
     } catch (err) {
@@ -268,10 +278,12 @@ export default function AdminDashboard() {
     if (!editingAnnouncementId || !editAnnouncementTitle.trim() || !editAnnouncementBody.trim()) return;
     setUpdatingAnnouncement(true);
     try {
-      await updateAnnouncement(editingAnnouncementId, editAnnouncementTitle, editAnnouncementBody);
+      await updateAnnouncement(editingAnnouncementId, editAnnouncementTitle, editAnnouncementTitleTe, editAnnouncementBody, editAnnouncementBodyTe);
       setEditingAnnouncementId(null);
       setEditAnnouncementTitle("");
+      setEditAnnouncementTitleTe("");
       setEditAnnouncementBody("");
+      setEditAnnouncementBodyTe("");
       fetchAnnouncements();
     } catch (err) {
       console.error(err);
@@ -403,13 +415,6 @@ export default function AdminDashboard() {
                   </h2>
                   <p className="text-gray-500">Here&apos;s what&apos;s happening with the festival today.</p>
                 </div>
-                <a
-                  href="/api/seed"
-                  target="_blank"
-                  className="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-orange-600 transition-colors text-sm"
-                >
-                  🌱 Seed Demo Data
-                </a>
               </div>
  
               {/* Stats Row */}
@@ -622,27 +627,51 @@ export default function AdminDashboard() {
                   <Bell className="text-orange-500" /> New Announcement
                 </h2>
                 <form onSubmit={handleCreateAnnouncement} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Title</label>
-                    <input
-                      type="text"
-                      required
-                      value={newAnnouncementTitle}
-                      onChange={(e) => setNewAnnouncementTitle(e.target.value)}
-                      placeholder="e.g., Today's Poojas have started"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">Title (English)</label>
+                      <input
+                        type="text"
+                        required
+                        value={newAnnouncementTitle}
+                        onChange={(e) => setNewAnnouncementTitle(e.target.value)}
+                        placeholder="e.g., Today's Poojas have started"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">Title (Telugu)</label>
+                      <input
+                        type="text"
+                        value={newAnnouncementTitleTe}
+                        onChange={(e) => setNewAnnouncementTitleTe(e.target.value)}
+                        placeholder="e.g., ఈరోజు పూజలు ప్రారంభమయ్యాయి"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Body</label>
-                    <textarea
-                      required
-                      value={newAnnouncementBody}
-                      onChange={(e) => setNewAnnouncementBody(e.target.value)}
-                      placeholder="Provide details about the announcement..."
-                      rows={3}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none resize-none"
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">Body (English)</label>
+                      <textarea
+                        required
+                        value={newAnnouncementBody}
+                        onChange={(e) => setNewAnnouncementBody(e.target.value)}
+                        placeholder="Provide details about the announcement..."
+                        rows={3}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none resize-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">Body (Telugu)</label>
+                      <textarea
+                        value={newAnnouncementBodyTe}
+                        onChange={(e) => setNewAnnouncementBodyTe(e.target.value)}
+                        placeholder="తెలుగులో వివరాలు ఇక్కడ రాయండి..."
+                        rows={3}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none resize-none"
+                      />
+                    </div>
                   </div>
                   <div className="flex justify-end">
                     <button
@@ -669,20 +698,38 @@ export default function AdminDashboard() {
                       <div key={ann.id} className={`p-5 rounded-2xl border ${ann.isActive ? 'border-orange-200 bg-orange-50/30' : 'border-gray-200 bg-gray-50'}`}>
                         {editingAnnouncementId === ann.id ? (
                           <form onSubmit={handleUpdateAnnouncement} className="space-y-3">
-                            <input
-                              type="text"
-                              required
-                              value={editAnnouncementTitle}
-                              onChange={(e) => setEditAnnouncementTitle(e.target.value)}
-                              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none text-sm font-bold"
-                            />
-                            <textarea
-                              required
-                              value={editAnnouncementBody}
-                              onChange={(e) => setEditAnnouncementBody(e.target.value)}
-                              rows={2}
-                              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none text-sm resize-none"
-                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              <input
+                                type="text"
+                                required
+                                value={editAnnouncementTitle}
+                                onChange={(e) => setEditAnnouncementTitle(e.target.value)}
+                                placeholder="Title (EN)"
+                                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none text-sm font-bold"
+                              />
+                              <input
+                                type="text"
+                                value={editAnnouncementTitleTe}
+                                onChange={(e) => setEditAnnouncementTitleTe(e.target.value)}
+                                placeholder="Title (TE)"
+                                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none text-sm font-bold"
+                              />
+                              <textarea
+                                required
+                                value={editAnnouncementBody}
+                                onChange={(e) => setEditAnnouncementBody(e.target.value)}
+                                placeholder="Body (EN)"
+                                rows={2}
+                                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none text-sm resize-none"
+                              />
+                              <textarea
+                                value={editAnnouncementBodyTe}
+                                onChange={(e) => setEditAnnouncementBodyTe(e.target.value)}
+                                placeholder="Body (TE)"
+                                rows={2}
+                                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none text-sm resize-none"
+                              />
+                            </div>
                             <div className="flex justify-end gap-2">
                               <button type="button" onClick={() => setEditingAnnouncementId(null)} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-gray-200 text-gray-700 hover:bg-gray-300">Cancel</button>
                               <button type="submit" disabled={updatingAnnouncement} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50">
@@ -800,9 +847,25 @@ export default function AdminDashboard() {
                       <option value="సాధారణ ఫోటో">సాధారణ ఫోటో — General Photo 📷</option>
                       <option value="సభ">సభ — Sabha / Meeting / Gathering 🏛️</option>
                       <option value="అమ్మవారి కళ్యాణం">అమ్మవారి కళ్యాణం — Ammavari Kalyanam 🌸</option>
-                      <option value="శ్రీ మహాభారతయుళ్ళ శ్రీకారము">శ్రీ మహాభారతయుళ్ళ శ్రీకారము — Inauguration Ceremony 🪔</option>
+                      <option value="పౌర్ణమి పూజ">పౌర్ణమి పూజ — Pournami Pooja 🌕</option>
+                      <option value="విజయదశమి పూజ">విజయదశమి పూజ — Vijayadashami Pooja 🌿</option>
+                      <option value="శ్రీ మహాభారతయజ్ఞ శ్రీకారము">శ్రీ మహాభారతయజ్ఞ శ్రీకారము — Sri Mahabharata Yagna Inauguration 🪔</option>
                     </optgroup>
                   </select>
+                </div>
+                <div>
+                  <label htmlFor="event-name-te" className="block text-sm font-bold text-gray-700 mb-2">
+                    Event Name (Custom Telugu Name)
+                  </label>
+                  <input
+                    type="text"
+                    id="event-name-te"
+                    value={eventNameTe}
+                    onChange={(e) => setEventNameTe(e.target.value)}
+                    placeholder="సొంతంగా తెలుగులో రాయండి (ఆప్షనల్)"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-orange-500 focus:ring-1 focus:ring-orange-500 font-medium transition-colors outline-none"
+                    disabled={uploading}
+                  />
                 </div>
               </div>
 
@@ -971,17 +1034,7 @@ export default function AdminDashboard() {
           {activeTab === "settings" && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm max-w-2xl mx-auto space-y-6">
               <h2 className="text-xl font-bold">Settings</h2>
-              <div className="p-4 bg-orange-50 border border-orange-200 rounded-xl">
-                <p className="font-bold text-orange-800 mb-1">🌱 Seed Demo Data</p>
-                <p className="text-sm text-orange-700 mb-3">Populate the database with default announcements and clean state for your site.</p>
-                <a
-                  href="/api/seed"
-                  target="_blank"
-                  className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-bold text-sm transition-colors"
-                >
-                  Run Seed →
-                </a>
-              </div>
+              
               
               {/* Live Stream Settings */}
               <div className="p-6 bg-red-50 border border-red-200 rounded-xl">

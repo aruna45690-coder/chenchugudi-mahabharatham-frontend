@@ -226,7 +226,7 @@ export default function GalleryPage() {
                                   : 'text-gray-600 bg-white/60 hover:bg-orange-100 hover:text-[#580000]'
                               }`}
                             >
-                              {eventGroup.eventName}
+                              {lang === 'en' ? eventGroup.eventName : (eventGroup.items[0]?.eventNameTe || eventGroup.eventName)}
                             </button>
                           ))}
                         </div>
@@ -274,7 +274,7 @@ export default function GalleryPage() {
                             
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
                               <p className="text-white font-bold text-sm leading-tight drop-shadow-md">
-                                {img.title}
+                                {lang === 'en' ? img.title : (img.titleTe || img.title)}
                               </p>
                             </div>
                           </div>

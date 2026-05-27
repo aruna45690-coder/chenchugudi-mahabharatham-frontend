@@ -92,7 +92,7 @@ export async function getAllAnnouncements() {
   }
 }
 
-export async function createAnnouncement(title: string, body: string, isActive: boolean = true) {
+export async function createAnnouncement(title: string, titleTe: string, body: string, bodyTe: string, isActive: boolean = true) {
   try {
     const { isAdmin } = await checkAdminStatus();
     if (!isAdmin) throw new Error("Unauthorized");
@@ -100,7 +100,7 @@ export async function createAnnouncement(title: string, body: string, isActive: 
     const res = await fetch(`${BACKEND_URL}/api/announcements`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, body, isActive }),
+      body: JSON.stringify({ title, titleTe, body, bodyTe, isActive }),
     });
     if (!res.ok) throw new Error("Failed to create announcement");
     const announcement = await res.json();
@@ -125,7 +125,7 @@ export async function deleteAnnouncement(id: number) {
   }
 }
 
-export async function updateAnnouncement(id: number, title: string, body: string) {
+export async function updateAnnouncement(id: number, title: string, titleTe: string, body: string, bodyTe: string) {
   try {
     const { isAdmin } = await checkAdminStatus();
     if (!isAdmin) throw new Error("Unauthorized");
@@ -133,7 +133,7 @@ export async function updateAnnouncement(id: number, title: string, body: string
     const res = await fetch(`${BACKEND_URL}/api/announcements/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, body }),
+      body: JSON.stringify({ title, titleTe, body, bodyTe }),
     });
     if (!res.ok) throw new Error("Failed to update announcement");
     const announcement = await res.json();
