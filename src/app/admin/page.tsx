@@ -346,6 +346,7 @@ export default function AdminDashboard() {
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {[
             { id: "overview", icon: <TrendingUp size={20} />, label: "Overview" },
+            { id: "analytics", icon: <Eye size={20} />, label: "Visitor Analytics" },
             { id: "announcements", icon: <Bell size={20} />, label: "Announcements" },
             { id: "gallery", icon: <ImageIcon size={20} />, label: "Manage Gallery" },
             { id: "settings", icon: <Settings size={20} />, label: "Settings" },
@@ -420,50 +421,72 @@ export default function AdminDashboard() {
               {/* Stats Row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Announcements */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center gap-5 hover:border-[#8B0000] transition-colors">
-                  <div className="p-4 bg-green-50 text-green-600 rounded-xl shrink-0"><Bell size={24} /></div>
+                <div className="bg-gradient-to-br from-white to-green-50/40 p-6 rounded-2xl border border-green-100 shadow-sm flex items-center gap-5 hover:shadow-lg hover:border-green-300 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                  <div className="p-4 bg-green-100 text-green-700 rounded-xl shrink-0 shadow-inner group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300"><Bell size={24} /></div>
                   <div>
-                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Announcements</p>
-                    <p className="text-2xl font-black text-gray-800">
+                    <p className="text-[10px] text-green-600/80 font-black uppercase tracking-[0.2em] mb-1">Announcements</p>
+                    <p className="text-3xl font-black text-gray-800 drop-shadow-sm">
                       {loading ? "—" : (stats?.activeAnnouncements ?? 0)}
                     </p>
                   </div>
                 </div>
 
                 {/* Participating Villages */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center gap-5 hover:border-[#8B0000] transition-colors">
-                  <div className="p-4 bg-orange-50 text-orange-600 rounded-xl shrink-0"><Users size={24} /></div>
+                <div className="bg-gradient-to-br from-white to-orange-50/40 p-6 rounded-2xl border border-orange-100 shadow-sm flex items-center gap-5 hover:shadow-lg hover:border-orange-300 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                  <div className="p-4 bg-orange-100 text-orange-700 rounded-xl shrink-0 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300"><Users size={24} /></div>
                   <div>
-                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Villages</p>
-                    <p className="text-2xl font-black text-gray-800">
+                    <p className="text-[10px] text-orange-600/80 font-black uppercase tracking-[0.2em] mb-1">Villages</p>
+                    <p className="text-3xl font-black text-gray-800 drop-shadow-sm">
                       {loading ? "—" : (stats?.villages ?? 24)}
                     </p>
                   </div>
                 </div>
 
                 {/* Unique Visitors */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center gap-5 hover:border-[#8B0000] transition-colors">
-                  <div className="p-4 bg-blue-50 text-blue-600 rounded-xl shrink-0"><Eye size={24} /></div>
+                <div 
+                  onClick={() => setActiveTab('analytics')}
+                  className="bg-gradient-to-br from-white to-blue-50/40 p-6 rounded-2xl border border-blue-100 shadow-sm flex items-center gap-5 hover:shadow-lg hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+                >
+                  <div className="p-4 bg-blue-100 text-blue-700 rounded-xl shrink-0 shadow-inner group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300"><Eye size={24} /></div>
                   <div>
-                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Unique Visitors</p>
-                    <p className="text-2xl font-black text-gray-800">
+                    <p className="text-[10px] text-blue-600/80 font-black uppercase tracking-[0.2em] mb-1">Unique Visitors</p>
+                    <p className="text-3xl font-black text-gray-800 drop-shadow-sm">
                       {analyticsLoading ? "—" : (analyticsStats?.totalUniqueVisitors ?? 0)}
                     </p>
                   </div>
                 </div>
 
                 {/* Likes Ratio / Feedback */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center gap-5 hover:border-[#8B0000] transition-colors">
-                  <div className="p-4 bg-amber-50 text-amber-600 rounded-xl shrink-0"><ThumbsUp size={24} /></div>
+                <div 
+                  onClick={() => setActiveTab('analytics')}
+                  className="bg-gradient-to-br from-white to-amber-50/40 p-6 rounded-2xl border border-amber-100 shadow-sm flex items-center gap-5 hover:shadow-lg hover:border-amber-300 hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+                >
+                  <div className="p-4 bg-amber-100 text-amber-700 rounded-xl shrink-0 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300"><ThumbsUp size={24} /></div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Devotee Feedback</p>
+                    <p className="text-[10px] text-amber-600/80 font-black uppercase tracking-[0.2em] mb-1">Devotee Feedback</p>
                     <div className="flex items-baseline gap-2">
-                      <p className="text-2xl font-black text-gray-800">
+                      <p className="text-3xl font-black text-gray-800 drop-shadow-sm">
                         {analyticsLoading ? "—" : `${(analyticsStats?.likes ?? 0) + (analyticsStats?.dislikes ?? 0) > 0 ? Math.round(((analyticsStats?.likes ?? 0) / ((analyticsStats?.likes ?? 0) + (analyticsStats?.dislikes ?? 0))) * 100) : 0}%`}
                       </p>
-                      <span className="text-[10px] text-gray-400 font-bold">Likes</span>
+                      <span className="text-[10px] text-amber-700/60 font-black uppercase tracking-wider">Likes</span>
                     </div>
                   </div>
+                </div>
+              </div>
+
+            </motion.div>
+          )}
+
+          {/* ANALYTICS TAB */}
+          {activeTab === "analytics" && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 max-w-6xl mx-auto">
+              
+              <div className="flex justify-between items-end">
+                <div>
+                  <h2 className="text-2xl font-black text-gray-800">
+                    Visitor Analytics 📊
+                  </h2>
+                  <p className="text-gray-500">Detailed breakdown of platform traffic and devotee feedback.</p>
                 </div>
               </div>
 

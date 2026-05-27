@@ -98,6 +98,8 @@ const vijayadashamiDonors = [
   { n: '10', nameEn: 'Sri P. Venkatarama Reddy', nameTe: 'శ్రీ పి. వెంకటరామారెడ్డి', locEn: 'Rentalacheenu', locTe: 'రెంటాలచేను' },
 ];
 
+
+
 const pournamiDonors = [
   { monthEn: 'January', monthTe: 'జనవరి', nameEn: 'Sri Shamballi Vijayachandra Reddy, S. Raja Reddy', nameTe: 'శ్రీ శాంబల్లి విజయచంద్రా రెడ్డి, యస్. రాజారెడ్డి', locEn: 'Venugopalapuram', locTe: 'వేణుగోపాలపురం' },
   { monthEn: 'February', monthTe: 'ఫిబ్రవరి', nameEn: 'Sri Yerrasani Harinadha Reddy', nameTe: 'శ్రీ యర్రసాని హరినాధ రెడ్డి', locEn: 'Chenchugudi', locTe: 'చెంచుగుడి' },
