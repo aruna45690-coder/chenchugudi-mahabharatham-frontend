@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback, Suspense, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CalendarDays, MapPin, Users, Heart, Languages, History,
-  Image as ImageIcon, Menu, X, Lock, Megaphone, Sparkles, Home as HomeIcon, User,
+  Image as ImageIcon, Menu, X, Lock, Megaphone, Sparkles, Home as HomeIcon, User, Bell,
   Phone, Play, QrCode, HeartHandshake, Volume2, VolumeX, MessageCircle, Music, Drama, ChevronDown, ChevronRight
 } from "lucide-react";
 import Link from "next/link";
@@ -950,6 +950,8 @@ export default function Home() {
           </motion.div>
         </motion.div>
       </section>
+
+
 
       {/* ══ HISTORY TIMELINE SECTION ══════════════════════ */}
       <section id="history" className="py-12 md:py-16 px-6 relative bg-[#fffdf5] overflow-hidden">

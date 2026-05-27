@@ -1,0 +1,23 @@
+{
+  "name": "Chenchugudi Mahabharatham",
+  "short_name": "Mahabharatham",
+  "description": "64th Annual Chenchugudi Mahabharatham Mahotsavam",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8B0000",
+  "icons": [
+    {
+      "src": "/images/deity.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/deity.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

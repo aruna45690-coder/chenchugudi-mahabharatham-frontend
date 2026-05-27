@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { useUser, useClerk, UserButton } from "@clerk/nextjs";
-import { getGalleryImages, uploadGalleryImage, deleteGalleryImage, getStats, getAnalyticsStats, getLiveStreamSettings, updateLiveStreamSettings } from "@/lib/actions";
+import { getGalleryImages, uploadGalleryImage, deleteGalleryImage, getStats, getAnalyticsStats, getLiveStreamSettings, updateLiveStreamSettings, getAllAnnouncements, createAnnouncement, deleteAnnouncement, toggleAnnouncement, updateAnnouncement } from "@/lib/actions";
 interface Stats {
   activeAnnouncements: number;
   villages: number;
@@ -57,6 +57,17 @@ export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sendingPush, setSendingPush] = useState(false);
 
+  // Announcement states
+  const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [announcementsLoading, setAnnouncementsLoading] = useState(false);
+  const [newAnnouncementTitle, setNewAnnouncementTitle] = useState("");
+  const [newAnnouncementBody, setNewAnnouncementBody] = useState("");
+  const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
+  const [editingAnnouncementId, setEditingAnnouncementId] = useState<number | null>(null);
+  const [editAnnouncementTitle, setEditAnnouncementTitle] = useState("");
+  const [editAnnouncementBody, setEditAnnouncementBody] = useState("");
+  const [updatingAnnouncement, setUpdatingAnnouncement] = useState(false);
+
   const handleSendPushNotification = async () => {
     if (!confirm("Are you sure you want to send a Live notification to all subscribers?")) return;
     
@@ -98,6 +109,18 @@ export default function AdminDashboard() {
     }
   }, []);
 
+  const fetchAnnouncements = useCallback(async () => {
+    setAnnouncementsLoading(true);
+    try {
+      const data = await getAllAnnouncements();
+      setAnnouncements(data);
+    } catch (err) {
+      console.error("Failed to fetch announcements:", err);
+    } finally {
+      setAnnouncementsLoading(false);
+    }
+  }, []);
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     setAnalyticsLoading(true);
@@ -127,7 +150,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchData();
     fetchGallery();
-  }, [fetchData, fetchGallery]);
+    fetchAnnouncements();
+  }, [fetchData, fetchGallery, fetchAnnouncements]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -221,6 +245,69 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleCreateAnnouncement = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAnnouncementTitle.trim() || !newAnnouncementBody.trim()) return;
+    setCreatingAnnouncement(true);
+    try {
+      await createAnnouncement(newAnnouncementTitle, newAnnouncementBody);
+      setNewAnnouncementTitle("");
+      setNewAnnouncementBody("");
+      fetchAnnouncements();
+      fetchData(); // update stats
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create announcement");
+    } finally {
+      setCreatingAnnouncement(false);
+    }
+  };
+
+  const handleUpdateAnnouncement = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingAnnouncementId || !editAnnouncementTitle.trim() || !editAnnouncementBody.trim()) return;
+    setUpdatingAnnouncement(true);
+    try {
+      await updateAnnouncement(editingAnnouncementId, editAnnouncementTitle, editAnnouncementBody);
+      setEditingAnnouncementId(null);
+      setEditAnnouncementTitle("");
+      setEditAnnouncementBody("");
+      fetchAnnouncements();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update announcement");
+    } finally {
+      setUpdatingAnnouncement(false);
+    }
+  };
+
+  const handleToggleAnnouncement = async (id: number, currentStatus: boolean) => {
+    try {
+      // optimistic update
+      setAnnouncements(prev => prev.map(a => a.id === id ? { ...a, isActive: !currentStatus } : a));
+      await toggleAnnouncement(id, !currentStatus);
+      fetchData(); // update stats
+    } catch (err) {
+      console.error(err);
+      alert("Failed to toggle announcement");
+      fetchAnnouncements(); // revert
+    }
+  };
+
+  const handleDeleteAnnouncement = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this announcement?")) return;
+    try {
+      setAnnouncements(prev => prev.filter(a => a.id !== id));
+      await deleteAnnouncement(id);
+      fetchData(); // update stats
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete announcement");
+      fetchAnnouncements(); // revert
+    }
+  };
+
+
   return (
     <div className="min-h-screen bg-gray-50 flex font-sans text-gray-800">
       
@@ -247,6 +334,7 @@ export default function AdminDashboard() {
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {[
             { id: "overview", icon: <TrendingUp size={20} />, label: "Overview" },
+            { id: "announcements", icon: <Bell size={20} />, label: "Announcements" },
             { id: "gallery", icon: <ImageIcon size={20} />, label: "Manage Gallery" },
             { id: "settings", icon: <Settings size={20} />, label: "Settings" },
           ].map((item) => (
@@ -526,6 +614,130 @@ export default function AdminDashboard() {
             </motion.div>
           )}
  
+          {/* ANNOUNCEMENTS TAB */}
+          {activeTab === "announcements" && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 max-w-4xl mx-auto">
+              <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
+                <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                  <Bell className="text-orange-500" /> New Announcement
+                </h2>
+                <form onSubmit={handleCreateAnnouncement} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">Title</label>
+                    <input
+                      type="text"
+                      required
+                      value={newAnnouncementTitle}
+                      onChange={(e) => setNewAnnouncementTitle(e.target.value)}
+                      placeholder="e.g., Today's Poojas have started"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1">Body</label>
+                    <textarea
+                      required
+                      value={newAnnouncementBody}
+                      onChange={(e) => setNewAnnouncementBody(e.target.value)}
+                      placeholder="Provide details about the announcement..."
+                      rows={3}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none resize-none"
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={creatingAnnouncement}
+                      className="bg-[#8B0000] text-white px-8 py-3 rounded-xl font-bold shadow-md hover:bg-red-900 transition-colors disabled:opacity-50"
+                    >
+                      {creatingAnnouncement ? "Publishing..." : "Publish Announcement"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
+                <h2 className="text-xl font-bold mb-6">Manage Announcements</h2>
+                
+                {announcementsLoading ? (
+                  <div className="py-12 flex justify-center"><RefreshCw className="animate-spin text-orange-500" size={32} /></div>
+                ) : announcements.length === 0 ? (
+                  <div className="text-center py-12 text-gray-400">No announcements found.</div>
+                ) : (
+                  <div className="space-y-4">
+                    {announcements.map((ann) => (
+                      <div key={ann.id} className={`p-5 rounded-2xl border ${ann.isActive ? 'border-orange-200 bg-orange-50/30' : 'border-gray-200 bg-gray-50'}`}>
+                        {editingAnnouncementId === ann.id ? (
+                          <form onSubmit={handleUpdateAnnouncement} className="space-y-3">
+                            <input
+                              type="text"
+                              required
+                              value={editAnnouncementTitle}
+                              onChange={(e) => setEditAnnouncementTitle(e.target.value)}
+                              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none text-sm font-bold"
+                            />
+                            <textarea
+                              required
+                              value={editAnnouncementBody}
+                              onChange={(e) => setEditAnnouncementBody(e.target.value)}
+                              rows={2}
+                              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none text-sm resize-none"
+                            />
+                            <div className="flex justify-end gap-2">
+                              <button type="button" onClick={() => setEditingAnnouncementId(null)} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-gray-200 text-gray-700 hover:bg-gray-300">Cancel</button>
+                              <button type="submit" disabled={updatingAnnouncement} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50">
+                                {updatingAnnouncement ? "Saving..." : "Save"}
+                              </button>
+                            </div>
+                          </form>
+                        ) : (
+                          <div className="flex justify-between items-start gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-1">
+                                <h3 className="font-bold text-gray-900">{ann.title}</h3>
+                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${ann.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}`}>
+                                  {ann.isActive ? 'Active' : 'Hidden'}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600 mb-2">{ann.body}</p>
+                              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                                {new Date(ann.createdAt).toLocaleString()}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => {
+                                  setEditingAnnouncementId(ann.id);
+                                  setEditAnnouncementTitle(ann.title);
+                                  setEditAnnouncementBody(ann.body);
+                                }}
+                                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleToggleAnnouncement(ann.id, ann.isActive)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${ann.isActive ? 'bg-orange-100 text-orange-700 hover:bg-orange-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}
+                              >
+                                {ann.isActive ? 'Hide' : 'Show'}
+                              </button>
+                              <button
+                                onClick={() => handleDeleteAnnouncement(ann.id)}
+                                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+
           {/* GALLERY TAB */}
           {activeTab === "gallery" && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm max-w-4xl mx-auto">

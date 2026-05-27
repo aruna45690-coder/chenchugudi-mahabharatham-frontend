@@ -3,6 +3,7 @@ import { Cinzel, Hind_Guntur } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import AudioPlayer from "./components/AudioPlayer";
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const cinzel = Cinzel({
   variable: "--font-cinzel",
@@ -47,6 +48,13 @@ export const metadata: Metadata = {
     description: "Join the 64th Annual Chenchugudi Mahabharatham Festival, uniting 24 villages in Vedurukuppam Mandal.",
     images: ["/images/deity.jpg"],
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Mahabharatham",
+  },
+  themeColor: "#8B0000",
 };
 
 export default function RootLayout({
@@ -64,6 +72,7 @@ export default function RootLayout({
           {children}
           <AudioPlayer />
         </body>
+        <GoogleAnalytics gaId="G-Q7KWK9H54H" />
       </html>
     </ClerkProvider>
   );

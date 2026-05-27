@@ -2,15 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
-import { prisma } from "./prisma";
-import { v2 as cloudinary } from "cloudinary";
 
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || '',
-  api_key: process.env.CLOUDINARY_API_KEY || '',
-  api_secret: process.env.CLOUDINARY_API_SECRET || '',
-});
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 
 // ── Check if the currently logged in user is a whitelisted Admin ─────────
 export async function checkAdminStatus() {
@@ -44,183 +37,12 @@ export async function checkAdminStatus() {
   }
 }
 
-// ── Stats for the homepage ────────────────────────────────────────────
-export async function getStats() {
-  try {
-    const announcementCount = await prisma.announcement.count({ where: { isActive: true } });
-    return {
-      activeAnnouncements: announcementCount,
-      villages: 24,
-    };
-  } catch (error) {
-    console.error("Error fetching stats:", error);
-    return {
-      activeAnnouncements: 0,
-      villages: 24,
-    };
-  }
-}
-
-// ── Announcements ─────────────────────────────────────────────────────
-export async function getAnnouncements() {
-  try {
-    const announcements = await prisma.announcement.findMany({
-      where: { isActive: true },
-      orderBy: { createdAt: 'desc' },
-    });
-    return announcements;
-  } catch (error) {
-    console.error("Error fetching announcements:", error);
-    return [];
-  }
-}
-
-// ── Gallery images ────────────────────────────────────────────────────
-export async function getGalleryImages(limit?: number) {
-  try {
-    const images = await prisma.galleryImage.findMany({
-      orderBy: [
-        { eventDate: 'desc' },
-        { createdAt: 'desc' }
-      ],
-      ...(limit ? { take: limit } : {})
-    });
-    return images;
-  } catch (error) {
-    console.error("Error fetching gallery images:", error);
-    return [];
-  }
-}
-
-// ── Toggle announcement ───────────────────────────────────────────────
-export async function toggleAnnouncement(id: number, isActive: boolean) {
-  try {
-    const announcement = await prisma.announcement.update({
-      where: { id },
-      data: { isActive },
-    });
-    return announcement;
-  } catch (error) {
-    console.error("Error in toggleAnnouncement server action:", error);
-    throw error;
-  }
-}
-
-// ── Upload gallery image ──────────────────────────────────────────────
-export async function uploadGalleryImage(formData: FormData) {
-  try {
-    const title = formData.get("title")?.toString() || "Chenchugudi Mahabharatham";
-    const uploadedBy = formData.get("uploadedBy")?.toString() || "Admin";
-    const eventName = formData.get("eventName")?.toString() || null;
-    const eventDateStr = formData.get("eventDate")?.toString();
-    const eventDate = eventDateStr ? new Date(eventDateStr) : new Date();
-    const mediaType = formData.get("mediaType")?.toString() || "IMAGE";
-    const videoUrl = formData.get("videoUrl")?.toString() || null;
-    
-    let secure_url = "";
-    let public_id = null;
-
-    if (mediaType === "YOUTUBE") {
-      // For YouTube, store the thumbnail from YouTube and the video URL
-      secure_url = formData.get("thumbnailUrl")?.toString() || "https://img.youtube.com/vi/" + (videoUrl?.split("v=")[1]?.split("&")[0] || "") + "/hqdefault.jpg";
-    } else {
-      const file = formData.get("image") as File;
-      if (!file) throw new Error("No media file provided");
-
-      // Auto-detect whether the file is a video based on its MIME type
-      const isVideo = file.type.startsWith("video/");
-      const detectedMediaType = isVideo ? "VIDEO" : "IMAGE";
-      // Override the mediaType if we auto-detected it correctly
-      if (detectedMediaType === "VIDEO") {
-        (formData as any)._mediaType = "VIDEO";
-      }
-
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const base64Data = `data:${file.type};base64,${buffer.toString('base64')}`;
-
-      const result = await new Promise((resolve, reject) => {
-        cloudinary.uploader.upload(base64Data, { 
-          folder: "chenchugudi-festival", 
-          resource_type: "auto",
-          // For videos, also generate a thumbnail poster image
-          ...(isVideo ? { eager: [{ format: "jpg", transformation: [{ start_offset: "0" }] }] } : {})
-        }, (error, result) => {
-          if (error) reject(error);
-          else resolve(result as { secure_url: string; public_id: string; eager?: any[] });
-        });
-      }) as { secure_url: string; public_id: string; eager?: any[] };
-      
-      secure_url = result.secure_url;
-      public_id = result.public_id;
-
-      // For videos, use the eager thumbnail as imageUrl (for the masonry grid preview), 
-      // store the original video URL in videoUrl field
-      if (isVideo) {
-        const videoFullUrl = result.secure_url;
-        const thumbnail = result.eager?.[0]?.secure_url || result.secure_url.replace(/\.[^/.]+$/, ".jpg");
-
-        const newImage = await prisma.galleryImage.create({
-          data: {
-            title,
-            imageUrl: thumbnail,   // thumbnail for the grid preview
-            videoUrl: videoFullUrl, // actual video for the lightbox player
-            publicId: public_id,
-            mediaType: "VIDEO",
-            uploadedBy,
-            eventDate,
-            eventName,
-          },
-        });
-        return newImage;
-      }
-    }
-
-    const newImage = await prisma.galleryImage.create({
-      data: {
-        title,
-        imageUrl: secure_url,
-        publicId: public_id,
-        mediaType,
-        videoUrl,
-        uploadedBy,
-        eventDate,
-        eventName,
-      },
-    });
-
-    return newImage;
-  } catch (error) {
-    console.error("Error in uploadGalleryImage server action:", error);
-    throw error;
-  }
-}
-
-// ── Delete gallery image ──────────────────────────────────────────────
-export async function deleteGalleryImage(id: number) {
-  try {
-    const image = await prisma.galleryImage.findUnique({ where: { id } });
-    if (!image) throw new Error("Image not found");
-
-    if (image.publicId) {
-      await cloudinary.uploader.destroy(image.publicId);
-    }
-
-    await prisma.galleryImage.delete({ where: { id } });
-    return { success: true };
-  } catch (error) {
-    console.error("Error in deleteGalleryImage server action:", error);
-    throw error;
-  }
-}
-
-// Helper to extract IP address safely from headers
+// ── Helper to extract IP address safely from headers ───────────────────
 async function getClientIp(): Promise<string> {
   try {
     const headersList = await headers();
     const forwardedFor = headersList.get("x-forwarded-for");
     if (forwardedFor) {
-      // Extract the first IP if multiple are present in proxy chain
       return forwardedFor.split(",")[0].trim();
     }
     return (
@@ -233,30 +55,172 @@ async function getClientIp(): Promise<string> {
   }
 }
 
+// ── Stats for the homepage ────────────────────────────────────────────
+export async function getStats() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/stats`, { next: { revalidate: 60 } });
+    if (!res.ok) throw new Error("Failed to fetch stats");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching stats:", error);
+    return { activeAnnouncements: 0, villages: 24 };
+  }
+}
+
+// ── Announcements ─────────────────────────────────────────────────────
+export async function getAnnouncements() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/announcements`, { cache: 'no-store' });
+    if (!res.ok) throw new Error("Failed to fetch announcements");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching announcements:", error);
+    return [];
+  }
+}
+
+export async function getAllAnnouncements() {
+  try {
+    const { isAdmin } = await checkAdminStatus();
+    if (!isAdmin) return [];
+    const res = await fetch(`${BACKEND_URL}/api/announcements?all=true`, { cache: 'no-store' });
+    if (!res.ok) throw new Error("Failed to fetch all announcements");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching all announcements:", error);
+    return [];
+  }
+}
+
+export async function createAnnouncement(title: string, body: string, isActive: boolean = true) {
+  try {
+    const { isAdmin } = await checkAdminStatus();
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const res = await fetch(`${BACKEND_URL}/api/announcements`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, body, isActive }),
+    });
+    if (!res.ok) throw new Error("Failed to create announcement");
+    const announcement = await res.json();
+    return { success: true, announcement };
+  } catch (error) {
+    console.error("Error creating announcement:", error);
+    throw error;
+  }
+}
+
+export async function deleteAnnouncement(id: number) {
+  try {
+    const { isAdmin } = await checkAdminStatus();
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const res = await fetch(`${BACKEND_URL}/api/announcements/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error("Failed to delete announcement");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting announcement:", error);
+    throw error;
+  }
+}
+
+export async function updateAnnouncement(id: number, title: string, body: string) {
+  try {
+    const { isAdmin } = await checkAdminStatus();
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const res = await fetch(`${BACKEND_URL}/api/announcements/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, body }),
+    });
+    if (!res.ok) throw new Error("Failed to update announcement");
+    const announcement = await res.json();
+    return { success: true, announcement };
+  } catch (error) {
+    console.error("Error updating announcement:", error);
+    throw error;
+  }
+}
+
+export async function toggleAnnouncement(id: number, isActive: boolean) {
+  try {
+    const { isAdmin } = await checkAdminStatus();
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const res = await fetch(`${BACKEND_URL}/api/announcements/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isActive }),
+    });
+    if (!res.ok) throw new Error("Failed to toggle announcement");
+    return await res.json();
+  } catch (error) {
+    console.error("Error in toggleAnnouncement server action:", error);
+    throw error;
+  }
+}
+
+// ── Gallery images ────────────────────────────────────────────────────
+export async function getGalleryImages(limit?: number) {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/gallery`, { cache: 'no-store' });
+    if (!res.ok) throw new Error("Failed to fetch gallery");
+    let images = await res.json();
+    if (limit) images = images.slice(0, limit);
+    return images;
+  } catch (error) {
+    console.error("Error fetching gallery images:", error);
+    return [];
+  }
+}
+
+export async function uploadGalleryImage(formData: FormData) {
+  try {
+    const { isAdmin } = await checkAdminStatus();
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const res = await fetch(`${BACKEND_URL}/api/gallery`, {
+      method: "POST",
+      body: formData,
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || "Failed to upload gallery image");
+    }
+    return await res.json();
+  } catch (error) {
+    console.error("Error in uploadGalleryImage server action:", error);
+    throw error;
+  }
+}
+
+export async function deleteGalleryImage(id: number) {
+  try {
+    const { isAdmin } = await checkAdminStatus();
+    if (!isAdmin) throw new Error("Unauthorized");
+
+    const res = await fetch(`${BACKEND_URL}/api/gallery/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error("Failed to delete image");
+    return { success: true };
+  } catch (error) {
+    console.error("Error in deleteGalleryImage server action:", error);
+    throw error;
+  }
+}
+
 // ── Record user page view for Daily Active User metrics ────────────────
 export async function recordPageView() {
   try {
     const ipAddress = await getClientIp();
-    
-    // Get current local date in YYYY-MM-DD format
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const visitDate = `${yyyy}-${mm}-${dd}`;
-
-    try {
-      await prisma.userVisit.create({
-        data: {
-          ipAddress,
-          visitDate,
-        },
-      });
-      return { success: true, isNewToday: true };
-    } catch (dbError: unknown) {
-      // Catch unique constraint (already visited today) and return success
-      return { success: true, isNewToday: false };
-    }
+    const res = await fetch(`${BACKEND_URL}/api/visits`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ipAddress }),
+    });
+    if (!res.ok) throw new Error("Failed to record visit");
+    return await res.json();
   } catch (error) {
     console.error("Error in recordPageView:", error);
     return { success: false, error: String(error) };
@@ -267,14 +231,13 @@ export async function recordPageView() {
 export async function submitFeedback(isLike: boolean) {
   try {
     const ipAddress = await getClientIp();
-    
-    const feedback = await prisma.feedback.upsert({
-      where: { ipAddress },
-      update: { isLike },
-      create: { ipAddress, isLike },
+    const res = await fetch(`${BACKEND_URL}/api/feedback`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isLike, ipAddress }),
     });
-    
-    return { success: true, feedback };
+    if (!res.ok) throw new Error("Failed to submit feedback");
+    return await res.json();
   } catch (error) {
     console.error("Error in submitFeedback:", error);
     return { success: false, error: String(error) };
@@ -285,10 +248,9 @@ export async function submitFeedback(isLike: boolean) {
 export async function getUserFeedbackStatus() {
   try {
     const ipAddress = await getClientIp();
-    const feedback = await prisma.feedback.findUnique({
-      where: { ipAddress }
-    });
-    return { success: true, hasVoted: !!feedback, isLike: feedback?.isLike ?? null };
+    const res = await fetch(`${BACKEND_URL}/api/feedback/status?ipAddress=${encodeURIComponent(ipAddress)}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error("Failed to get feedback status");
+    return await res.json();
   } catch (error) {
     console.error("Error in getUserFeedbackStatus:", error);
     return { success: false, error: String(error) };
@@ -298,41 +260,12 @@ export async function getUserFeedbackStatus() {
 // ── Get analytics data for Admin Dashboard ────────────────────────────
 export async function getAnalyticsStats() {
   try {
-    // 1. Total unique visitors (all time distinct IPs)
-    const uniqueVisitorsResult = await prisma.userVisit.findMany({
-      select: { ipAddress: true },
-      distinct: ['ipAddress']
-    });
-    const totalUniqueVisitors = uniqueVisitorsResult.length;
+    const { isAdmin } = await checkAdminStatus();
+    if (!isAdmin) throw new Error("Unauthorized");
 
-    // 2. Feedback counts
-    const likes = await prisma.feedback.count({ where: { isLike: true } });
-    const dislikes = await prisma.feedback.count({ where: { isLike: false } });
-
-    // 3. Daily Active Users (DAU) for the last 7 days
-    const rawDau = await prisma.userVisit.groupBy({
-      by: ['visitDate'],
-      _count: {
-        ipAddress: true,
-      },
-      orderBy: {
-        visitDate: 'desc',
-      },
-      take: 7,
-    });
-
-    const dauList = rawDau.map((row) => ({
-      date: row.visitDate,
-      count: row._count.ipAddress,
-    }));
-
-    return {
-      success: true,
-      totalUniqueVisitors,
-      likes,
-      dislikes,
-      dauList,
-    };
+    const res = await fetch(`${BACKEND_URL}/api/analytics`, { cache: 'no-store' });
+    if (!res.ok) throw new Error("Failed to fetch analytics");
+    return await res.json();
   } catch (error) {
     console.error("Error in getAnalyticsStats:", error);
     return {
@@ -348,15 +281,9 @@ export async function getAnalyticsStats() {
 // ── Fetch Global Site Settings (Live Stream) ──────────────────────────
 export async function getLiveStreamSettings() {
   try {
-    const settings = await prisma.siteSetting.findUnique({
-      where: { id: 1 }
-    });
-    return { 
-      success: true, 
-      liveStreamUrl: settings?.liveStreamUrl || "", 
-      liveStreamPlatform: settings?.liveStreamPlatform || "youtube",
-      isLiveActive: settings?.isLiveActive || false 
-    };
+    const res = await fetch(`${BACKEND_URL}/api/live-stream`, { cache: 'no-store' });
+    if (!res.ok) throw new Error("Failed to fetch live stream settings");
+    return await res.json();
   } catch (error) {
     console.error("Error in getLiveStreamSettings:", error);
     return { success: false, liveStreamUrl: "", liveStreamPlatform: "youtube", isLiveActive: false };
@@ -371,16 +298,15 @@ export async function updateLiveStreamSettings(url: string, platform: string, is
       return { success: false, error: "Unauthorized" };
     }
 
-    const settings = await prisma.siteSetting.upsert({
-      where: { id: 1 },
-      update: { liveStreamUrl: url, liveStreamPlatform: platform, isLiveActive: isActive },
-      create: { id: 1, liveStreamUrl: url, liveStreamPlatform: platform, isLiveActive: isActive },
+    const res = await fetch(`${BACKEND_URL}/api/live-stream`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url, platform, isActive }),
     });
-    return { success: true, settings };
+    if (!res.ok) throw new Error("Failed to update live stream settings");
+    return await res.json();
   } catch (error) {
     console.error("Error in updateLiveStreamSettings:", error);
     return { success: false, error: String(error) };
   }
 }
-
-
