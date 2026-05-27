@@ -1971,7 +1971,7 @@ export default function Home() {
           {galleryImages.length > 0 ? (
             <div className="space-y-10">
               {/* Simple Masonry Grid for Recent Items */}
-              <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+              <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6">
                 {galleryImages.map((img, idx) => {
                   const getYoutubeThumbnail = (url: string) => {
                     if (!url) return '';
@@ -1983,7 +1983,7 @@ export default function Home() {
                   <div
                     key={img.id}
                     onClick={() => openLightbox(galleryImages, idx)}
-                    className="break-inside-avoid bg-white border border-gray-100 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer relative"
+                    className="break-inside-avoid bg-white border border-gray-100 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer relative mb-6"
                   >
                     {img.mediaType === 'YOUTUBE' ? (
                       <div className="w-full relative aspect-video bg-black">
