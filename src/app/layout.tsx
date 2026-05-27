@@ -20,7 +20,7 @@ const hindGuntur = Hind_Guntur({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://chenchugudi-mahabharath.vercel.app'),
+  metadataBase: new URL('https://chenchugudi-mahabharatham.vercel.app'),
   title: "Chenchugudi Mahabharatham Mahotsavam — 65th Annual Grand Festival",
   description:
     "Official website for the 65th Annual Chenchugudi Mahabharatham Mahotsavam. Sri Krishna, Draupadi Sametha Dharmarajuvari Devasthanam, Chenchugudi, Vedurukuppam Mandal, Tirupati District, Andhra Pradesh. Uniting 24 villages.",
@@ -29,9 +29,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Chenchugudi Mahabharatham Mahotsavam | 65th Annual Festival",
     description: "Join the 65th Annual Chenchugudi Mahabharatham Festival, uniting 24 villages in Chenchugudi, Vedurukuppam Mandal.",
-    url: "https://chenchugudi-mahabharath.vercel.app",
+    url: "https://chenchugudi-mahabharatham.vercel.app",
     siteName: "Chenchugudi Mahabharatham",
-
+    images: [
+      {
+        url: '/mahabharatham-hero.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Chenchugudi Mahabharatham Festival Banner',
+      },
+    ],
     locale: "te_IN",
     type: "website",
   },
@@ -39,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Chenchugudi Mahabharatham Mahotsavam",
     description: "Join the 65th Annual Chenchugudi Mahabharatham Festival, uniting 24 villages in Chenchugudi, Vedurukuppam Mandal.",
-
+    images: ['/mahabharatham-hero.jpg'],
   },
   manifest: "/manifest.json",
   appleWebApp: {
