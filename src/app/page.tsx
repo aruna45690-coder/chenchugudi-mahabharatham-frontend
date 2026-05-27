@@ -1685,7 +1685,7 @@ export default function Home() {
                           {lang === 'en' ? 'Annual Krishnashtami Pooja Donor' : 'ప్రతి సం|| కృష్ణాష్టమి పూజ జరిపించు దాత'}
                         </p>
                         <p className="text-gray-800 font-bold text-sm md:text-base leading-snug">
-                          {lang === 'en' ? "Late Sri Bandi Lakshmana Reddy's son B. Sarath Reddy" : 'కీ॥శే॥ బండి లక్ష్మణరెడ్డి కుమారుడు బి. శరత్ రెడ్డి'}
+                          {lang === 'en' ? "Late Sri Bandi Lakshmana Reddy's son B. Sarath Reddy" : 'కీ॥శే॥ బండి లక్ష్మిణరెడ్డి కుమారుడు బి. శరత్ రెడ్డి'}
                         </p>
                         <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider mt-1">
                           {lang === 'en' ? 'Rentalacheenu' : 'రెంటాలచేను'}
