@@ -248,10 +248,10 @@ export default function GalleryPage() {
                           <div
                             key={img.id}
                             onClick={() => openLightbox(activeEventData.items, globalIdx)}
-                            className="break-inside-avoid bg-white border border-gray-100 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer relative mb-6"
+                            className="bg-white border border-gray-100 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer relative aspect-[4/3]"
                           >
                             {img.mediaType === 'YOUTUBE' ? (
-                              <div className="w-full relative aspect-video bg-black">
+                              <div className="w-full h-full relative bg-black">
                                 <img src={getYoutubeThumbnail(img.videoUrl) || img.imageUrl} alt={img.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
                                 <div className="absolute inset-0 flex items-center justify-center">
                                   <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -260,7 +260,7 @@ export default function GalleryPage() {
                                 </div>
                               </div>
                             ) : isVideo(img) ? (
-                              <div className="w-full relative aspect-video bg-black">
+                              <div className="w-full h-full relative bg-black">
                                 <video src={img.videoUrl || img.imageUrl} className="w-full h-full object-cover" preload="metadata" muted />
                                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                                   <div className="w-12 h-12 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
@@ -269,7 +269,7 @@ export default function GalleryPage() {
                                 </div>
                               </div>
                             ) : (
-                              <img src={img.imageUrl} alt={img.title} className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                              <img src={img.imageUrl} alt={img.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                             )}
                             
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
@@ -288,7 +288,7 @@ export default function GalleryPage() {
                                   <Play size={22} className="text-[#E25822]" />
                                   {lang === 'en' ? 'Videos' : 'వీడియోలు'}
                                 </h3>
-                                <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                                   {videos.map((img) => renderMediaItem(img, activeEventData.items.indexOf(img)))}
                                 </div>
                               </div>
@@ -300,7 +300,7 @@ export default function GalleryPage() {
                                   <ImageIcon size={22} className="text-[#E25822]" />
                                   {lang === 'en' ? 'Photos' : 'ఫోటోలు'}
                                 </h3>
-                                <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                                   {photos.map((img) => renderMediaItem(img, activeEventData.items.indexOf(img)))}
                                 </div>
                               </div>

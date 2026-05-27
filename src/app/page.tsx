@@ -1971,7 +1971,7 @@ export default function Home() {
           {galleryImages.length > 0 ? (
             <div className="space-y-10">
               {/* Simple Masonry Grid for Recent Items */}
-              <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {galleryImages.map((img, idx) => {
                   const getYoutubeThumbnail = (url: string) => {
                     if (!url) return '';
@@ -1983,10 +1983,10 @@ export default function Home() {
                   <div
                     key={img.id}
                     onClick={() => openLightbox(galleryImages, idx)}
-                    className="break-inside-avoid bg-white border border-gray-100 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer relative mb-6"
+                    className="bg-white border border-gray-100 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer relative aspect-[4/3]"
                   >
                     {img.mediaType === 'YOUTUBE' ? (
-                      <div className="w-full relative aspect-video bg-black">
+                      <div className="w-full h-full relative bg-black">
                         <img src={getYoutubeThumbnail(img.videoUrl) || img.imageUrl} alt={img.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -1995,7 +1995,7 @@ export default function Home() {
                         </div>
                       </div>
                     ) : img.mediaType === 'VIDEO' || img.mediaType === 'video' || (img.videoUrl && img.videoUrl.trim() !== '') || (img.imageUrl && img.imageUrl.match(/\.(mp4|webm|ogg|mov)$/i)) ? (
-                      <div className="w-full relative aspect-video bg-black">
+                      <div className="w-full h-full relative bg-black">
                         <video src={img.videoUrl || img.imageUrl} className="w-full h-full object-cover" preload="metadata" muted />
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                           <div className="w-12 h-12 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
@@ -2004,7 +2004,7 @@ export default function Home() {
                         </div>
                       </div>
                     ) : (
-                      <img src={img.imageUrl} alt={img.title} className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                      <img src={img.imageUrl} alt={img.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                     )}
                     
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
@@ -2161,24 +2161,29 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Digital Donations */}
-            <div className="bg-gradient-to-br from-[#580000] to-[#3a0000] rounded-3xl p-6 shadow-xl border border-[#FFD700]/30 flex flex-col h-full text-white text-center relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <QrCode size={120} />
+            {/* WhatsApp Updates */}
+            <div className="bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-3xl p-6 shadow-xl border border-white/20 flex flex-col h-full text-white text-center relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                <MessageCircle size={120} />
               </div>
               <div className="flex justify-center mb-4 relative z-10">
-                <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-[#FFD700] border border-[#FFD700]/30">
-                  <HeartHandshake size={32} />
+                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30 shadow-lg group-hover:bg-white/30 transition-colors">
+                  <MessageCircle size={32} />
                 </div>
               </div>
-              <h3 className="font-black text-2xl mb-2 relative z-10 text-[#FFD700]">{lang === 'en' ? 'Digital Samaarpana' : 'డిజిటల్ సమర్పణ'}</h3>
-              <p className="text-white/80 text-sm mb-6 relative z-10">
-                {lang === 'en' ? 'Support the Annadanam and Festival funds directly via UPI.' : 'అన్నదానం మరియు ఉత్సవ నిర్వహణకు మీ వంతు సహాయం UPI ద్వారా అందించండి.'}
+              <h3 className="font-black text-2xl mb-2 relative z-10 text-white drop-shadow-md">
+                {lang === 'en' ? 'WhatsApp Updates' : 'వాట్సాప్ అప్‌డేట్స్'}
+              </h3>
+              <p className="text-white/90 text-sm mb-6 relative z-10 leading-relaxed font-medium">
+                {lang === 'en' 
+                  ? 'Join our community group for daily photos, live stream links, and important festival announcements.' 
+                  : 'రోజువారీ ఫోటోలు, లైవ్ స్ట్రీమ్ లింక్స్ మరియు ముఖ్యమైన ప్రకటనల కోసం మా గ్రూప్‌లో చేరండి.'}
               </p>
 
-              <div className="mt-auto bg-white p-4 rounded-2xl flex flex-col items-center justify-center relative z-10">
-                <QrCode size={100} className="text-gray-800 mb-2" />
-                <p className="text-gray-800 font-black text-xs uppercase tracking-widest">{lang === 'en' ? 'Scan to Donate' : 'విరాళం కొరకు స్కాన్ చేయండి'}</p>
+              <div className="mt-auto relative z-10 w-full">
+                <a href="#" className="flex items-center justify-center w-full bg-white text-[#128C7E] py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0">
+                  {lang === 'en' ? 'Join Group' : 'గ్రూప్‌లో చేరండి'}
+                </a>
               </div>
             </div>
 
