@@ -573,7 +573,7 @@ export default function Home() {
       {/* Floating WhatsApp Community Button */}
       <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[90]">
         <a
-          href="#" // Will be updated by Admin
+          href="https://api.whatsapp.com/send?text=శ్రీ మహాభారత మహోత్సవ తేదీలు మరియు వివరాలు తెలుసుకోండి! 🙏%0A%0ACheck out the 65th Annual Chenchugudi Mahabharatham Festival schedule and live updates!%0A%0Ahttps://chenchugudi-mahabharatham.vercel.app"
           target="_blank"
           rel="noopener noreferrer"
           className="bg-[#25D366] hover:bg-[#128C7E] text-white p-3.5 md:p-4 rounded-full shadow-[0_10px_30px_rgba(37,211,102,0.4)] hover:shadow-[0_15px_40px_rgba(37,211,102,0.6)] hover:-translate-y-1 transition-all flex items-center justify-center group relative cursor-pointer"
@@ -581,7 +581,7 @@ export default function Home() {
           <span className="absolute inset-0 rounded-full border border-[#25D366] animate-ping opacity-50 pointer-events-none"></span>
           <MessageCircle size={28} className="fill-white" />
           <span className="absolute right-[120%] bottom-1/2 translate-y-1/2 bg-white text-[#128C7E] font-bold text-xs md:text-sm px-4 py-2 rounded-2xl rounded-br-none opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap shadow-xl border border-green-100 pointer-events-none origin-bottom-right scale-95 group-hover:scale-100">
-            {lang === 'en' ? 'Join WhatsApp for Live Updates!' : 'లైవ్ అప్‌డేట్స్ కోసం వాట్సాప్‌లో చేరండి!'}
+            {lang === 'en' ? 'Share with Friends & Family' : 'వాట్సాప్‌లో పంచుకోండి'}
           </span>
         </a>
       </div>
@@ -2268,17 +2268,17 @@ export default function Home() {
                 </div>
               </div>
               <h3 className="font-black text-2xl mb-2 relative z-10 text-white drop-shadow-md">
-                {lang === 'en' ? 'WhatsApp Updates' : 'వాట్సాప్ అప్‌డేట్స్'}
+                {lang === 'en' ? 'Share on WhatsApp' : 'వాట్సాప్‌లో పంచుకోండి'}
               </h3>
               <p className="text-white/90 text-sm mb-6 relative z-10 leading-relaxed font-medium">
                 {lang === 'en' 
-                  ? 'Join our community group for daily photos, live stream links, and important festival announcements.' 
-                  : 'రోజువారీ ఫోటోలు, లైవ్ స్ట్రీమ్ లింక్స్ మరియు ముఖ్యమైన ప్రకటనల కోసం మా గ్రూప్‌లో చేరండి.'}
+                  ? 'Invite your friends and family to the festival by sharing this website link with them.' 
+                  : 'ఈ వెబ్‌సైట్‌ను పంచుకోవడం ద్వారా మీ స్నేహితులు మరియు కుటుంబ సభ్యులను పండుగకు ఆహ్వానించండి.'}
               </p>
 
               <div className="mt-auto relative z-10 w-full">
-                <a href="#" className="flex items-center justify-center w-full bg-white text-[#128C7E] py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0">
-                  {lang === 'en' ? 'Join Group' : 'గ్రూప్‌లో చేరండి'}
+                <a href="https://api.whatsapp.com/send?text=శ్రీ మహాభారత మహోత్సవ తేదీలు మరియు వివరాలు తెలుసుకోండి! 🙏%0A%0ACheck out the 65th Annual Chenchugudi Mahabharatham Festival schedule and live updates!%0A%0Ahttps://chenchugudi-mahabharatham.vercel.app" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full bg-white text-[#128C7E] py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0">
+                  {lang === 'en' ? 'Share Link' : 'వెబ్‌సైట్ పంచుకోండి'}
                 </a>
               </div>
             </div>
