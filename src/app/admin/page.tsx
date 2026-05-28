@@ -185,7 +185,7 @@ export default function AdminDashboard() {
         title = file.name.split(".")[0] || "Chenchugudi Mahabharatham Media";
         
         // 1. Get signature from our backend
-        const sigRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/cloudinary-sign`);
+        const sigRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/cloudinary-sign`);
         if (!sigRes.ok) throw new Error("Failed to get upload signature");
         const sigData = await sigRes.json();
         
@@ -226,7 +226,7 @@ export default function AdminDashboard() {
         eventNameTe: eventNameTe.trim() || undefined
       };
 
-      const saveRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/gallery`, {
+      const saveRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/gallery`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
