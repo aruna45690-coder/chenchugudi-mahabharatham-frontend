@@ -496,7 +496,7 @@ export default function Home() {
       const [statsData, announceList, galleryList, liveData, activeYear] = await Promise.all([
         getStats(),
         getAnnouncements(),
-        getGalleryImages(),
+        getGalleryImages(10),
         getLiveStreamSettings(),
         getActiveFestivalYear()
       ]);

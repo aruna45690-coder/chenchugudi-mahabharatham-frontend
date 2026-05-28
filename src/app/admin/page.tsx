@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { 
   LayoutDashboard, Users, Image as ImageIcon, 
   Settings, LogOut, TrendingUp, Bell, Menu, Upload, RefreshCw,
-  ThumbsUp, ThumbsDown, Eye
+  ThumbsUp, ThumbsDown, Eye, Star
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
@@ -283,6 +283,28 @@ export default function AdminDashboard() {
       // Restore original state if server call fails
       setGalleryImages(previous);
       alert("Failed to delete item. Please try again.");
+    }
+  };
+
+  const handleToggleFeature = async (id: number, currentStatus: boolean) => {
+    try {
+      // Optimistically update
+      setGalleryImages(prev => prev.map(img => img.id === id ? { ...img, isFeatured: !currentStatus } : img));
+      
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/gallery/${id}/feature`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isFeatured: !currentStatus })
+      });
+      
+      if (!res.ok) throw new Error("Failed to toggle feature status");
+      
+      await fetchGallery(); // Refresh for accurate sorting
+    } catch (err) {
+      console.error("Feature error:", err);
+      // Revert optimistic update
+      setGalleryImages(prev => prev.map(img => img.id === id ? { ...img, isFeatured: currentStatus } : img));
+      alert("Failed to update feature status.");
     }
   };
 
@@ -1093,15 +1115,28 @@ export default function AdminDashboard() {
                           </p>
                         </div>
                         <div className="flex justify-between items-center mt-auto">
-                          <span className="text-[10px] text-gray-300 truncate max-w-[60%]">
+                          <span className="text-[10px] text-gray-300 truncate max-w-[50%]">
                             By {image.uploadedBy}
                           </span>
-                          <button
-                            onClick={() => handleDeleteImage(image.id)}
-                            className="text-white text-[10px] font-bold bg-red-600 hover:bg-red-700 px-2.5 py-1 rounded-full shadow transition-colors shrink-0"
-                          >
-                            Delete
-                          </button>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleToggleFeature(image.id, image.isFeatured)}
+                              className={`p-1.5 rounded-full shadow transition-colors shrink-0 ${
+                                image.isFeatured 
+                                  ? 'bg-yellow-500 hover:bg-yellow-600 text-white' 
+                                  : 'bg-white/20 hover:bg-white/40 text-white'
+                              }`}
+                              title={image.isFeatured ? "Unpin from top" : "Pin to top"}
+                            >
+                              <Star size={12} className={image.isFeatured ? "fill-white" : ""} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteImage(image.id)}
+                              className="text-white text-[10px] font-bold bg-red-600 hover:bg-red-700 px-2.5 py-1 rounded-full shadow transition-colors shrink-0"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
