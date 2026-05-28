@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     siteName: "Chenchugudi Mahabharatham",
     images: [
       {
-        url: '/mahabharatham-hero.jpg',
+        url: '/images/mahabharatham-hero.jpg',
         width: 1200,
         height: 630,
         alt: 'Chenchugudi Mahabharatham Festival Banner',
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Chenchugudi Mahabharatham Mahotsavam",
     description: "Join the 65th Annual Chenchugudi Mahabharatham Festival, uniting 24 villages in Chenchugudi, Vedurukuppam Mandal.",
-    images: ['/mahabharatham-hero.jpg'],
+    images: ['/images/mahabharatham-hero.jpg'],
   },
   manifest: "/manifest.json",
   appleWebApp: {

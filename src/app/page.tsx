@@ -932,12 +932,11 @@ export default function Home() {
             </Link>
           </motion.div>
 
-          {/* Stats Bar */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="w-full max-w-3xl grid grid-cols-3 glass-dark rounded-3xl overflow-hidden shadow-2xl border border-white/8"
+            className="w-full max-w-3xl grid grid-cols-3 glass-dark rounded-3xl overflow-hidden shadow-2xl border border-white/8 mb-12"
           >
             {[
               { icon: <Users size={22} />, value: siteStats?.villages ?? 24, label: t.liveStats.villages },
@@ -951,6 +950,49 @@ export default function Home() {
               </div>
             ))}
           </motion.div>
+
+          {/* Embedded Mini Live Player */}
+          <AnimatePresence>
+            {liveStreamSettings?.isActive && liveStreamSettings.url && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1 }}
+                className="w-full max-w-3xl relative z-20 mb-8"
+              >
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#FFD700] via-[#E25822] to-[#FFD700] rounded-[26px] blur-sm opacity-50 animate-pulse-glow"></div>
+                <div className="relative rounded-3xl p-1 md:p-2 bg-gradient-to-br from-[#580000] to-[#2a0000] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-[#FFD700]/30">
+                  <div className="absolute -top-3 -right-3 z-30">
+                    <span className="flex items-center gap-1.5 bg-red-600 text-white px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg border border-red-400">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> Live
+                    </span>
+                  </div>
+                  <div className="rounded-[20px] overflow-hidden bg-black aspect-video relative">
+                    <iframe
+                      className="w-full h-full absolute top-0 left-0"
+                      src={(() => {
+                        const url = liveStreamSettings.url;
+                        const platform = liveStreamSettings.platform;
+                        if (platform === "youtube") {
+                          let videoId = url;
+                          if (url.includes("youtube.com/watch?v=")) videoId = url.split("v=")[1].split("&")[0];
+                          else if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1].split("?")[0];
+                          else if (url.includes("youtube.com/embed/")) return url;
+                          return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+                        }
+                        if (platform === "facebook") return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=true`;
+                        return url;
+                      })()}
+                      title="Live Stream"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Scroll indicator */}
