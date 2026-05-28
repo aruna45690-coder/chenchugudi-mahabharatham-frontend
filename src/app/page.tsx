@@ -1988,16 +1988,6 @@ export default function Home() {
                         imgClasses: 'object-cover object-[50%_33%] scale-[1.15]'
                       },
                       {
-                        nameTe: 'శ్రీ పూల యశ్వంత్ రెడ్డి గారు',
-                        nameEn: 'Sri Poola Yashwanth Reddy',
-                        descTe: 'S/o. శ్రీ పూల వెంకట్రామారెడ్డి గారు, రెంటాలచేను',
-                        descEn: 'S/o. Sri Poola Venkatramareddy, Rentalacheenu',
-                        role: 'నిర్వాహకులు',
-                        roleEn: 'Organizer',
-                        image: '/committee/3.jpg',
-                        imgClasses: 'object-cover object-top origin-top scale-[1.25]'
-                      },
-                      {
                         nameTe: 'శ్రీ పూల అనిల్ రెడ్డి గారు',
                         nameEn: 'Sri Poola Anil Reddy',
                         descTe: 'S/o. శ్రీ పూల పట్టాభి రామారెడ్డి గారు, రెంటాలచేను',
@@ -2006,6 +1996,16 @@ export default function Home() {
                         roleEn: 'Organizer',
                         image: '/committee/4.jpg',
                         imgClasses: 'object-cover object-[50%_35%] scale-[1.3]'
+                      },
+                      {
+                        nameTe: 'శ్రీ పూల యశ్వంత్ రెడ్డి గారు',
+                        nameEn: 'Sri Poola Yashwanth Reddy',
+                        descTe: 'S/o. శ్రీ పూల వెంకట్రామారెడ్డి గారు, రెంటాలచేను',
+                        descEn: 'S/o. Sri Poola Venkatramareddy, Rentalacheenu',
+                        role: 'నిర్వాహకులు',
+                        roleEn: 'Organizer',
+                        image: '/committee/3.jpg',
+                        imgClasses: 'object-cover object-top origin-top scale-[1.25]'
                       },
                     ].map((member, idx) => renderMember(member, idx + 1, false))}
                   </div>
