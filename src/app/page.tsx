@@ -1925,7 +1925,7 @@ export default function Home() {
                   role: 'ధర్మకర్త',
                   roleEn: 'Chief Trustee',
                   image: '/committee/1.jpg',
-                  imgClasses: 'object-top scale-[1.2] translate-y-1'
+                  imgClasses: 'object-cover object-[50%_15%] scale-110'
                 },
                 {
                   nameTe: 'శ్రీ పూల వెంకటరామారెడ్డి గారు',
@@ -1935,7 +1935,7 @@ export default function Home() {
                   role: 'ధర్మకర్త',
                   roleEn: 'Trustee',
                   image: '/committee/2.jpg',
-                  imgClasses: 'object-top scale-[1.4] translate-y-3'
+                  imgClasses: 'object-cover object-[50%_40%] scale-[1.15]'
                 },
                 {
                   nameTe: 'శ్రీ పూల యశ్వంత్ రెడ్డి గారు',
