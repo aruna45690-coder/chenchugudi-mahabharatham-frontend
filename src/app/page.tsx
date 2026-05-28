@@ -1506,18 +1506,18 @@ export default function Home() {
         </div>
       </section>
       {/* ══ 24 VILLAGES UNITY SECTION ══════════════════════ */}
-      <section id="villages" className="py-16 md:py-24 px-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #2a0000 0%, #1a0000 100%)' }}>
+      <section id="villages" className="pt-16 pb-12 md:pt-24 md:pb-16 px-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #2a0000 0%, #1a0000 100%)' }}>
         {/* Background Effects */}
         <div className="absolute inset-0 z-0 opacity-10 mandala-bg"></div>
         <div className="absolute top-1/2 right-0 w-[600px] h-[600px] bg-[#FFD700]/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2"></div>
         <div className="absolute top-1/2 left-0 w-[600px] h-[600px] bg-[#E25822]/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2"></div>
         
         <div className="max-w-4xl mx-auto relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex flex-col items-center text-center mb-16">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex flex-col items-center text-center mb-12 md:mb-16">
             <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#FFD700]/30 bg-gradient-to-r from-[#FFD700]/20 to-[#FFA500]/10 text-[#FFD700] text-xs font-black uppercase tracking-[0.25em] mb-6 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
               <HeartHandshake size={15} /> {lang === 'en' ? 'Divine Unity' : 'పవిత్ర ఐక్యత'}
             </span>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-[#FFF] via-[#FFD700] to-[#FFA500] mb-8 drop-shadow-[0_2px_10px_rgba(255,215,0,0.4)]">
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-[#FFF] via-[#FFD700] to-[#FFA500] mb-6 drop-shadow-[0_2px_10px_rgba(255,215,0,0.4)]">
               {lang === 'en' ? 'The 24 United Villages' : '24 గ్రామాల ఐక్యత'}
             </h2>
             <p className="text-orange-100/90 max-w-2xl text-sm md:text-lg leading-relaxed font-medium text-balance">
@@ -1536,20 +1536,20 @@ export default function Home() {
           >
             {/* Elegant Quote Box */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700]/20 via-[#E25822]/20 to-[#FFD700]/20 rounded-[32px] blur-xl opacity-60"></div>
-            <div className="relative bg-gradient-to-br from-white/10 to-transparent border border-white/20 backdrop-blur-xl rounded-[32px] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden">
+            <div className="relative bg-gradient-to-br from-white/10 to-transparent border border-white/20 backdrop-blur-xl rounded-[32px] px-8 py-10 md:px-12 md:pt-12 md:pb-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden">
               <div className="absolute -top-10 -right-10 text-[150px] text-[#FFD700] opacity-10 font-serif leading-none select-none pointer-events-none">"</div>
               
-              <div className="flex flex-col items-center text-center gap-6 relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#FFD700] to-[#E25822] rounded-full p-[2px] shadow-lg">
+              <div className="flex flex-col items-center text-center gap-5 relative z-10">
+                <div className="w-14 h-14 bg-gradient-to-br from-[#FFD700] to-[#E25822] rounded-full p-[2px] shadow-lg">
                   <div className="w-full h-full rounded-full bg-[#2a0000] flex items-center justify-center">
-                    <span className="text-3xl text-[#FFD700] leading-none mt-2 font-serif">❝</span>
+                    <span className="text-2xl text-[#FFD700] leading-none mt-1 font-serif">❝</span>
                   </div>
                 </div>
                 
-                <p className="text-[#FFD700] text-lg md:text-2xl font-bold leading-relaxed text-balance max-w-3xl">
+                <p className="text-[#FFD700] text-lg md:text-xl font-bold leading-relaxed text-balance max-w-3xl">
                   {lang === 'en' ? 'To all the village elders, youth, and volunteers — your dedication makes this festival a monumental success every year. We bow to your devotion.' : 'గ్రామ పెద్దలు, యువకులు మరియు స్వచ్ఛంద సేవకులందరికీ — మీ అంకితభావం ప్రతి సంవత్సరం ఈ ఉత్సవాన్ని మహాకార్యంగా చేస్తుంది. మీ భక్తికి మా నమస్కారాలు.'}
                 </p>
-                <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#E25822] to-transparent mt-4 rounded-full"></div>
+                <div className="w-20 h-1 bg-gradient-to-r from-transparent via-[#E25822] to-transparent rounded-full mt-2"></div>
               </div>
             </div>
           </motion.div>
@@ -1557,7 +1557,7 @@ export default function Home() {
       </section>
 
       {/* ══ DONORS SECTION ══════════════════════════════════ */}
-      <section className="py-16 md:py-24 bg-[#fffdf5] mandala-bg border-y border-orange-100 relative overflow-hidden" id="donors">
+      <section className="pt-12 pb-16 md:pt-20 md:pb-24 bg-[#fffdf5] mandala-bg border-y border-orange-100 relative overflow-hidden" id="donors">
         {/* Subtle gold glow behind the whole section */}
         <div className="absolute inset-0 opacity-40" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,215,0,0.15) 0%, transparent 70%)' }} />
         
