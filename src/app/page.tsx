@@ -1561,19 +1561,19 @@ export default function Home() {
                 descEn: 'Sripuram Madhava Reddy, Chenchugudi',
               }
             ].map((donor, idx) => (
-              <div key={idx} className={`relative group rounded-3xl p-[2px] bg-gradient-to-br from-[#FFD700] via-orange-400 to-[#FFD700] shadow-[0_0_15px_rgba(255,215,0,0.1)] hover:shadow-[0_0_30px_rgba(255,215,0,0.3)] transition-all duration-500 hover:-translate-y-1 cursor-pointer w-full ${idx === 4 ? 'lg:col-span-2 lg:w-2/3 lg:mx-auto' : 'w-full'}`}>
-                <div className="bg-gradient-to-br from-[#2a0000] to-[#1a0000] rounded-[22px] p-4 sm:p-5 lg:p-6 h-full w-full flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left overflow-hidden relative">
+              <div key={idx} className={`relative group rounded-3xl p-[2px] bg-gradient-to-br from-[#FFD700] via-orange-400 to-[#FFD700] shadow-[0_0_15px_rgba(255,215,0,0.1)] hover:shadow-[0_0_30px_rgba(255,215,0,0.3)] transition-all duration-500 hover:-translate-y-1 cursor-pointer w-full ${idx === 4 ? 'lg:col-span-2 lg:w-1/2 lg:mx-auto' : 'w-full'}`}>
+                <div className="bg-gradient-to-br from-[#2a0000] to-[#1a0000] rounded-[22px] p-5 lg:p-6 h-full w-full flex flex-col items-center justify-center gap-4 text-center overflow-hidden relative">
                   {/* Glowing background behind icon */}
-                  <div className="absolute top-0 left-0 w-24 h-24 bg-[#FFD700]/10 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
+                  <div className="absolute top-1/2 left-1/2 w-24 h-24 bg-[#FFD700]/10 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
                   
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-[#FFD700] to-orange-500 flex items-center justify-center text-xl sm:text-2xl shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-[0_0_15px_rgba(255,215,0,0.3)] relative z-10 border border-white/20">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FFD700] to-orange-500 flex items-center justify-center text-2xl sm:text-3xl shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-[0_0_15px_rgba(255,215,0,0.3)] relative z-10 border border-white/20 mb-1">
                     <span className="drop-shadow-md">{donor.icon}</span>
                   </div>
-                  <div className="relative z-10 flex-1 min-w-0 w-full">
-                    <h4 className="font-black text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] to-yellow-200 mb-1.5 leading-snug break-words">
+                  <div className="relative z-10 w-full flex flex-col items-center justify-center">
+                    <h4 className="font-black text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] to-yellow-200 mb-2 leading-snug text-balance">
                       {lang === 'en' ? donor.titleEn : donor.titleTe}
                     </h4>
-                    <p className="text-gray-300 font-medium text-xs sm:text-sm leading-relaxed break-words">
+                    <p className="text-gray-300 font-medium text-sm leading-relaxed text-balance">
                       {lang === 'en' ? donor.descEn : donor.descTe}
                     </p>
                   </div>

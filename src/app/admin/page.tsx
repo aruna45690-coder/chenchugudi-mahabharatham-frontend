@@ -971,7 +971,7 @@ export default function AdminDashboard() {
                       <option value="కురుక్షేత్ర యుద్ధం">కురుక్షేత్ర యుద్ధం — Kurukshetra Yuddham (War) 🏹</option>
                       <option value="ఇలావంతుని బలి">ఇలావంతుని బలి — Ilavantuni Bali (Ritual Sacrifice) 🔱</option>
                       <option value="ధుర్యోధన వధ">ధుర్యోధన వధ — Duryodhana Vadha (Slaying of Duryodhana) ⚔️</option>
-                      <option value="అగ్గిగుండ ప్రవేశం">అగ్గిగుండ ప్రవేశం — Aggigunda Pravesham (Fire Walk 🔥)</option>
+                      <option value="అగ్నిగుండ ప్రవేశం">అగ్నిగుండ ప్రవేశం — Agnigunda Pravesham (Fire Walk 🔥)</option>
                       <option value="ధర్మరాజుల పట్టాభిషేకము">ధర్మరాజుల పట్టాభిషేకము — Dharmarajula Pattabhishekamu (Coronation) 👑</option>
                       <option value="వసంతోత్సవం">వసంతోత్సవం — Vasanthotsavam (Spring Festival) 🌸</option>
                     </optgroup>
