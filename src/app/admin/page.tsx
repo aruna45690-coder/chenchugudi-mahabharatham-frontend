@@ -162,8 +162,10 @@ export default function AdminDashboard() {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    const file = files[0];
-    await uploadFile(file);
+    const filesArray = Array.from(files);
+    for (const file of filesArray) {
+      await uploadFile(file);
+    }
     e.target.value = ""; // Clear file input
   };
 
@@ -259,8 +261,11 @@ export default function AdminDashboard() {
     e.stopPropagation();
     setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      await uploadFile(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const filesArray = Array.from(e.dataTransfer.files);
+      for (const file of filesArray) {
+        await uploadFile(file);
+      }
     }
   };
 
@@ -988,6 +993,7 @@ export default function AdminDashboard() {
                     onChange={handleFileUpload}
                     accept="image/*,video/*"
                     disabled={uploading}
+                    multiple
                   />
                   <label
                     htmlFor="file-upload"
