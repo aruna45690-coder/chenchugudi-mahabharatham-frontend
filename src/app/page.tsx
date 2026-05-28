@@ -1918,8 +1918,8 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-6">
               {[
                 {
-                  nameTe: 'శ్రీ పూల పట్టాభి రామిరెడ్డి గారు',
-                  nameEn: 'Sri Poola Pattabhi Ramireddy',
+                  nameTe: 'శ్రీ పూల పట్టాభి రామారెడ్డి గారు',
+                  nameEn: 'Sri Poola Pattabhi Ramareddy',
                   descTe: 'S/o. కీ॥శే॥ శ్రీ పూల కృష్ణారెడ్డి గారు, రెంటాలచేను',
                   descEn: 'S/o. Late Sri Poola Krishnareddy, Rentalacheenu',
                   role: 'ధర్మకర్త',
@@ -1950,8 +1950,8 @@ export default function Home() {
                 {
                   nameTe: 'శ్రీ పూల అనిల్ రెడ్డి గారు',
                   nameEn: 'Sri Poola Anil Reddy',
-                  descTe: 'S/o. శ్రీ పూల పట్టాభి రామిరెడ్డి గారు, రెంటాలచేను',
-                  descEn: 'S/o. Sri Poola Pattabhi Ramireddy, Rentalacheenu',
+                  descTe: 'S/o. శ్రీ పూల పట్టాభి రామారెడ్డి గారు, రెంటాలచేను',
+                  descEn: 'S/o. Sri Poola Pattabhi Ramareddy, Rentalacheenu',
                   role: 'నిర్వాహకులు',
                   roleEn: 'Organizer',
                   image: '/committee/4.jpg',
