@@ -1923,7 +1923,8 @@ export default function Home() {
                   descTe: 'S/o. కీ॥శే॥ శ్రీ పూలా కృష్ణారెడ్డి గారు, రెంటాలచేను',
                   descEn: 'S/o. Late Sri Poola Krishnareddy, Rentalacheenu',
                   role: 'ధర్మకర్త',
-                  roleEn: 'Chief Trustee'
+                  roleEn: 'Chief Trustee',
+                  image: '/committee/1.jpg'
                 },
                 {
                   nameTe: 'శ్రీ పూల వెంకటరామారెడ్డి గారు',
@@ -1960,12 +1961,14 @@ export default function Home() {
                 >
                   <div className="relative mb-5">
                     <div className="w-36 h-36 md:w-40 md:h-40 rounded-full border-[3px] border-[#FFD700]/50 group-hover:border-[#FFD700] transition-all duration-500 p-2 bg-gradient-to-br from-white/10 to-transparent shadow-[0_0_30px_rgba(255,215,0,0.15)] group-hover:shadow-[0_0_50px_rgba(255,215,0,0.5)] overflow-hidden flex items-center justify-center relative group-hover:-translate-y-2">
-                      {/* Placeholder Avatar */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#580000] via-[#8B0000] to-[#3a0000] flex items-center justify-center rounded-full m-1.5 shadow-inner">
-                        <User size={56} className="text-[#FFD700]/40 group-hover:text-[#FFD700] group-hover:scale-110 transition-all duration-500" />
-                      </div>
-                      {/* Add Image Here later */}
-                      {/* <img src={`/member-${idx+1}.jpg`} alt={member.name} className="w-full h-full object-cover rounded-full relative z-10" /> */}
+                      {/* Profile Image */}
+                      {member.image ? (
+                        <img src={member.image} alt={lang === 'en' ? member.nameEn : member.nameTe} className="w-full h-full object-cover rounded-full relative z-10 m-1.5 shadow-inner" />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#580000] via-[#8B0000] to-[#3a0000] flex items-center justify-center rounded-full m-1.5 shadow-inner z-10">
+                          <User size={56} className="text-[#FFD700]/40 group-hover:text-[#FFD700] group-hover:scale-110 transition-all duration-500" />
+                        </div>
+                      )}
                     </div>
                     {/* Decorative badge */}
                     <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-[#580000] px-5 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest border-2 border-[#580000] shadow-xl whitespace-nowrap z-20 transition-transform group-hover:scale-105">
