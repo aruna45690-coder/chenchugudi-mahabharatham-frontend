@@ -2017,66 +2017,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Villages Section */}
-      <section id="villages" className="py-12 md:py-16 px-6 bg-[#580000]/5">
-        <div className="max-w-6xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-black text-[#580000] mb-6">{t.united}</h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              {t.unitedDesc}
-            </p>
-          </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {[
-              { te: 'చెంచుగుడి', en: 'Chenchugudi' },
-              { te: 'చంతలగుంట', en: 'Chantalagunta' },
-              { te: 'రెంటాలచేను', en: 'Rentalacheenu' },
-              { te: 'వావిలచేను', en: 'Vavilacheenu' },
-              { te: 'కమిటచేను', en: 'Kamitacheenu' },
-              { te: 'బాలుపల్లి', en: 'Balupalli' },
-              { te: 'వేణుగోపాలపురం', en: 'Venugopalapuram' },
-              { te: 'మహమ్మదాపురం', en: 'Mahammadapuram' },
-              { te: 'తిరుమలయ్యపల్లి', en: 'Tirumalayya Palli' },
-              { te: 'రెడ్డేపల్లి', en: 'Reddepalli' },
-              { te: 'సోమేంద్రపురం', en: 'Somendrapuram' },
-              { te: 'అల్లమవారికడిగ', en: 'Allamavarikadiga' },
-              { te: 'చాప్లమ్పల్లి', en: 'Chaplampalli' },
-              { te: 'వేపేరి', en: 'Veperi' },
-              { te: 'బొప్పలమడుగు', en: 'Boppalamadugu' },
-              { te: 'గుంటచేను', en: 'Guntacheenu' },
-              { te: 'రెంటాలచేను H.W.', en: 'Rentalacheenu H.W.' },
-              { te: 'అద్దలమ్మవారికడిగ', en: 'Addalammavarikadiga' },
-              { te: 'గాదావరిచేను', en: 'Gadavarichernu' },
-              { te: 'వేగిసోంపాలెం', en: 'Vegisompalem' },
-              { te: 'చెంచుగుడి H.W.', en: 'Chenchugudi H.W.' },
-              { te: 'వేపూరు', en: 'Vepuru' },
-              { te: 'గంటపల్లె', en: 'Gantapalle' },
-              { te: 'జవేసు తిరుపతి', en: 'Javeesu Tirupati' },
-            ].map((village, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.03 }}
-                className={`p-4 border-2 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-[#E25822] transition-all cursor-pointer group flex flex-col items-center justify-center text-center min-h-[90px] ${i === 0 ? 'bg-[#580000] border-[#580000] text-white' : 'bg-white/70 backdrop-blur-sm border-white'
-                  }`}
-              >
-                <Heart className={`mb-2 transition-colors ${i === 0 ? 'text-[#FFD700]' : 'text-[#580000]/30 group-hover:text-[#E25822]'}`} size={18} />
-                <span className={`font-bold text-center text-xs md:text-sm leading-tight ${i === 0 ? 'text-white' : 'text-gray-800 group-hover:text-[#E25822]'}`}>
-                  {lang === 'en' ? village.en : village.te}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Interactive Contribution Section (Samaarpana) temporarily removed */}
 
