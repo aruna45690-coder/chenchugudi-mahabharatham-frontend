@@ -1915,49 +1915,8 @@ export default function Home() {
               <div className="h-0.5 w-24 bg-[#FFD700] mx-auto rounded-full" />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-6">
-              {[
-                {
-                  nameTe: 'శ్రీ పూల పట్టాభి రామరెడ్డి గారు',
-                  nameEn: 'Sri Poola Pattabhi Ramareddy',
-                  descTe: 'S/o. కీ॥శే॥ శ్రీ పూల కృష్ణారెడ్డి గారు, రెంటాలచేను',
-                  descEn: 'S/o. Late Sri Poola Krishnareddy, Rentalacheenu',
-                  role: 'ధర్మకర్త',
-                  roleEn: 'Chief Trustee',
-                  image: '/committee/1.jpg',
-                  imgClasses: 'object-cover object-[50%_10%] scale-110'
-                },
-                {
-                  nameTe: 'శ్రీ పూల వెంకట్రామరెడ్డి గారు',
-                  nameEn: 'Sri Poola Venkatramareddy',
-                  descTe: 'S/o. కీ॥శే॥ శ్రీ పూల కృష్ణారెడ్డి గారు, రెంటాలచేను',
-                  descEn: 'S/o. Late Sri Poola Krishnareddy, Rentalacheenu',
-                  role: 'ధర్మకర్త',
-                  roleEn: 'Trustee',
-                  image: '/committee/2.jpg',
-                  imgClasses: 'object-cover object-[50%_33%] scale-[1.15]'
-                },
-                {
-                  nameTe: 'శ్రీ పూల యశ్వంత్ రెడ్డి గారు',
-                  nameEn: 'Sri Poola Yashwanth Reddy',
-                  descTe: 'S/o. శ్రీ పూల వెంకట్రామరెడ్డి గారు, రెంటాలచేను',
-                  descEn: 'S/o. Sri Poola Venkatramareddy, Rentalacheenu',
-                  role: 'నిర్వాహకులు',
-                  roleEn: 'Organizer',
-                  image: '/committee/3.jpg',
-                  imgClasses: 'object-cover object-top origin-top scale-[1.25]'
-                },
-                {
-                  nameTe: 'శ్రీ పూల అనిల్ రెడ్డి గారు',
-                  nameEn: 'Sri Poola Anil Reddy',
-                  descTe: 'S/o. శ్రీ పూల పట్టాభి రామరెడ్డి గారు, రెంటాలచేను',
-                  descEn: 'S/o. Sri Poola Pattabhi Ramareddy, Rentalacheenu',
-                  role: 'నిర్వాహకులు',
-                  roleEn: 'Organizer',
-                  image: '/committee/4.jpg',
-                  imgClasses: 'object-cover object-[50%_35%] scale-[1.3]'
-                },
-              ].map((member, idx) => (
+            {(() => {
+              const renderMember = (member: any, idx: number, isFounder: boolean = false) => (
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, y: 30 }}
@@ -1967,29 +1926,92 @@ export default function Home() {
                   className="flex flex-col items-center text-center group"
                 >
                   <div className="relative mb-5">
-                    <div className="w-36 h-36 md:w-40 md:h-40 rounded-full border-[3px] border-[#FFD700]/50 group-hover:border-[#FFD700] transition-all duration-500 bg-gradient-to-br from-white/10 to-transparent shadow-[0_0_30px_rgba(255,215,0,0.15)] group-hover:shadow-[0_0_50px_rgba(255,215,0,0.5)] overflow-hidden flex items-center justify-center relative group-hover:-translate-y-2">
+                    <div className={`${isFounder ? 'w-48 h-48 md:w-56 md:h-56 rounded-full border-4 border-[#FFD700] ring-4 ring-[#FFD700]/30 ring-offset-4 ring-offset-[#580000] shadow-[0_0_50px_rgba(255,215,0,0.6)] group-hover:shadow-[0_0_80px_rgba(255,215,0,0.8)]' : 'w-36 h-36 md:w-40 md:h-40 rounded-full border-[3px] border-[#FFD700]/50 group-hover:border-[#FFD700] shadow-[0_0_30px_rgba(255,215,0,0.15)] group-hover:shadow-[0_0_50px_rgba(255,215,0,0.5)]'} transition-all duration-500 bg-gradient-to-br from-white/10 to-transparent overflow-hidden flex items-center justify-center relative group-hover:-translate-y-2`}>
                       {/* Profile Image */}
                       {member.image ? (
                         <img src={member.image} alt={lang === 'en' ? member.nameEn : member.nameTe} className={`w-full h-full object-cover ${member.imgClasses || 'object-center'} rounded-full relative z-10 shadow-inner`} />
                       ) : (
                         <div className="absolute inset-0 bg-gradient-to-br from-[#580000] via-[#8B0000] to-[#3a0000] flex items-center justify-center rounded-full shadow-inner z-10">
-                          <User size={56} className="text-[#FFD700]/40 group-hover:text-[#FFD700] group-hover:scale-110 transition-all duration-500" />
+                          <User size={isFounder ? 72 : 56} className="text-[#FFD700]/40 group-hover:text-[#FFD700] group-hover:scale-110 transition-all duration-500" />
                         </div>
                       )}
                     </div>
                     {/* Decorative badge */}
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-[#580000] px-5 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest border-2 border-[#580000] shadow-xl whitespace-nowrap z-20 transition-transform group-hover:scale-105">
+                    <div className={`absolute ${isFounder ? '-bottom-4 px-8 py-2.5 text-[14px] shadow-[0_0_20px_rgba(255,215,0,0.4)]' : '-bottom-3 px-5 py-1.5 text-[11px] shadow-xl'} left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-[#580000] rounded-full font-black uppercase tracking-widest border-2 border-[#580000] whitespace-nowrap z-20 transition-transform group-hover:scale-105`}>
                       {lang === 'en' ? member.roleEn : member.role}
                     </div>
                   </div>
 
                   <div className="mt-4 px-2">
-                    <h3 className="text-white font-black text-xl mb-1.5 leading-snug group-hover:text-[#FFD700] transition-colors">{lang === 'en' ? member.nameEn : member.nameTe}</h3>
-                    <p className="text-white/70 text-sm leading-relaxed">{lang === 'en' ? member.descEn : member.descTe}</p>
+                    <h3 className={`text-white font-black ${isFounder ? 'text-2xl mb-2' : 'text-xl mb-1.5'} leading-snug group-hover:text-[#FFD700] transition-colors`}>{lang === 'en' ? member.nameEn : member.nameTe}</h3>
+                    {member.descTe && (
+                      <p className={`text-white/70 ${isFounder ? 'text-base' : 'text-sm'} leading-relaxed`}>{lang === 'en' ? member.descEn : member.descTe}</p>
+                    )}
                   </div>
                 </motion.div>
-              ))}
-            </div>
+              );
+
+              return (
+                <>
+                  <div className="flex justify-center mb-16">
+                    {renderMember({
+                      nameTe: 'కీ॥శే॥ శ్రీ పూల కృష్ణారెడ్డి గారు',
+                      nameEn: 'Late Sri Poola Krishnareddy Garu',
+                      descTe: 'రెంటాలచేను',
+                      descEn: 'Rentalacheenu',
+                      role: 'వ్యవస్థాపకులు & ధర్మకర్త',
+                      roleEn: 'Founder & Trustee',
+                      image: '/committee/0.jpg',
+                      imgClasses: 'object-cover object-[50%_15%] scale-[1.1]'
+                    }, 0, true)}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-6">
+                    {[
+                      {
+                        nameTe: 'శ్రీ పూల పట్టాభి రామారెడ్డి గారు',
+                        nameEn: 'Sri Poola Pattabhi Ramareddy',
+                        descTe: 'S/o. కీ॥శే॥ శ్రీ పూల కృష్ణారెడ్డి గారు, రెంటాలచేను',
+                        descEn: 'S/o. Late Sri Poola Krishnareddy, Rentalacheenu',
+                        role: 'ధర్మకర్త',
+                        roleEn: 'Chief Trustee',
+                        image: '/committee/1.jpg',
+                        imgClasses: 'object-cover object-[50%_10%] scale-110'
+                      },
+                      {
+                        nameTe: 'శ్రీ పూల వెంకట్రామారెడ్డి గారు',
+                        nameEn: 'Sri Poola Venkatramareddy',
+                        descTe: 'S/o. కీ॥శే॥ శ్రీ పూల కృష్ణారెడ్డి గారు, రెంటాలచేను',
+                        descEn: 'S/o. Late Sri Poola Krishnareddy, Rentalacheenu',
+                        role: 'ధర్మకర్త',
+                        roleEn: 'Trustee',
+                        image: '/committee/2.jpg',
+                        imgClasses: 'object-cover object-[50%_33%] scale-[1.15]'
+                      },
+                      {
+                        nameTe: 'శ్రీ పూల యశ్వంత్ రెడ్డి గారు',
+                        nameEn: 'Sri Poola Yashwanth Reddy',
+                        descTe: 'S/o. శ్రీ పూల వెంకట్రామారెడ్డి గారు, రెంటాలచేను',
+                        descEn: 'S/o. Sri Poola Venkatramareddy, Rentalacheenu',
+                        role: 'నిర్వాహకులు',
+                        roleEn: 'Organizer',
+                        image: '/committee/3.jpg',
+                        imgClasses: 'object-cover object-top origin-top scale-[1.25]'
+                      },
+                      {
+                        nameTe: 'శ్రీ పూల అనిల్ రెడ్డి గారు',
+                        nameEn: 'Sri Poola Anil Reddy',
+                        descTe: 'S/o. శ్రీ పూల పట్టాభి రామారెడ్డి గారు, రెంటాలచేను',
+                        descEn: 'S/o. Sri Poola Pattabhi Ramareddy, Rentalacheenu',
+                        role: 'నిర్వాహకులు',
+                        roleEn: 'Organizer',
+                        image: '/committee/4.jpg',
+                        imgClasses: 'object-cover object-[50%_35%] scale-[1.3]'
+                      },
+                    ].map((member, idx) => renderMember(member, idx + 1, false))}
+                  </div>
+                </>
+              );
+            })()}
 
           </div>
         </div>
