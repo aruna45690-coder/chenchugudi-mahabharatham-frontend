@@ -1580,9 +1580,9 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           {/* Section Header */}
           <div className="flex flex-col items-center gap-3 mb-12 text-center">
-            <span className="text-xs font-bold tracking-[0.3em] uppercase text-[#E25822]/70">— {lang === 'en' ? 'Generous Contributors' : 'దేవస్థాన మహా దాతలు'} —</span>
+            <span className="text-xs font-bold tracking-[0.3em] uppercase text-[#E25822]/70">— {lang === 'en' ? 'Generous Contributors' : 'దేవస్థాన మహాదాతలు'} —</span>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-[#580000] flex items-center gap-2">
-              <span className="text-orange-500">🙏</span> {lang === 'en' ? 'Divine Donors' : 'పూజా ఉభయదాతలు'}
+              <span className="text-orange-500">🙏</span> {lang === 'en' ? 'Divine Donors' : 'పూజా ఉభయ దాతలు'}
             </h2>
             <div className="divider-gold w-32" />
             <p className="text-gray-500 text-sm max-w-xl mt-2">
