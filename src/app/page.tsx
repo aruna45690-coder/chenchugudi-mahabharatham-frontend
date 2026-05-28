@@ -974,9 +974,13 @@ export default function Home() {
                         const url = liveStreamSettings.url;
                         const platform = liveStreamSettings.platform;
                         if (platform === "youtube") {
-                          const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|live\/|shorts\/))([^&?]+)/);
-                          if (match && match[1]) {
-                            return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1`;
+                          let videoId = null;
+                          const match = url.match(/(?:v=|v\/|embed\/|youtu\.be\/|shorts\/|live\/)([a-zA-Z0-9_-]{11})/);
+                          if (match) videoId = match[1];
+                          else if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) videoId = url.trim();
+                          
+                          if (videoId) {
+                            return `https://www.youtube.com/embed/${videoId}?playsinline=1&rel=0`;
                           }
                           return url;
                         }
@@ -1144,9 +1148,13 @@ export default function Home() {
                             const platform = liveStreamSettings.platform;
                             
                             if (platform === "youtube") {
-                              const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|live\/|shorts\/))([^&?]+)/);
-                              if (match && match[1]) {
-                                return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1`;
+                              let videoId = null;
+                              const match = url.match(/(?:v=|v\/|embed\/|youtu\.be\/|shorts\/|live\/)([a-zA-Z0-9_-]{11})/);
+                              if (match) videoId = match[1];
+                              else if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) videoId = url.trim();
+                              
+                              if (videoId) {
+                                return `https://www.youtube.com/embed/${videoId}?playsinline=1&rel=0`;
                               }
                               return url;
                             } else if (platform === "facebook") {
