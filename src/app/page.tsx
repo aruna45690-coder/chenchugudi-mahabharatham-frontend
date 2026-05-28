@@ -2268,17 +2268,17 @@ export default function Home() {
                 </div>
               </div>
               <h3 className="font-black text-2xl mb-2 relative z-10 text-white drop-shadow-md">
-                {lang === 'en' ? 'Share on WhatsApp' : 'వాట్సాప్‌లో పంచుకోండి'}
+                {lang === 'en' ? 'Official WhatsApp Group' : 'అధికారిక వాట్సాప్ గ్రూప్'}
               </h3>
               <p className="text-white/90 text-sm mb-6 relative z-10 leading-relaxed font-medium">
                 {lang === 'en' 
-                  ? 'Invite your friends and family to the festival by sharing this website link with them.' 
-                  : 'ఈ వెబ్‌సైట్‌ను పంచుకోవడం ద్వారా మీ స్నేహితులు మరియు కుటుంబ సభ్యులను పండుగకు ఆహ్వానించండి.'}
+                  ? 'Join our community group for daily photos, live stream links, and important festival announcements.' 
+                  : 'రోజువారీ ఫోటోలు, లైవ్ స్ట్రీమ్ లింక్స్ మరియు ముఖ్యమైన ప్రకటనల కోసం మా గ్రూప్‌లో చేరండి.'}
               </p>
 
               <div className="mt-auto relative z-10 w-full">
-                <a href="https://api.whatsapp.com/send?text=శ్రీ మహాభారత మహోత్సవ తేదీలు మరియు వివరాలు తెలుసుకోండి! 🙏%0A%0ACheck out the 65th Annual Chenchugudi Mahabharatham Festival schedule and live updates!%0A%0Ahttps://chenchugudi-mahabharatham.vercel.app" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full bg-white text-[#128C7E] py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0">
-                  {lang === 'en' ? 'Share Link' : 'వెబ్‌సైట్ పంచుకోండి'}
+                <a href="https://chat.whatsapp.com/Lb73DFyuD64FGuR6b0lRBY" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full bg-white text-[#128C7E] py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0">
+                  {lang === 'en' ? 'Join Group' : 'గ్రూప్‌లో చేరండి'}
                 </a>
               </div>
             </div>
