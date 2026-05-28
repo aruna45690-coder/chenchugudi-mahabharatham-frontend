@@ -1505,9 +1505,58 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/* ══ 24 VILLAGES UNITY SECTION ══════════════════════ */}
+      <section id="villages" className="py-16 md:py-24 px-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #2a0000 0%, #1a0000 100%)' }}>
+        {/* Background Effects */}
+        <div className="absolute inset-0 z-0 opacity-10 mandala-bg"></div>
+        <div className="absolute top-1/2 right-0 w-[600px] h-[600px] bg-[#FFD700]/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2"></div>
+        <div className="absolute top-1/2 left-0 w-[600px] h-[600px] bg-[#E25822]/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2"></div>
+        
+        <div className="max-w-4xl mx-auto relative z-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex flex-col items-center text-center mb-16">
+            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#FFD700]/30 bg-gradient-to-r from-[#FFD700]/20 to-[#FFA500]/10 text-[#FFD700] text-xs font-black uppercase tracking-[0.25em] mb-6 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+              <HeartHandshake size={15} /> {lang === 'en' ? 'Divine Unity' : 'పవిత్ర ఐక్యత'}
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-[#FFF] via-[#FFD700] to-[#FFA500] mb-8 drop-shadow-[0_2px_10px_rgba(255,215,0,0.4)]">
+              {lang === 'en' ? 'The 24 United Villages' : '24 గ్రామాల ఐక్యత'}
+            </h2>
+            <p className="text-orange-100/90 max-w-2xl text-sm md:text-lg leading-relaxed font-medium text-balance">
+              {lang === 'en' 
+                ? 'With the blessings of Sri Krishna and Draupadi Mata, 24 surrounding villages come together as one family. Their unwavering devotion, volunteerism, and contributions are the very heartbeat of this grand Mahotsavam.'
+                : 'శ్రీ కృష్ణ పరమాత్మ మరియు ద్రౌపదీ మాత ఆశీస్సులతో, చుట్టుపక్కల 24 గ్రామాలు ఒకే కుటుంబంగా ఏకమవుతాయి. వారి అచంచలమైన భక్తి, స్వచ్ఛంద సేవ మరియు విరాళాలు ఈ మహాకార్యానికి ప్రాణం.'}
+            </p>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true }} 
+            transition={{ delay: 0.2 }} 
+            className="relative"
+          >
+            {/* Elegant Quote Box */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700]/20 via-[#E25822]/20 to-[#FFD700]/20 rounded-[32px] blur-xl opacity-60"></div>
+            <div className="relative bg-gradient-to-br from-white/10 to-transparent border border-white/20 backdrop-blur-xl rounded-[32px] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden">
+              <div className="absolute -top-10 -right-10 text-[150px] text-[#FFD700] opacity-10 font-serif leading-none select-none pointer-events-none">"</div>
+              
+              <div className="flex flex-col items-center text-center gap-6 relative z-10">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#FFD700] to-[#E25822] rounded-full p-[2px] shadow-lg">
+                  <div className="w-full h-full rounded-full bg-[#2a0000] flex items-center justify-center">
+                    <span className="text-3xl text-[#FFD700] leading-none mt-2 font-serif">❝</span>
+                  </div>
+                </div>
+                
+                <p className="text-[#FFD700] text-lg md:text-2xl font-bold leading-relaxed text-balance max-w-3xl">
+                  {lang === 'en' ? 'To all the village elders, youth, and volunteers — your dedication makes this festival a monumental success every year. We bow to your devotion.' : 'గ్రామ పెద్దలు, యువకులు మరియు స్వచ్ఛంద సేవకులందరికీ — మీ అంకితభావం ప్రతి సంవత్సరం ఈ ఉత్సవాన్ని మహాకార్యంగా చేస్తుంది. మీ భక్తికి మా నమస్కారాలు.'}
+                </p>
+                <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#E25822] to-transparent mt-4 rounded-full"></div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* ══ DONORS SECTION ══════════════════════════════════ */}
-      {/* ══ DONORS SECTION ═════════════════════════════════════════ */}
       <section className="py-16 md:py-24 bg-[#fffdf5] mandala-bg border-y border-orange-100 relative overflow-hidden" id="donors">
         {/* Subtle gold glow behind the whole section */}
         <div className="absolute inset-0 opacity-40" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,215,0,0.15) 0%, transparent 70%)' }} />
@@ -1561,24 +1610,38 @@ export default function Home() {
                 descEn: 'Sripuram Madhava Reddy, Chenchugudi',
               }
             ].map((donor, idx) => (
-              <div key={idx} className={`relative group rounded-3xl p-[2px] bg-gradient-to-br from-[#FFD700] via-orange-400 to-[#FFD700] shadow-[0_0_15px_rgba(255,215,0,0.1)] hover:shadow-[0_0_30px_rgba(255,215,0,0.3)] transition-all duration-500 hover:-translate-y-1 cursor-pointer w-full ${idx === 4 ? 'lg:col-span-2 lg:w-1/2 lg:mx-auto' : 'w-full'}`}>
-                <div className="bg-gradient-to-br from-[#2a0000] to-[#1a0000] rounded-[22px] p-5 lg:p-6 h-full w-full flex flex-col items-center justify-center gap-4 text-center overflow-hidden relative">
-                  {/* Glowing background behind icon */}
-                  <div className="absolute top-1/2 left-1/2 w-24 h-24 bg-[#FFD700]/10 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
-                  
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FFD700] to-orange-500 flex items-center justify-center text-2xl sm:text-3xl shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-[0_0_15px_rgba(255,215,0,0.3)] relative z-10 border border-white/20 mb-1">
-                    <span className="drop-shadow-md">{donor.icon}</span>
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className={`relative group rounded-[28px] bg-white border border-orange-100 hover:border-orange-300 shadow-[0_10px_30px_rgba(226,88,34,0.05)] hover:shadow-[0_20px_50px_rgba(226,88,34,0.15)] transition-all duration-500 hover:-translate-y-2 cursor-pointer overflow-hidden ${idx === 4 ? 'lg:col-span-2 lg:w-2/3 lg:mx-auto' : ''}`}
+              >
+                {/* Animated Gradient Background on Hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                
+                {/* Decorative Top Accent Line */}
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#E25822] opacity-80 group-hover:opacity-100 transition-opacity"></div>
+
+                <div className="p-6 md:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6 relative z-10">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#FFD700] via-[#FFA500] to-[#E25822] p-[2px] shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 relative">
+                    <div className="absolute inset-0 bg-[#E25822] rounded-2xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+                    <div className="w-full h-full rounded-[14px] bg-[#fffdf5] flex items-center justify-center text-3xl relative z-10 border border-white/50">
+                      <span className="drop-shadow-sm">{donor.icon}</span>
+                    </div>
                   </div>
-                  <div className="relative z-10 w-full flex flex-col items-center justify-center">
-                    <h4 className="font-black text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] to-yellow-200 mb-2 leading-snug text-balance">
+                  
+                  <div className="flex-1 text-center sm:text-left flex flex-col justify-center min-h-[5rem]">
+                    <h4 className="font-black text-xl md:text-2xl text-[#580000] mb-2 leading-tight group-hover:text-[#E25822] transition-colors">
                       {lang === 'en' ? donor.titleEn : donor.titleTe}
                     </h4>
-                    <p className="text-gray-300 font-medium text-sm leading-relaxed text-balance">
+                    <p className="text-gray-600 font-medium text-sm md:text-base leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
                       {lang === 'en' ? donor.descEn : donor.descTe}
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
