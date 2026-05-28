@@ -1945,7 +1945,7 @@ export default function Home() {
                   role: 'నిర్వాహకులు',
                   roleEn: 'Organizer',
                   image: '/committee/3.jpg',
-                  imgClasses: 'object-cover object-[50%_10%] scale-[1.25]'
+                  imgClasses: 'object-cover object-top origin-top scale-[1.25]'
                 },
                 {
                   nameTe: 'శ్రీ పూల అనిల్ రెడ్డి గారు',
@@ -1955,7 +1955,7 @@ export default function Home() {
                   role: 'నిర్వాహకులు',
                   roleEn: 'Organizer',
                   image: '/committee/4.jpg',
-                  imgClasses: 'object-cover object-[50%_15%] scale-[1.3]'
+                  imgClasses: 'object-cover object-[50%_25%] scale-[1.3]'
                 },
               ].map((member, idx) => (
                 <motion.div
