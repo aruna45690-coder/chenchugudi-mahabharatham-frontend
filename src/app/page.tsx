@@ -1508,19 +1508,22 @@ export default function Home() {
 
       {/* ══ DONORS SECTION ══════════════════════════════════ */}
       {/* ══ DONORS SECTION ═════════════════════════════════════════ */}
-      <section className="py-12 md:py-16 bg-[#fffdf5] mandala-bg border-t border-orange-100 relative overflow-hidden" id="donors">
+      <section className="py-16 md:py-24 bg-[#fffdf5] mandala-bg border-y border-orange-100 relative overflow-hidden" id="donors">
+        {/* Subtle gold glow behind the whole section */}
+        <div className="absolute inset-0 opacity-40" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,215,0,0.15) 0%, transparent 70%)' }} />
+        
         <div className="max-w-6xl mx-auto px-4 md:px-8 relative z-10">
           <div className="text-center mb-16">
-            <span className="inline-block bg-orange-100 text-[#580000] text-sm font-black uppercase tracking-widest px-4 py-2 rounded-full border border-orange-200 mb-4 shadow-sm">
-              {lang === 'en' ? 'Special Acknowledgements' : 'ప్రత్యేక కృతజ్ఞతలు'}
+            <span className="inline-block bg-gradient-to-r from-orange-100 to-yellow-100 text-[#580000] text-xs sm:text-sm font-black uppercase tracking-widest px-5 py-2.5 rounded-full border border-orange-200 mb-5 shadow-sm">
+              {lang === 'en' ? 'Divine Benefactors' : 'ఉత్సవ ప్రధాన పోషకులు'}
             </span>
-            <h2 className="text-4xl md:text-5xl font-black text-[#580000] mb-6 drop-shadow-sm font-display tracking-wide">
-              {lang === 'en' ? 'Sponsors & Donors' : 'దాతలు & సహాయకులు'}
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-[#580000] mb-6 drop-shadow-sm font-display tracking-wide pb-2">
+              {lang === 'en' ? 'Distinguished Patrons' : 'మహోన్నత దాతలు'}
             </h2>
-            <div className="w-24 h-1 bg-[#E25822] mx-auto rounded-full" />
+            <div className="w-32 h-1 bg-gradient-to-r from-transparent via-[#E25822] to-transparent mx-auto rounded-full opacity-80" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
             {[
               {
                 icon: '🎨',
@@ -1558,17 +1561,22 @@ export default function Home() {
                 descEn: 'Sripuram Madhava Reddy, Chenchugudi',
               }
             ].map((donor, idx) => (
-              <div key={idx} className="bg-gradient-to-br from-[#fffdf5] to-[#FFD700]/10 border border-[#FFD700]/30 rounded-3xl p-6 shadow-[0_4px_20px_rgba(255,215,0,0.1)] hover:shadow-[0_10px_40px_rgba(226,88,34,0.15)] hover:-translate-y-2 transition-all duration-500 flex items-start gap-4 group">
-                <div className="w-14 h-14 rounded-2xl bg-white/50 backdrop-blur-sm border border-[#FFD700]/40 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-inner">
-                  {donor.icon}
-                </div>
-                <div>
-                  <h4 className="font-bold text-[#E25822] mb-1 leading-snug">
-                    {lang === 'en' ? donor.titleEn : donor.titleTe}
-                  </h4>
-                  <p className="text-gray-700 font-medium text-sm leading-relaxed">
-                    {lang === 'en' ? donor.descEn : donor.descTe}
-                  </p>
+              <div key={idx} className={`relative group rounded-3xl p-[2px] bg-gradient-to-br from-[#FFD700] via-orange-400 to-[#FFD700] shadow-[0_0_15px_rgba(255,215,0,0.1)] hover:shadow-[0_0_30px_rgba(255,215,0,0.3)] transition-all duration-500 hover:-translate-y-1 cursor-pointer w-full ${idx === 4 ? 'lg:col-span-2 lg:w-2/3 lg:mx-auto' : 'w-full'}`}>
+                <div className="bg-gradient-to-br from-[#2a0000] to-[#1a0000] rounded-[22px] p-4 sm:p-5 lg:p-6 h-full w-full flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left overflow-hidden relative">
+                  {/* Glowing background behind icon */}
+                  <div className="absolute top-0 left-0 w-24 h-24 bg-[#FFD700]/10 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
+                  
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-[#FFD700] to-orange-500 flex items-center justify-center text-xl sm:text-2xl shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-[0_0_15px_rgba(255,215,0,0.3)] relative z-10 border border-white/20">
+                    <span className="drop-shadow-md">{donor.icon}</span>
+                  </div>
+                  <div className="relative z-10 flex-1 min-w-0 w-full">
+                    <h4 className="font-black text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] to-yellow-200 mb-1.5 leading-snug break-words">
+                      {lang === 'en' ? donor.titleEn : donor.titleTe}
+                    </h4>
+                    <p className="text-gray-300 font-medium text-xs sm:text-sm leading-relaxed break-words">
+                      {lang === 'en' ? donor.descEn : donor.descTe}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
