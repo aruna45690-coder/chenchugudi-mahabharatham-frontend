@@ -1995,7 +1995,7 @@ export default function Home() {
                         role: 'నిర్వాహకులు',
                         roleEn: 'Organizer',
                         image: '/committee/4.jpg',
-                        imgClasses: 'object-cover object-[50%_35%] scale-[1.3]'
+                        imgClasses: 'object-cover object-[50%_45%] scale-[1.3]'
                       },
                       {
                         nameTe: 'శ్రీ పూల యశ్వంత్ రెడ్డి గారు',
