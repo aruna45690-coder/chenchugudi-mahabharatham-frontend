@@ -1955,7 +1955,7 @@ export default function Home() {
                   role: 'నిర్వాహకులు',
                   roleEn: 'Organizer',
                   image: '/committee/4.jpg',
-                  imgClasses: 'object-cover object-[50%_5%] scale-[1.15]'
+                  imgClasses: 'object-cover object-[50%_15%] scale-[1.7]'
                 },
               ].map((member, idx) => (
                 <motion.div
