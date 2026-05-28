@@ -1943,7 +1943,9 @@ export default function Home() {
                   descTe: 'S/o. శ్రీ పూల వెంకటరామారెడ్డి గారు, రెంటాలచేను',
                   descEn: 'S/o. Sri Poola Venkataramareddy, Rentalacheenu',
                   role: 'నిర్వాహకులు',
-                  roleEn: 'Organizer'
+                  roleEn: 'Organizer',
+                  image: '/committee/3.jpg',
+                  imgClasses: 'object-cover object-[50%_15%] scale-110'
                 },
                 {
                   nameTe: 'శ్రీ పూల అనిల్ రెడ్డి గారు',
@@ -1951,7 +1953,9 @@ export default function Home() {
                   descTe: 'S/o. శ్రీ పూలా పట్టాభి రామిరెడ్డి గారు, రెంటాలచేను',
                   descEn: 'S/o. Sri Poola Pattabhi Ramireddy, Rentalacheenu',
                   role: 'నిర్వాహకులు',
-                  roleEn: 'Organizer'
+                  roleEn: 'Organizer',
+                  image: '/committee/4.jpg',
+                  imgClasses: 'object-cover object-[50%_15%] scale-[1.15]'
                 },
               ].map((member, idx) => (
                 <motion.div
