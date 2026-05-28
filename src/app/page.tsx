@@ -974,11 +974,11 @@ export default function Home() {
                         const url = liveStreamSettings.url;
                         const platform = liveStreamSettings.platform;
                         if (platform === "youtube") {
-                          let videoId = url;
-                          if (url.includes("youtube.com/watch?v=")) videoId = url.split("v=")[1].split("&")[0];
-                          else if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1].split("?")[0];
-                          else if (url.includes("youtube.com/embed/")) return url;
-                          return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+                          const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|live\/|shorts\/))([^&?]+)/);
+                          if (match && match[1]) {
+                            return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1`;
+                          }
+                          return url;
                         }
                         if (platform === "facebook") return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=true`;
                         return url;
@@ -1144,15 +1144,11 @@ export default function Home() {
                             const platform = liveStreamSettings.platform;
                             
                             if (platform === "youtube") {
-                              let videoId = url;
-                              if (url.includes("youtube.com/watch?v=")) {
-                                videoId = url.split("v=")[1].split("&")[0];
-                              } else if (url.includes("youtu.be/")) {
-                                videoId = url.split("youtu.be/")[1].split("?")[0];
-                              } else if (url.includes("youtube.com/embed/")) {
-                                return url; // already embed
+                              const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|live\/|shorts\/))([^&?]+)/);
+                              if (match && match[1]) {
+                                return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1`;
                               }
-                              return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+                              return url;
                             } else if (platform === "facebook") {
                               return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=true`;
                             } else if (platform === "twitch") {
