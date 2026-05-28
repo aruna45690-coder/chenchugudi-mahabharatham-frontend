@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { useUser, useClerk, UserButton } from "@clerk/nextjs";
-import { getGalleryImages, uploadGalleryImage, deleteGalleryImage, getStats, getAnalyticsStats, getLiveStreamSettings, updateLiveStreamSettings, getAllAnnouncements, createAnnouncement, deleteAnnouncement, toggleAnnouncement, updateAnnouncement } from "@/lib/actions";
+import { getGalleryImages, uploadGalleryImage, deleteGalleryImage, reorderGalleryImages, getStats, getAnalyticsStats, getLiveStreamSettings, updateLiveStreamSettings, getAllAnnouncements, createAnnouncement, deleteAnnouncement, toggleAnnouncement, updateAnnouncement } from "@/lib/actions";
 interface Stats {
   activeAnnouncements: number;
   villages: number;
@@ -44,6 +44,43 @@ export default function AdminDashboard() {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  
+  // Reordering states
+  const [isReordering, setIsReordering] = useState(false);
+  const [savingOrder, setSavingOrder] = useState(false);
+
+  const handleMoveImage = (index: number, direction: number) => {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= galleryImages.length) return;
+    
+    const newGallery = [...galleryImages];
+    const temp = newGallery[index];
+    newGallery[index] = newGallery[newIndex];
+    newGallery[newIndex] = temp;
+    setGalleryImages(newGallery);
+  };
+
+  const handleSaveOrder = async () => {
+    setSavingOrder(true);
+    try {
+      // Map current array index to sortOrder (0 is top)
+      const itemsToUpdate = galleryImages.map((img, idx) => ({
+        publicId: img.publicId,
+        sortOrder: idx
+      })).filter(item => item.publicId); // Only update items with publicId in Cloudinary
+      
+      await reorderGalleryImages(itemsToUpdate);
+      alert("Sort order saved successfully!");
+      setIsReordering(false);
+      await fetchGallery();
+    } catch (err: any) {
+      console.error("Save order error:", err);
+      alert(err.message || "Failed to save order");
+    } finally {
+      setSavingOrder(false);
+    }
+  };
+
   const [eventDate, setEventDate] = useState(() => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -1055,7 +1092,42 @@ export default function AdminDashboard() {
                 </div>
               )}
 
-              <h3 className="text-lg font-bold mb-4">Recent Uploads</h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-bold">Recent Uploads</h3>
+                {galleryImages.length > 1 && (
+                  <div className="flex gap-2">
+                    {isReordering ? (
+                      <>
+                        <button
+                          onClick={() => {
+                            setIsReordering(false);
+                            fetchGallery(); // Reset order
+                          }}
+                          disabled={savingOrder}
+                          className="px-4 py-1.5 rounded-full text-sm font-bold bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors disabled:opacity-50"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={handleSaveOrder}
+                          disabled={savingOrder}
+                          className="px-4 py-1.5 rounded-full text-sm font-bold bg-green-600 text-white hover:bg-green-700 transition-colors shadow-md disabled:opacity-50 flex items-center gap-2"
+                        >
+                          {savingOrder ? <RefreshCw size={14} className="animate-spin" /> : null}
+                          Save Order
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => setIsReordering(true)}
+                        className="px-4 py-1.5 rounded-full text-sm font-bold bg-orange-100 text-orange-700 hover:bg-orange-200 transition-colors flex items-center gap-2"
+                      >
+                        <RefreshCw size={14} /> Reorder Images
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {galleryLoading && galleryImages.length === 0 ? (
                   // Skeletons
@@ -1071,8 +1143,8 @@ export default function AdminDashboard() {
                     <p className="text-sm text-gray-400 mt-1">Upload the first photo or video to start the gallery.</p>
                   </div>
                 ) : (
-                  galleryImages.map((image) => (
-                    <div key={image.id} className="aspect-square bg-gray-100 rounded-xl border border-gray-200 relative overflow-hidden group shadow-sm">
+                  galleryImages.map((image, index) => (
+                    <div key={image.id} className={`aspect-square bg-gray-100 rounded-xl border relative overflow-hidden group shadow-sm transition-all ${isReordering ? 'border-orange-400 border-2' : 'border-gray-200'}`}>
                       {image.mediaType === 'video' ? (
                         <div className="w-full h-full relative">
                           <video
@@ -1100,45 +1172,67 @@ export default function AdminDashboard() {
                         />
                       )}
                       
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
-                        <div>
-                          <p className="text-white text-xs font-bold truncate" title={image.title}>
-                            {image.title}
-                          </p>
-                          {image.eventName && (
-                            <p className="text-orange-300 text-[10px] font-bold mt-0.5 truncate">
-                              🎬 {image.eventName}
-                            </p>
-                          )}
-                          <p className="text-gray-300 text-[9px] mt-0.5">
-                            📅 {new Date(image.eventDate).toLocaleDateString()}
-                          </p>
+                      {isReordering ? (
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-between px-2">
+                          <button
+                            onClick={() => handleMoveImage(index, -1)}
+                            disabled={index === 0}
+                            className="p-2 bg-white rounded-full shadow-md text-orange-600 disabled:opacity-30 hover:bg-orange-50 transition-all hover:scale-110"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                          </button>
+                          <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md">
+                            {index + 1}
+                          </div>
+                          <button
+                            onClick={() => handleMoveImage(index, 1)}
+                            disabled={index === galleryImages.length - 1}
+                            className="p-2 bg-white rounded-full shadow-md text-orange-600 disabled:opacity-30 hover:bg-orange-50 transition-all hover:scale-110"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                          </button>
                         </div>
-                        <div className="flex justify-between items-center mt-auto">
-                          <span className="text-[10px] text-gray-300 truncate max-w-[50%]">
-                            By {image.uploadedBy}
-                          </span>
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleToggleFeature(image.id, image.isFeatured)}
-                              className={`p-1.5 rounded-full shadow transition-colors shrink-0 ${
-                                image.isFeatured 
-                                  ? 'bg-yellow-500 hover:bg-yellow-600 text-white' 
-                                  : 'bg-white/20 hover:bg-white/40 text-white'
-                              }`}
-                              title={image.isFeatured ? "Unpin from top" : "Pin to top"}
-                            >
-                              <Star size={12} className={image.isFeatured ? "fill-white" : ""} />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteImage(image.id)}
-                              className="text-white text-[10px] font-bold bg-red-600 hover:bg-red-700 px-2.5 py-1 rounded-full shadow transition-colors shrink-0"
-                            >
-                              Delete
-                            </button>
+                      ) : (
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
+                          <div>
+                            <p className="text-white text-xs font-bold truncate" title={image.title}>
+                              {image.title}
+                            </p>
+                            {image.eventName && (
+                              <p className="text-orange-300 text-[10px] font-bold mt-0.5 truncate">
+                                🎬 {image.eventName}
+                              </p>
+                            )}
+                            <p className="text-gray-300 text-[9px] mt-0.5">
+                              📅 {new Date(image.eventDate).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div className="flex justify-between items-center mt-auto">
+                            <span className="text-[10px] text-gray-300 truncate max-w-[50%]">
+                              By {image.uploadedBy}
+                            </span>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleToggleFeature(image.id, image.isFeatured)}
+                                className={`p-1.5 rounded-full shadow transition-colors shrink-0 ${
+                                  image.isFeatured 
+                                    ? 'bg-yellow-500 hover:bg-yellow-600 text-white' 
+                                    : 'bg-white/20 hover:bg-white/40 text-white'
+                                }`}
+                                title={image.isFeatured ? "Unpin from top" : "Pin to top"}
+                              >
+                                <Star size={12} className={image.isFeatured ? "fill-white" : ""} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteImage(image.id)}
+                                className="text-white text-[10px] font-bold bg-red-600 hover:bg-red-700 px-2.5 py-1 rounded-full shadow transition-colors shrink-0"
+                              >
+                                Delete
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   ))
                 )}

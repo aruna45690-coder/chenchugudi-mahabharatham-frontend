@@ -2026,7 +2026,6 @@ export default function Home() {
             viewport={{ once: true }}
             className="mb-16"
           >
-            <Users className="mx-auto text-[#580000] mb-4" size={56} />
             <h2 className="text-4xl md:text-5xl font-black text-[#580000] mb-6">{t.united}</h2>
             <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
               {t.unitedDesc}

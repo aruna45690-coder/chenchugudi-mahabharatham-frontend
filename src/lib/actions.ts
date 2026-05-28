@@ -222,6 +222,27 @@ export async function deleteGalleryImage(id: number) {
   }
 }
 
+export async function reorderGalleryImages(items: { publicId: string; sortOrder: number }[]) {
+  try {
+    const { isAdmin } = await checkAdminStatus();
+    if (!isAdmin) throw new Error("Unauthorized");
+    
+    const res = await fetch(`${BACKEND_URL}/api/gallery/reorder`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items })
+    });
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || "Failed to save sort order");
+    }
+    return await res.json();
+  } catch (error) {
+    console.error("Error in reorderGalleryImages server action:", error);
+    throw error;
+  }
+}
+
 // ── Record user page view for Daily Active User metrics ────────────────
 export async function recordPageView() {
   try {
