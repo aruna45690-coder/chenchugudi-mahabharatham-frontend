@@ -1932,7 +1932,8 @@ export default function Home() {
                   descTe: 'S/o. కీ॥శే॥ శ్రీ పూలా కృష్ణారెడ్డి గారు, రెంటాలచేను',
                   descEn: 'S/o. Late Sri Poola Krishnareddy, Rentalacheenu',
                   role: 'ధర్మకర్త',
-                  roleEn: 'Trustee'
+                  roleEn: 'Trustee',
+                  image: '/committee/2.jpg'
                 },
                 {
                   nameTe: 'శ్రీ పూల యశ్వంత్ రెడ్డి గారు',
