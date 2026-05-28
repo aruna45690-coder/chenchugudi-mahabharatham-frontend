@@ -173,27 +173,68 @@ export default function AdminDashboard() {
     setUploading(true);
     setUploadError(null);
 
-    const formData = new FormData();
-    if (file) {
-      formData.append("image", file);
-      formData.append("title", file.name.split(".")[0] || "Chenchugudi Mahabharatham Media");
-    } else {
-      formData.append("title", "YouTube Video " + Date.now());
-    }
-    
-    formData.append("mediaType", mediaType);
-    if (videoUrl) formData.append("videoUrl", videoUrl);
-    formData.append("uploadedBy", displayName);
-    formData.append("eventDate", eventDate);
-    if (eventName.trim()) {
-      formData.append("eventName", eventName.trim());
-    }
-    if (eventNameTe.trim()) {
-      formData.append("eventNameTe", eventNameTe.trim());
-    }
+    let imageUrl = '';
+    let publicId = '';
+    let finalMediaType = mediaType;
+    let title = "YouTube Video " + Date.now();
 
     try {
-      await uploadGalleryImage(formData);
+      if (file) {
+        title = file.name.split(".")[0] || "Chenchugudi Mahabharatham Media";
+        
+        // 1. Get signature from our backend
+        const sigRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/cloudinary-sign`);
+        if (!sigRes.ok) throw new Error("Failed to get upload signature");
+        const sigData = await sigRes.json();
+        
+        // 2. Upload to Cloudinary
+        const cloudFormData = new FormData();
+        cloudFormData.append("file", file);
+        cloudFormData.append("api_key", sigData.apiKey);
+        cloudFormData.append("timestamp", sigData.timestamp);
+        cloudFormData.append("signature", sigData.signature);
+        cloudFormData.append("folder", "chenchugudi-gallery");
+        
+        const cloudRes = await fetch(`https://api.cloudinary.com/v1_1/${sigData.cloudName}/auto/upload`, {
+          method: "POST",
+          body: cloudFormData
+        });
+        
+        if (!cloudRes.ok) {
+          const errData = await cloudRes.text();
+          throw new Error("Cloudinary upload failed: " + errData);
+        }
+        const cloudResult = await cloudRes.json();
+        
+        imageUrl = cloudResult.secure_url;
+        publicId = cloudResult.public_id;
+        finalMediaType = cloudResult.resource_type === 'video' ? 'VIDEO' : 'IMAGE';
+      }
+
+      // 3. Send data to our backend
+      const payload = {
+        title,
+        mediaType: finalMediaType,
+        imageUrl,
+        publicId,
+        videoUrl: videoUrl || undefined,
+        uploadedBy: displayName,
+        eventDate: eventDate,
+        eventName: eventName.trim() || undefined,
+        eventNameTe: eventNameTe.trim() || undefined
+      };
+
+      const saveRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/gallery`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      
+      if (!saveRes.ok) {
+        const errorText = await saveRes.text();
+        throw new Error(errorText || "Failed to save to database");
+      }
+
       await fetchGallery();
     } catch (err: any) {
       console.error("Upload error:", err);
