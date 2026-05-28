@@ -1960,12 +1960,12 @@ export default function Home() {
                   className="flex flex-col items-center text-center group"
                 >
                   <div className="relative mb-5">
-                    <div className="w-36 h-36 md:w-40 md:h-40 rounded-full border-[3px] border-[#FFD700]/50 group-hover:border-[#FFD700] transition-all duration-500 p-2 bg-gradient-to-br from-white/10 to-transparent shadow-[0_0_30px_rgba(255,215,0,0.15)] group-hover:shadow-[0_0_50px_rgba(255,215,0,0.5)] overflow-hidden flex items-center justify-center relative group-hover:-translate-y-2">
+                    <div className="w-36 h-36 md:w-40 md:h-40 rounded-full border-[3px] border-[#FFD700]/50 group-hover:border-[#FFD700] transition-all duration-500 bg-gradient-to-br from-white/10 to-transparent shadow-[0_0_30px_rgba(255,215,0,0.15)] group-hover:shadow-[0_0_50px_rgba(255,215,0,0.5)] overflow-hidden flex items-center justify-center relative group-hover:-translate-y-2">
                       {/* Profile Image */}
                       {member.image ? (
-                        <img src={member.image} alt={lang === 'en' ? member.nameEn : member.nameTe} className="w-full h-full object-cover object-top rounded-full relative z-10 m-1.5 shadow-inner" />
+                        <img src={member.image} alt={lang === 'en' ? member.nameEn : member.nameTe} className="w-full h-full object-cover object-top rounded-full relative z-10 shadow-inner" />
                       ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#580000] via-[#8B0000] to-[#3a0000] flex items-center justify-center rounded-full m-1.5 shadow-inner z-10">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#580000] via-[#8B0000] to-[#3a0000] flex items-center justify-center rounded-full shadow-inner z-10">
                           <User size={56} className="text-[#FFD700]/40 group-hover:text-[#FFD700] group-hover:scale-110 transition-all duration-500" />
                         </div>
                       )}
