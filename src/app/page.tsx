@@ -1580,9 +1580,9 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           {/* Section Header */}
           <div className="flex flex-col items-center gap-3 mb-12 text-center">
-            <span className="text-xs font-bold tracking-[0.3em] uppercase text-[#E25822]/70">— {lang === 'en' ? 'Generous Contributors' : 'దేవస్థాన మహాదాతలు'} —</span>
+            <span className="text-xs font-bold tracking-[0.3em] uppercase text-[#E25822]/70">— {lang === 'en' ? 'Generous Contributors' : 'దేవస్థాన మహా దాతలు'} —</span>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-[#580000] flex items-center gap-2">
-              <span className="text-orange-500">🙏</span> {lang === 'en' ? 'Divine Donors' : 'పూజా ఉభయ దాతలు'}
+              <span className="text-orange-500">🙏</span> {lang === 'en' ? 'Divine Donors' : 'పూజా ఉభయదాతలు'}
             </h2>
             <div className="divider-gold w-32" />
             <p className="text-gray-500 text-sm max-w-xl mt-2">
@@ -2004,8 +2004,7 @@ export default function Home() {
                         descEn: 'S/o. Sri Poola Venkatramareddy, Rentalacheenu',
                         role: 'నిర్వాహకులు',
                         roleEn: 'Organizer',
-                        image: '/committee/3.jpg',
-                        imgClasses: 'object-cover object-top origin-top scale-[1.25]'
+                        image: '/committee/3.png'
                       },
                     ].map((member, idx) => renderMember(member, idx + 1, false))}
                   </div>
