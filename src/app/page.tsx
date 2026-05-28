@@ -1920,7 +1920,7 @@ export default function Home() {
                 {
                   nameTe: 'శ్రీ పూలా పట్టాభి రామారెడ్డి గారు',
                   nameEn: 'Sri Poola Pattabhi Ramareddy',
-                  descTe: 'S/o. కీ॥శే॥ శ్రీ పూలా కృష్ణారెడ్డి గారు, రెంటాలచేను',
+                  descTe: 'S/o. కీ॥శే॥ శ్రీ పూల కృష్ణారెడ్డి గారు, రెంటాలచేను',
                   descEn: 'S/o. Late Sri Poola Krishnareddy, Rentalacheenu',
                   role: 'ధర్మకర్త',
                   roleEn: 'Chief Trustee',
@@ -1928,9 +1928,9 @@ export default function Home() {
                   imgClasses: 'object-cover object-[50%_10%] scale-110'
                 },
                 {
-                  nameTe: 'శ్రీ పూల వెంకట్రామిరెడ్డి గారు',
-                  nameEn: 'Sri Poola Venkatramireddy',
-                  descTe: 'S/o. కీ॥శే॥ శ్రీ పూలా కృష్ణారెడ్డి గారు, రెంటాలచేను',
+                  nameTe: 'శ్రీ పూల వెంకట్రామారెడ్డి గారు',
+                  nameEn: 'Sri Poola Venkatramareddy',
+                  descTe: 'S/o. కీ॥శే॥ శ్రీ పూల కృష్ణారెడ్డి గారు, రెంటాలచేను',
                   descEn: 'S/o. Late Sri Poola Krishnareddy, Rentalacheenu',
                   role: 'ధర్మకర్త',
                   roleEn: 'Trustee',
@@ -1940,8 +1940,8 @@ export default function Home() {
                 {
                   nameTe: 'శ్రీ పూల యశ్వంత్ రెడ్డి గారు',
                   nameEn: 'Sri Poola Yashwanth Reddy',
-                  descTe: 'S/o. శ్రీ పూల వెంకట్రామిరెడ్డి గారు, రెంటాలచేను',
-                  descEn: 'S/o. Sri Poola Venkatramireddy, Rentalacheenu',
+                  descTe: 'S/o. శ్రీ పూల వెంకట్రామారెడ్డి గారు, రెంటాలచేను',
+                  descEn: 'S/o. Sri Poola Venkatramareddy, Rentalacheenu',
                   role: 'నిర్వాహకులు',
                   roleEn: 'Organizer',
                   image: '/committee/3.jpg',
