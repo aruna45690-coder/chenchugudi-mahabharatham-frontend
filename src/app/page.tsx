@@ -519,6 +519,30 @@ export default function Home() {
 
   useEffect(() => {
     loadData();
+    
+    // Set up polling for live stream status every 30 seconds
+    const liveStreamInterval = setInterval(async () => {
+      try {
+        const liveData = await getLiveStreamSettings();
+        if (liveData.success) {
+          setLiveStreamSettings(prev => {
+            // Only update state if something actually changed to prevent unnecessary re-renders
+            if (prev?.isActive !== liveData.isLiveActive || prev?.url !== liveData.liveStreamUrl) {
+              return { 
+                url: liveData.liveStreamUrl, 
+                platform: liveData.liveStreamPlatform || 'youtube',
+                isActive: liveData.isLiveActive 
+              };
+            }
+            return prev;
+          });
+        }
+      } catch (e) {
+        // Silently fail polling
+      }
+    }, 30000);
+
+    return () => clearInterval(liveStreamInterval);
   }, [loadData]);
 
   // Handle scroll for sticky nav
