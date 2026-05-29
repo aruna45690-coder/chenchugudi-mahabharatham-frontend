@@ -2346,10 +2346,10 @@ export default function Home() {
               <div className="mt-8 pt-6 border-t border-gray-100">
                 <h4 className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-4">{lang === 'en' ? 'Follow Updates Live' : 'లైవ్ అప్‌డేట్స్'}</h4>
                 <div className="flex gap-4">
-                  <a href="#" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors font-bold text-sm">
+                  <a href="https://www.youtube.com/@dtosmedia" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors font-bold text-sm shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0">
                     <Play size={18} /> YouTube
                   </a>
-                  <a href="#" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors font-bold text-sm">
+                  <a href="#" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors font-bold text-sm shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0">
                     <Users size={18} /> Facebook
                   </a>
                 </div>
