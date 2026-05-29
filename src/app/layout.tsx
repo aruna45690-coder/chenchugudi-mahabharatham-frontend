@@ -27,13 +27,13 @@ export const metadata: Metadata = {
   keywords: "Chenchugudi, Mahabharatham, Festival, Tirupati, Vedurukuppam, Draupadi, Dharmarajula, Telugu Temple, Chittoor District, Mahabharat Festival 2026, Hindu Festival",
   authors: [{ name: 'Chenchugudi Temple Committee' }],
   openGraph: {
-    title: "Chenchugudi Mahabharatham Mahotsavam | 65th Annual Festival",
-    description: "Join the 65th Annual Chenchugudi Mahabharatham Festival, uniting 24 villages in Chenchugudi, Vedurukuppam Mandal.",
+    title: "చెంచుగుడి మహాభారత మహోత్సవం | 65వ వార్షికోత్సవం",
+    description: "వెదురుకుప్పం మండలం, చెంచుగుడిలో 24 గ్రామాల కలయికతో అత్యంత వైభవంగా జరుగుతున్న 65వ వార్షిక శ్రీ మహాభారత మహోత్సవంలో పాల్గొనండి.",
     url: "https://chenchugudi-mahabharatham.vercel.app",
-    siteName: "Chenchugudi Mahabharatham",
+    siteName: "చెంచుగుడి మహాభారతం",
     images: [
       {
-        url: '/images/mahabharatham-hero.jpg',
+        url: '/images/og-banner.png',
         width: 1200,
         height: 630,
         alt: 'Chenchugudi Mahabharatham Festival Banner',
@@ -44,9 +44,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Chenchugudi Mahabharatham Mahotsavam",
-    description: "Join the 65th Annual Chenchugudi Mahabharatham Festival, uniting 24 villages in Chenchugudi, Vedurukuppam Mandal.",
-    images: ['/images/mahabharatham-hero.jpg'],
+    title: "చెంచుగుడి మహాభారత మహోత్సవం",
+    description: "వెదురుకుప్పం మండలం, చెంచుగుడిలో 24 గ్రామాల కలయికతో అత్యంత వైభవంగా జరుగుతున్న 65వ వార్షిక శ్రీ మహాభారత మహోత్సవంలో పాల్గొనండి.",
+    images: ['/images/og-banner.png'],
   },
   manifest: "/manifest.json",
   appleWebApp: {
