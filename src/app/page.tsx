@@ -668,7 +668,7 @@ export default function Home() {
           <div className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
             {[
               { href: '#home', label: t.nav.home },
-              ...(liveStreamSettings?.isActive ? [{ href: '#live', label: t.nav.live }] : []),
+              ...(liveStreamSettings?.isActive ? [{ href: '#home', label: t.nav.live }] : []),
               { href: '#announcements', label: lang === 'en' ? 'News' : 'వార్తలు' },
               { href: '#schedule', label: t.nav.schedule },
               {
@@ -768,7 +768,7 @@ export default function Home() {
           >
             {[
               { href: '#home', label: t.nav.home },
-              ...(liveStreamSettings?.isActive ? [{ href: '#live', label: t.nav.live }] : []),
+              ...(liveStreamSettings?.isActive ? [{ href: '#home', label: t.nav.live }] : []),
               { href: '#announcements', label: lang === 'en' ? 'News' : 'వార్తలు' },
               { href: '#schedule', label: t.nav.schedule },
               { href: '#programs', label: t.nav.harikatha, onClick: () => setActiveProgramTab("harikatha") },
@@ -1110,83 +1110,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ LIVE STREAM SECTION ════════════════════════════ */}
-      {liveStreamSettings?.isActive && liveStreamSettings.url && (
-        <section id="live" className="py-12 md:py-16 px-6 relative bg-[#fffdf5]">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#3D0000] to-[#fffdf5] h-[300px] z-0"></div>
-          <div className="max-w-4xl mx-auto relative z-10">
-            {/* Section Header */}
-            <div className="flex flex-col items-center gap-3 mb-8 text-center">
-              <span className="inline-flex items-center gap-2 bg-red-500/20 text-red-400 border border-red-500/30 px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase shadow-[0_0_15px_rgba(239,68,68,0.4)]">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> Live Now
-              </span>
-              <h2 className="font-display text-2xl md:text-4xl font-black text-white drop-shadow-md">{t.liveStream}</h2>
-              <button
-                onClick={() => setIsLiveStreamExpanded(!isLiveStreamExpanded)}
-                className="mt-2 px-6 py-2.5 rounded-full border border-white/20 text-white font-bold text-sm uppercase tracking-wider hover:bg-white/10 hover:border-white/40 transition-all duration-300 mx-auto inline-flex items-center gap-2 shadow-lg"
-              >
-                {isLiveStreamExpanded ? (lang === 'en' ? 'Close Player' : 'ప్లేయర్ మూసివేయి') : (lang === 'en' ? 'Watch Live Now' : 'ఇప్పుడే లైవ్ చూడండి')}
-              </button>
-            </div>
-
-            <AnimatePresence>
-              {isLiveStreamExpanded && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                  className="relative overflow-hidden"
-                >
-                  <div className="pt-2">
-                    <div className="rounded-3xl p-1 md:p-2 bg-gradient-to-br from-[#FFD700] via-[#E25822] to-[#FFD700] shadow-[0_20px_50px_rgba(226,88,34,0.3)] animate-pulse-glow">
-                      <div className="rounded-[22px] overflow-hidden bg-black aspect-video relative">
-                        <iframe
-                          className="w-full h-full absolute top-0 left-0"
-                          src={(() => {
-                            const url = liveStreamSettings.url;
-                            const platform = liveStreamSettings.platform;
-                            
-                            if (platform === "youtube") {
-                              let videoId = null;
-                              const match = url.match(/(?:v=|v\/|embed\/|youtu\.be\/|shorts\/|live\/)([a-zA-Z0-9_-]{11})/);
-                              if (match) videoId = match[1];
-                              else if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) videoId = url.trim();
-                              
-                              if (videoId) {
-                                return `https://www.youtube.com/embed/${videoId}?playsinline=1&rel=0`;
-                              }
-                              return url;
-                            } else if (platform === "facebook") {
-                              return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=true`;
-                            } else if (platform === "twitch") {
-                              let channel = url;
-                              if (url.includes("twitch.tv/")) {
-                                channel = url.split("twitch.tv/")[1].split("?")[0];
-                              }
-                              return `https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname}&autoplay=true`;
-                            } else if (platform === "instagram") {
-                              if (url.includes("instagram.com/p/") || url.includes("instagram.com/reel/")) {
-                                return `${url.split('?')[0]}embed/`;
-                              }
-                              return url;
-                            }
-                            
-                            return url;
-                          })()}
-                          title="Chenchugudi Mahabharatham Live Stream"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        ></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </section>
-      )}
 
       {/* ══ ANNOUNCEMENTS SECTION ══════════════════════════ */}
       <section id="announcements" className="py-12 md:py-16 px-6" style={{ background: 'linear-gradient(180deg, #fffdf5 0%, #fff8ec 100%)' }}>
