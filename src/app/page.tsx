@@ -1270,12 +1270,12 @@ export default function Home() {
                     <button onClick={subscribeToPushNotifications} disabled={isSubscribing} className="shrink-0 bg-[#E25822] text-white hover:bg-[#c44719] hover:scale-105 transition-all px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg disabled:opacity-50">
                       <Bell size={14} className={isSubscribing ? "animate-pulse" : ""} /> 
                       {isSubscribing 
-                        ? (lang === 'en' ? "Enabling..." : "ఆన్ అవుతోంది...") 
-                        : (lang === 'en' ? "Enable 6:00 AM Alerts" : "6:00 AM అలర్ట్స్ ఆన్ చేయండి")}
+                        ? (lang === 'en' ? "Allowing..." : "అనుమతించబడుతోంది...") 
+                        : (lang === 'en' ? "Allow Notifications" : "నోటిఫికేషన్స్ అనుమతించండి")}
                     </button>
                   ) : (
                     <div className="shrink-0 bg-green-500 text-white px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
-                      <Bell size={14} /> {lang === 'en' ? "Alerts Enabled" : "అలర్ట్స్ ఆన్ అయ్యాయి"}
+                      <Bell size={14} /> {lang === 'en' ? "Notifications Allowed" : "నోటిఫికేషన్స్ అనుమతించబడ్డాయి"}
                     </div>
                   )}
 
