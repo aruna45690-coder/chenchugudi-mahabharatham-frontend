@@ -211,6 +211,21 @@ const annadanamDonors = [
   }
 ];
 
+const urlBase64ToUint8Array = (base64String: string) => {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+};
+
 export default function Home() {
   const [lang, setLang] = useState<"en" | "te">("te");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -227,6 +242,72 @@ export default function Home() {
   const { isSignedIn } = useAuth();
   const { signOut } = useClerk();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  // Check if already subscribed on load
+  useEffect(() => {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.pushManager.getSubscription().then(subscription => {
+          if (subscription) setIsSubscribed(true);
+        });
+      }).catch(console.error);
+    }
+  }, []);
+
+  const subscribeToPushNotifications = async () => {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      alert(lang === 'en' ? 'Push notifications are not supported in your browser.' : 'మీ బ్రౌజర్ నోటిఫికేషన్స్‌ను సపోర్ట్ చేయడం లేదు.');
+      return;
+    }
+
+    setIsSubscribing(true);
+    try {
+      // Request permission
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        alert(lang === 'en' ? 'Notifications permission denied.' : 'నోటిఫికేషన్స్ అనుమతించబడలేదు.');
+        setIsSubscribing(false);
+        return;
+      }
+
+      // Register SW
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      await navigator.serviceWorker.ready;
+
+      // Subscribe
+      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+      if (!vapidKey) throw new Error('VAPID key not found');
+      
+      let subscription = await registration.pushManager.getSubscription();
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(vapidKey)
+        });
+      }
+
+      // Send to backend
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(subscription)
+      });
+
+      if (res.ok) {
+        setIsSubscribed(true);
+        alert(lang === 'en' ? 'Successfully subscribed to 6:00 AM alerts!' : '6:00 AM అలర్ట్స్ విజయవంతంగా ఆన్ చేయబడ్డాయి!');
+      } else {
+        throw new Error('Backend failed to save subscription');
+      }
+    } catch (error) {
+      console.error('Subscription error:', error);
+      alert(lang === 'en' ? 'Failed to subscribe. Please try again.' : 'సబ్స్క్రైబ్ చేయడం విఫలమైంది.');
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -1228,42 +1309,57 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
-                <button onClick={() => {
-                  const dateStr = dailyDigest.dateObj.toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                  let text = lang === 'en' 
-                    ? `*Today's Chenchugudi Festival Digest*\n_${dateStr}_\n\n`
-                    : `*ఈరోజు చెంచుగుడి ఉత్సవ విశేషాలు*\n_${dateStr}_\n\n`;
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {!isSubscribed ? (
+                    <button onClick={subscribeToPushNotifications} disabled={isSubscribing} className="shrink-0 bg-[#E25822] text-white hover:bg-[#c44719] hover:scale-105 transition-all px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg disabled:opacity-50">
+                      <Bell size={14} className={isSubscribing ? "animate-pulse" : ""} /> 
+                      {isSubscribing 
+                        ? (lang === 'en' ? "Enabling..." : "ఆన్ అవుతోంది...") 
+                        : (lang === 'en' ? "Enable 6:00 AM Alerts" : "6:00 AM అలర్ట్స్ ఆన్ చేయండి")}
+                    </button>
+                  ) : (
+                    <div className="shrink-0 bg-green-500 text-white px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
+                      <Bell size={14} /> {lang === 'en' ? "Alerts Enabled" : "అలర్ట్స్ ఆన్ అయ్యాయి"}
+                    </div>
+                  )}
 
-                  if (dailyDigest.mainEvent) {
-                    text += lang === 'en' 
-                      ? `*Main Event:* ${dailyDigest.mainEvent.eventEn}\n- Organizers: ${dailyDigest.mainEvent.sponsorEn || 'Committee'}\n\n`
-                      : `*ప్రధాన ఉత్సవం:* ${dailyDigest.mainEvent.eventTe}\n- నిర్వాహకులు: ${dailyDigest.mainEvent.sponsorTe || 'కమిటీ'}\n\n`;
-                  }
+                  <button onClick={() => {
+                    const dateStr = dailyDigest.dateObj.toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    let text = lang === 'en' 
+                      ? `*Today's Chenchugudi Festival Digest*\n_${dateStr}_\n\n`
+                      : `*ఈరోజు చెంచుగుడి ఉత్సవ విశేషాలు*\n_${dateStr}_\n\n`;
 
-                  if (dailyDigest.yagnam && dailyDigest.yagnam.length > 0) {
-                    text += lang === 'en' ? `*Daily Yagnam & Pooja Donors:*\n` : `*నిత్య యజ్ఞం, పూజ ఉభయదాతలు:*\n`;
-                    dailyDigest.yagnam.forEach((d: any) => {
-                      text += `- ${lang === 'en' ? d.nameEn : d.nameTe} (${lang === 'en' ? (d.locationEn || d.locEn) : (d.locationTe || d.locTe)})\n`;
-                    });
-                    text += `\n`;
-                  }
+                    if (dailyDigest.mainEvent) {
+                      text += lang === 'en' 
+                        ? `*Main Event:* ${dailyDigest.mainEvent.eventEn}\n- Organizers: ${dailyDigest.mainEvent.sponsorEn || 'Committee'}\n\n`
+                        : `*ప్రధాన ఉత్సవం:* ${dailyDigest.mainEvent.eventTe}\n- నిర్వాహకులు: ${dailyDigest.mainEvent.sponsorTe || 'కమిటీ'}\n\n`;
+                    }
 
-                  if (dailyDigest.annadanam && dailyDigest.annadanam.length > 0) {
-                    text += lang === 'en' ? `*Annadanam Donors:*\n` : `*అన్నదాన వితరణ దాతలు:*\n`;
-                    dailyDigest.annadanam.forEach((d: any) => {
-                      text += `- ${lang === 'en' ? d.descEn : d.descTe} (సమయం: ${lang === 'en' ? d.timeEn : d.timeTe})\n`;
-                    });
-                    text += `\n`;
-                  }
-                  
-                  text += lang === 'en'
-                    ? `*For more details and live updates please visit our website:*\nhttps://chenchugudi-mahabharatham.vercel.app/\n\n*May the blessings of Lord Krishna be with you!*`
-                    : `*మరిన్ని వివరాలు మరియు లైవ్ అప్డేట్స్ కోసం దయచేసి మా వెబ్సైట్ను సందర్శించండి:*\nhttps://chenchugudi-mahabharatham.vercel.app/\n\n*శ్రీ కృష్ణ పరమాత్మ ఆశీస్సులు మీకు కలగాలి!*`;
+                    if (dailyDigest.yagnam && dailyDigest.yagnam.length > 0) {
+                      text += lang === 'en' ? `*Daily Yagnam & Pooja Donors:*\n` : `*నిత్య యజ్ఞం, పూజ ఉభయదాతలు:*\n`;
+                      dailyDigest.yagnam.forEach((d: any) => {
+                        text += `- ${lang === 'en' ? d.nameEn : d.nameTe} (${lang === 'en' ? (d.locationEn || d.locEn) : (d.locationTe || d.locTe)})\n`;
+                      });
+                      text += `\n`;
+                    }
 
-                  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-                }} className="shrink-0 bg-[#FFD700] text-[#580000] hover:bg-white hover:scale-105 transition-all px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg">
-                  <MessageCircle size={14} /> {lang === 'en' ? "Share Today's Schedule" : "ఈరోజు వివరాలు షేర్ చేయండి"}
-                </button>
+                    if (dailyDigest.annadanam && dailyDigest.annadanam.length > 0) {
+                      text += lang === 'en' ? `*Annadanam Donors:*\n` : `*అన్నదాన వితరణ దాతలు:*\n`;
+                      dailyDigest.annadanam.forEach((d: any) => {
+                        text += `- ${lang === 'en' ? d.descEn : d.descTe} (సమయం: ${lang === 'en' ? d.timeEn : d.timeTe})\n`;
+                      });
+                      text += `\n`;
+                    }
+                    
+                    text += lang === 'en'
+                      ? `*For more details and live updates please visit our website:*\nhttps://chenchugudi-mahabharatham.vercel.app/\n\n*May the blessings of Lord Krishna be with you!*`
+                      : `*మరిన్ని వివరాలు మరియు లైవ్ అప్డేట్స్ కోసం దయచేసి మా వెబ్సైట్ను సందర్శించండి:*\nhttps://chenchugudi-mahabharatham.vercel.app/\n\n*శ్రీ కృష్ణ పరమాత్మ ఆశీస్సులు మీకు కలగాలి!*`;
+
+                    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                  }} className="shrink-0 bg-[#FFD700] text-[#580000] hover:bg-white hover:scale-105 transition-all px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
+                    <MessageCircle size={14} /> {lang === 'en' ? "Share Schedule" : "వివరాలు షేర్ చేయండి"}
+                  </button>
+                </div>
               </div>
 
               {/* Digest Content */}
