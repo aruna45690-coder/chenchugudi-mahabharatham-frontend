@@ -216,6 +216,7 @@ export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [siteStats, setSiteStats] = useState<SiteStats | null>(null);
   const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [dailyDigest, setDailyDigest] = useState<any>(null);
   const [galleryImages, setGalleryImages] = useState<any[]>([]);
   const [activeYearData, setActiveYearData] = useState<any>(null);
   const [liveStreamSettings, setLiveStreamSettings] = useState<{ url: string; platform: string; isActive: boolean } | null>(null);
@@ -505,40 +506,53 @@ export default function Home() {
       
       // Check for automatic announcements based on today's date
       const istNow = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-      const todaysEvents = annadanamDonors.filter((item: any) => {
-        if (!item.date) return false;
-        const parts = item.date.split('-');
-        if (parts.length === 3) {
-          const d = parseInt(parts[0]);
-          const m = parseInt(parts[1]);
-          const y = parseInt(parts[2]);
-          return d === istNow.getDate() && m === (istNow.getMonth() + 1) && y === istNow.getFullYear();
-        }
-        return false;
+      
+      const parseDateStr = (dateStr: string) => {
+        if (!dateStr) return null;
+        const parts = dateStr.split('-');
+        if (parts.length === 3) return { d: parseInt(parts[0]), m: parseInt(parts[1]), y: parseInt(parts[2]) };
+        return null;
+      };
+
+      const isToday = (parsed: any) => {
+        if (!parsed) return false;
+        return parsed.d === istNow.getDate() && parsed.m === (istNow.getMonth() + 1) && parsed.y === istNow.getFullYear();
+      };
+
+      const todaysEvents = annadanamDonors.filter((item: any) => isToday(parseDateStr(item.date)));
+      
+      const yagnamList = activeYear?.sponsors || yagnamDonors;
+      const todaysYagnam = yagnamList.filter((item: any) => {
+        const dStr = item.date || item.dateEn || item.dateTe;
+        return isToday(parseDateStr(dStr));
       });
 
-      let finalAnnouncements = announceList;
-      if (todaysEvents.length > 0) {
-        // Only trigger announcement after 9:40 AM
-        const currentHour = istNow.getHours();
-        const currentMinute = istNow.getMinutes();
-        
-        if (currentHour > 9 || (currentHour === 9 && currentMinute >= 40)) {
-          const autoAnns = todaysEvents.map((event: any, i: number) => ({
-            id: `auto-event-${i}`,
-            title: `🌟 Today's Event: ${event.dayEn}`,
-            titleTe: `🌟 ఈరోజు కార్యక్రమం: ${event.dayTe}`,
-            body: `${event.descEn} (${event.timeEn})`,
-            bodyTe: `${event.descTe} (${event.timeTe})`,
-            isActive: true,
-            createdAt: new Date().toISOString(),
-            isAutomatic: true,
-          }));
-          finalAnnouncements = [...autoAnns, ...announceList];
+      const currentHour = istNow.getHours();
+      
+      // Only build digest after 6:00 AM
+      if (currentHour >= 6) {
+        // Find today's main event from timeline
+        const todaysMainEvent = (activeYear?.events || []).find((item: any) => {
+          const dStr = item.date || item.dateEn || item.dateTe;
+          return isToday(parseDateStr(dStr));
+        });
+
+        // Determine if we are within the festival dates (May 29 - June 7, 2026) for Harikatha/Drama
+        const isFestivalDay = (istNow.getFullYear() === 2026 && istNow.getMonth() === 4 && istNow.getDate() >= 29) || 
+                              (istNow.getFullYear() === 2026 && istNow.getMonth() === 5 && istNow.getDate() <= 7);
+
+        if (todaysEvents.length > 0 || todaysYagnam.length > 0 || todaysMainEvent || isFestivalDay) {
+          setDailyDigest({
+            dateObj: istNow,
+            annadanam: todaysEvents,
+            yagnam: todaysYagnam,
+            mainEvent: todaysMainEvent,
+            isFestivalDay: isFestivalDay
+          });
         }
       }
       
-      setAnnouncements(finalAnnouncements);
+      setAnnouncements(announceList);
       setGalleryImages(galleryList);
       setActiveYearData(activeYear);
       if (liveData.success) {
@@ -1185,6 +1199,131 @@ export default function Home() {
             <h2 className="font-display text-3xl md:text-4xl font-bold text-[#580000]">{t.announcements}</h2>
             <div className="divider-gold w-32" />
           </motion.div>
+
+          {/* DAILY DIGEST WIDGET */}
+          {dailyDigest && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-12 relative overflow-hidden rounded-[2rem] border border-[#FFD700]/40 shadow-[0_20px_50px_rgba(226,88,34,0.15)]"
+              style={{ background: 'linear-gradient(135deg, #fffdf5 0%, #fff3e0 100%)' }}
+            >
+              {/* Decorative background glow */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#E25822]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#FFD700]/20 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20"></div>
+
+              {/* Top Banner Bar */}
+              <div className="bg-gradient-to-r from-[#580000] via-[#7a0000] to-[#580000] px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 relative z-10">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl animate-pulse">📅</span>
+                  <div>
+                    <h3 className="text-[#FFD700] font-black text-lg md:text-xl uppercase tracking-widest leading-none">
+                      {lang === 'en' ? "Today's Festival Digest" : "ఈరోజు ఉత్సవ విశేషాలు"}
+                    </h3>
+                    <p className="text-white/80 font-bold text-xs mt-1 uppercase tracking-widest">
+                      {dailyDigest.dateObj.toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </p>
+                  </div>
+                </div>
+                <button onClick={() => {
+                  let text = lang === 'en' 
+                    ? `*Today's Chenchugudi Festival Digest*\n\n`
+                    : `*ఈరోజు చెంచుగుడి ఉత్సవ విశేషాలు*\n\n`;
+
+                  if (dailyDigest.mainEvent) {
+                    text += lang === 'en' 
+                      ? `*Main Event:* ${dailyDigest.mainEvent.eventEn}\n- Organizers: ${dailyDigest.mainEvent.sponsorEn || 'Committee'}\n\n`
+                      : `*ప్రధాన ఉత్సవం:* ${dailyDigest.mainEvent.eventTe}\n- నిర్వాహకులు: ${dailyDigest.mainEvent.sponsorTe || 'కమిటీ'}\n\n`;
+                  }
+
+                  if (dailyDigest.yagnam && dailyDigest.yagnam.length > 0) {
+                    text += lang === 'en' ? `*Daily Yagnam & Pooja Donors:*\n` : `*నిత్య యజ్ఞం, పూజ ఉభయదాతలు:*\n`;
+                    dailyDigest.yagnam.forEach((d: any) => {
+                      text += `- ${lang === 'en' ? d.nameEn : d.nameTe} (${lang === 'en' ? (d.locationEn || d.locEn) : (d.locationTe || d.locTe)})\n`;
+                    });
+                    text += `\n`;
+                  }
+
+                  if (dailyDigest.annadanam && dailyDigest.annadanam.length > 0) {
+                    text += lang === 'en' ? `*Annadanam Donors:*\n` : `*అన్నదాన వితరణ దాతలు:*\n`;
+                    dailyDigest.annadanam.forEach((d: any) => {
+                      text += `- ${lang === 'en' ? d.descEn : d.descTe} (సమయం: ${lang === 'en' ? d.timeEn : d.timeTe})\n`;
+                    });
+                    text += `\n`;
+                  }
+                  
+                  text += lang === 'en'
+                    ? `*For more details and live updates please visit our website:*\nhttps://chenchugudi-mahabharatham.vercel.app/\n\n*May the blessings of Lord Krishna be with you!*`
+                    : `*మరిన్ని వివరాలు మరియు లైవ్ అప్డేట్స్ కోసం దయచేసి మా వెబ్సైట్ను సందర్శించండి:*\nhttps://chenchugudi-mahabharatham.vercel.app/\n\n*శ్రీ కృష్ణ పరమాత్మ ఆశీస్సులు మీకు కలగాలి!*`;
+
+                  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                }} className="shrink-0 bg-[#FFD700] text-[#580000] hover:bg-white hover:scale-105 transition-all px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg">
+                  <MessageCircle size={14} /> {lang === 'en' ? "Share Today's Schedule" : "ఈరోజు వివరాలు షేర్ చేయండి"}
+                </button>
+              </div>
+
+              {/* Digest Content */}
+              <div className="p-6 md:p-8 relative z-10">
+                <div className="space-y-6 max-w-3xl mx-auto">
+                  
+                  {/* Main Event */}
+                  {dailyDigest.mainEvent && (
+                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 border border-orange-200/50 shadow-sm">
+                      <div className="flex items-start gap-3">
+                        <span className="text-2xl mt-0.5">{dailyDigest.mainEvent.icon || '🕉️'}</span>
+                        <div>
+                          <p className="text-[#E25822] font-black text-xs uppercase tracking-widest mb-1">{lang === 'en' ? 'Main Festival Event' : 'ప్రధాన ఉత్సవ కార్యక్రమం'}</p>
+                          <h4 className="text-[#580000] font-bold text-base md:text-lg leading-snug">
+                            {lang === 'en' ? dailyDigest.mainEvent.eventEn : dailyDigest.mainEvent.eventTe}
+                          </h4>
+                          {(dailyDigest.mainEvent.sponsorEn || dailyDigest.mainEvent.sponsorTe) && (
+                            <p className="text-gray-600 text-xs mt-1.5 font-medium">🙏 {lang === 'en' ? 'Organizers: ' : 'నిర్వాహకులు: '}{lang === 'en' ? dailyDigest.mainEvent.sponsorEn : dailyDigest.mainEvent.sponsorTe}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Yagnam Donor */}
+                  {dailyDigest.yagnam.length > 0 && (
+                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 border border-orange-200/50 shadow-sm">
+                      <div className="flex items-start gap-3">
+                        <span className="text-2xl mt-0.5">🔥</span>
+                        <div>
+                          <p className="text-[#E25822] font-black text-xs uppercase tracking-widest mb-1">{lang === 'en' ? 'Daily Yagnam & Pooja Donor' : 'నిత్య యజ్ఞం, పూజ ఉభయదాతలు'}</p>
+                          {dailyDigest.yagnam.map((d: any, i: number) => (
+                            <div key={i} className="mb-2 last:mb-0">
+                              <h4 className="text-[#580000] font-bold text-sm md:text-base leading-snug">{lang === 'en' ? d.nameEn : d.nameTe}</h4>
+                              <p className="text-gray-500 text-[10px] font-bold uppercase mt-0.5">{lang === 'en' ? (d.locationEn || d.locEn) : (d.locationTe || d.locTe)}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Annadanam Donor */}
+                  {dailyDigest.annadanam.length > 0 && (
+                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 border border-orange-200/50 shadow-sm">
+                      <div className="flex items-start gap-3">
+                        <span className="text-2xl mt-0.5">🍛</span>
+                        <div>
+                          <p className="text-[#E25822] font-black text-xs uppercase tracking-widest mb-1">{lang === 'en' ? 'Annadanam Donors' : 'అన్నదాన వితరణ విరాళ దాతలు'}</p>
+                          {dailyDigest.annadanam.map((d: any, i: number) => (
+                            <div key={i} className="mb-2 last:mb-0">
+                              <h4 className="text-[#580000] font-bold text-sm md:text-base leading-snug">{lang === 'en' ? d.descEn : d.descTe}</h4>
+                              <p className="text-gray-500 text-[10px] font-bold uppercase mt-1">🕒 {lang === 'en' ? d.timeEn : d.timeTe}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
 
           <div className="grid md:grid-cols-3 gap-6">
             {announcements.length > 0 ? (
