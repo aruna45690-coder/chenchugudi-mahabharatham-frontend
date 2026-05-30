@@ -1229,9 +1229,10 @@ export default function Home() {
                   </div>
                 </div>
                 <button onClick={() => {
+                  const dateStr = dailyDigest.dateObj.toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                   let text = lang === 'en' 
-                    ? `*Today's Chenchugudi Festival Digest*\n\n`
-                    : `*ఈరోజు చెంచుగుడి ఉత్సవ విశేషాలు*\n\n`;
+                    ? `*Today's Chenchugudi Festival Digest*\n_${dateStr}_\n\n`
+                    : `*ఈరోజు చెంచుగుడి ఉత్సవ విశేషాలు*\n_${dateStr}_\n\n`;
 
                   if (dailyDigest.mainEvent) {
                     text += lang === 'en' 
