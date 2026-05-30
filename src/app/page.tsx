@@ -1216,7 +1216,9 @@ export default function Home() {
               {/* Top Banner Bar */}
               <div className="bg-gradient-to-r from-[#580000] via-[#7a0000] to-[#580000] px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 relative z-10">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl animate-pulse">📅</span>
+                  <div className="bg-[#FFD700]/20 p-2.5 rounded-2xl border border-[#FFD700]/40 shadow-[0_0_15px_rgba(255,215,0,0.4)]">
+                    <CalendarDays size={28} className="text-[#FFD700] animate-pulse drop-shadow-md" strokeWidth={2.5} />
+                  </div>
                   <div>
                     <h3 className="text-[#FFD700] font-black text-lg md:text-xl uppercase tracking-widest leading-none">
                       {lang === 'en' ? "Today's Festival Digest" : "ఈరోజు ఉత్సవ విశేషాలు"}
