@@ -502,7 +502,43 @@ export default function Home() {
       ]);
 
       setSiteStats(statsData);
-      setAnnouncements(announceList);
+      
+      // Check for automatic announcements based on today's date
+      const istNow = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+      const todaysEvents = annadanamDonors.filter((item: any) => {
+        if (!item.date) return false;
+        const parts = item.date.split('-');
+        if (parts.length === 3) {
+          const d = parseInt(parts[0]);
+          const m = parseInt(parts[1]);
+          const y = parseInt(parts[2]);
+          return d === istNow.getDate() && m === (istNow.getMonth() + 1) && y === istNow.getFullYear();
+        }
+        return false;
+      });
+
+      let finalAnnouncements = announceList;
+      if (todaysEvents.length > 0) {
+        // Only trigger announcement after 9:40 AM
+        const currentHour = istNow.getHours();
+        const currentMinute = istNow.getMinutes();
+        
+        if (currentHour > 9 || (currentHour === 9 && currentMinute >= 40)) {
+          const autoAnns = todaysEvents.map((event: any, i: number) => ({
+            id: `auto-event-${i}`,
+            title: `🌟 Today's Event: ${event.dayEn}`,
+            titleTe: `🌟 ఈరోజు కార్యక్రమం: ${event.dayTe}`,
+            body: `${event.descEn} (${event.timeEn})`,
+            bodyTe: `${event.descTe} (${event.timeTe})`,
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            isAutomatic: true,
+          }));
+          finalAnnouncements = [...autoAnns, ...announceList];
+        }
+      }
+      
+      setAnnouncements(finalAnnouncements);
       setGalleryImages(galleryList);
       setActiveYearData(activeYear);
       if (liveData.success) {
