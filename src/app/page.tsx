@@ -257,6 +257,10 @@ export default function Home() {
   }, []);
 
   const subscribeToPushNotifications = async () => {
+    // Hide the popup if it's visible
+    setShowPushPrompt(false);
+    localStorage.setItem('pushPromptInteracted', 'true');
+
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       alert(lang === 'en' ? 'Push notifications are not supported in your browser.' : 'మీ బ్రౌజర్ నోటిఫికేషన్స్‌ను సపోర్ట్ చేయడం లేదు.');
       return;
@@ -364,54 +368,6 @@ export default function Home() {
   const handleDismissPushPrompt = () => {
     localStorage.setItem('pushPromptInteracted', 'true');
     setShowPushPrompt(false);
-  };
-
-  const subscribeToPushNotifications = async () => {
-    // Hide the HTML popup immediately so it doesn't stay stuck
-    handleDismissPushPrompt();
-
-    if (!('serviceWorker' in navigator)) return;
-
-    try {
-      const registration = await navigator.serviceWorker.ready;
-      
-      const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-      if (!publicVapidKey) return;
-
-      const convertedVapidKey = urlBase64ToUint8Array(publicVapidKey);
-
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: convertedVapidKey,
-      });
-
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/subscribe`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(subscription),
-      });
-
-      setIsPushSubscribed(true);
-    } catch (error) {
-      console.error('Error subscribing to push notifications:', error);
-    }
-  };
-
-  const urlBase64ToUint8Array = (base64String: string) => {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-      .replace(/\-/g, '+')
-      .replace(/_/g, '/');
-
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-
-    for (let i = 0; i < rawData.length; ++i) {
-      outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
   };
 
   // Background Tab Flashing for Live Stream
